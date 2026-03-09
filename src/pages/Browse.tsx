@@ -108,271 +108,265 @@ export function Browse() {
   const activeFiltersCount = selectedGenres.length + selectedVerdicts.length + selectedCountries.length + 
     selectedDecades.length + selectedStreaming.length + selectedActors.length;
 
+  const renderFilters = () => (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="font-bold flex items-center gap-2">
+          <SlidersHorizontal className="w-4 h-4" />
+          Filters
+        </h2>
+        {activeFiltersCount > 0 && (
+          <button 
+            onClick={clearFilters}
+            className="text-xs font-medium hover:text-red-400 transition-colors"
+            style={{ color: '#ef4444' }}
+          >
+            Clear all
+          </button>
+        )}
+      </div>
+
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setActiveFilterTab('basic')}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+            activeFilterTab === 'basic' ? 'text-white' : 'text-muted-foreground'
+          }`}
+          style={activeFilterTab === 'basic' ? {
+            background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(185, 28, 28, 0.2) 100%)'
+          } : { background: 'rgba(255,255,255,0.05)' }}
+        >
+          Basic
+        </button>
+        <button
+          onClick={() => setActiveFilterTab('advanced')}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+            activeFilterTab === 'advanced' ? 'text-white' : 'text-muted-foreground'
+          }`}
+          style={activeFilterTab === 'advanced' ? {
+            background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(185, 28, 28, 0.2) 100%)'
+          } : { background: 'rgba(255,255,255,0.05)' }}
+        >
+          Advanced
+        </button>
+      </div>
+
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input 
+            placeholder="Search movies, actors, directors..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 input-cinematic"
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+            >
+              <X className="w-4 h-4 text-muted-foreground" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {activeFilterTab === 'basic' ? (
+        <>
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
+              Genre
+            </label>
+            <FilterChips 
+              options={genres.slice(0, 10)} 
+              selected={selectedGenres}
+              onChange={setSelectedGenres}
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block flex items-center gap-2">
+              <Calendar className="w-3 h-3" /> Decade
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {decades.map((decade) => (
+                <button
+                  key={decade}
+                  onClick={() => {
+                    if (selectedDecades.includes(decade)) {
+                      setSelectedDecades(selectedDecades.filter(d => d !== decade));
+                    } else {
+                      setSelectedDecades([...selectedDecades, decade]);
+                    }
+                  }}
+                  className={`filter-chip ${selectedDecades.includes(decade) ? 'active' : ''}`}
+                >
+                  {decade}s
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
+              Verdict
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {verdicts.map((verdict) => (
+                <button
+                  key={verdict}
+                  onClick={() => {
+                    if (selectedVerdicts.includes(verdict)) {
+                      setSelectedVerdicts(selectedVerdicts.filter(v => v !== verdict));
+                    } else {
+                      setSelectedVerdicts([...selectedVerdicts, verdict]);
+                    }
+                  }}
+                  className={`filter-chip ${selectedVerdicts.includes(verdict) ? 'active' : ''}`}
+                >
+                  {verdict}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block flex items-center gap-2">
+              <User className="w-3 h-3" /> Actors
+            </label>
+            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto scrollbar-hide">
+              {actors.slice(0, 15).map((actor) => (
+                <button
+                  key={actor.id}
+                  onClick={() => {
+                    if (selectedActors.includes(actor.name)) {
+                      setSelectedActors(selectedActors.filter(a => a !== actor.name));
+                    } else {
+                      setSelectedActors([...selectedActors, actor.name]);
+                    }
+                  }}
+                  className={`filter-chip ${selectedActors.includes(actor.name) ? 'active' : ''}`}
+                >
+                  {actor.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
+              Country
+            </label>
+            <select 
+              className="w-full input-cinematic text-sm"
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value && !selectedCountries.includes(value)) {
+                  setSelectedCountries([...selectedCountries, value]);
+                }
+              }}
+            >
+              <option value="">Select country</option>
+              {countries.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+            {selectedCountries.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {selectedCountries.map(country => (
+                  <span key={country} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs"
+                    style={{ background: 'rgba(220, 38, 38, 0.2)', color: '#ef4444' }}>
+                    {country}
+                    <button onClick={() => setSelectedCountries(selectedCountries.filter(c => c !== country))}>
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
+              Streaming
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {streamingServices.slice(0, 8).map((service) => (
+                <button
+                  key={service}
+                  onClick={() => {
+                    if (selectedStreaming.includes(service)) {
+                      setSelectedStreaming(selectedStreaming.filter(s => s !== service));
+                    } else {
+                      setSelectedStreaming([...selectedStreaming, service]);
+                    }
+                  }}
+                  className={`filter-chip ${selectedStreaming.includes(service) ? 'active' : ''}`}
+                >
+                  {service}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
+              Score: {scoreRange[0]} - {scoreRange[1]}
+            </label>
+            <Slider 
+              value={scoreRange}
+              onValueChange={setScoreRange}
+              min={0}
+              max={10}
+              step={0.1}
+              className="w-full"
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
+              Runtime: {runtimeRange[0]} - {runtimeRange[1]} min
+            </label>
+            <Slider 
+              value={runtimeRange}
+              onValueChange={setRuntimeRange}
+              min={60}
+              max={240}
+              step={5}
+              className="w-full"
+            />
+          </div>
+        </>
+      )}
+
+      <div className="flex items-center justify-between p-4 rounded-xl"
+        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground">
+          Spoiler-free mode
+        </label>
+        <Switch checked={spoilerFree} onCheckedChange={setSpoilerFree} />
+      </div>
+    </>
+  );
+
   return (
     <div className="min-h-screen pt-16">
       <div className="animated-bg" />
       
-      <div className="flex">
-        {/* Filter Sidebar */}
+      <div className="flex flex-col lg:flex-row">
         {showFilters && (
-          <aside className="w-80 flex-shrink-0 h-[calc(100vh-64px)] overflow-y-auto sticky top-16 p-5 border-r border-white/[0.06]"
+          <aside className="hidden lg:block lg:w-80 lg:flex-shrink-0 lg:h-[calc(100vh-64px)] lg:overflow-y-auto lg:sticky lg:top-16 p-5 border-r border-white/[0.06]"
             style={{ background: 'rgba(10, 10, 15, 0.9)', backdropFilter: 'blur(20px)' }}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-bold flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4" />
-                Filters
-              </h2>
-              {activeFiltersCount > 0 && (
-                <button 
-                  onClick={clearFilters}
-                  className="text-xs font-medium hover:text-red-400 transition-colors"
-                  style={{ color: '#ef4444' }}
-                >
-                  Clear all
-                </button>
-              )}
-            </div>
-
-            {/* Filter Tabs */}
-            <div className="flex gap-2 mb-6">
-              <button
-                onClick={() => setActiveFilterTab('basic')}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeFilterTab === 'basic' ? 'text-white' : 'text-muted-foreground'
-                }`}
-                style={activeFilterTab === 'basic' ? {
-                  background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(185, 28, 28, 0.2) 100%)'
-                } : { background: 'rgba(255,255,255,0.05)' }}
-              >
-                Basic
-              </button>
-              <button
-                onClick={() => setActiveFilterTab('advanced')}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeFilterTab === 'advanced' ? 'text-white' : 'text-muted-foreground'
-                }`}
-                style={activeFilterTab === 'advanced' ? {
-                  background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(185, 28, 28, 0.2) 100%)'
-                } : { background: 'rgba(255,255,255,0.05)' }}
-              >
-                Advanced
-              </button>
-            </div>
-
-            {/* Search */}
-            <div className="mb-6">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Search movies, actors, directors..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 input-cinematic"
-                />
-                {searchQuery && (
-                  <button 
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                  >
-                    <X className="w-4 h-4 text-muted-foreground" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {activeFilterTab === 'basic' ? (
-              <>
-                {/* Genre Filter */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
-                    Genre
-                  </label>
-                  <FilterChips 
-                    options={genres.slice(0, 10)} 
-                    selected={selectedGenres}
-                    onChange={setSelectedGenres}
-                  />
-                </div>
-
-                {/* Decade Filter */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block flex items-center gap-2">
-                    <Calendar className="w-3 h-3" /> Decade
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {decades.map((decade) => (
-                      <button
-                        key={decade}
-                        onClick={() => {
-                          if (selectedDecades.includes(decade)) {
-                            setSelectedDecades(selectedDecades.filter(d => d !== decade));
-                          } else {
-                            setSelectedDecades([...selectedDecades, decade]);
-                          }
-                        }}
-                        className={`filter-chip ${selectedDecades.includes(decade) ? 'active' : ''}`}
-                      >
-                        {decade}s
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Verdict Filter */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
-                    Verdict
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {verdicts.map((verdict) => (
-                      <button
-                        key={verdict}
-                        onClick={() => {
-                          if (selectedVerdicts.includes(verdict)) {
-                            setSelectedVerdicts(selectedVerdicts.filter(v => v !== verdict));
-                          } else {
-                            setSelectedVerdicts([...selectedVerdicts, verdict]);
-                          }
-                        }}
-                        className={`filter-chip ${selectedVerdicts.includes(verdict) ? 'active' : ''}`}
-                      >
-                        {verdict}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* Actor Filter */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block flex items-center gap-2">
-                    <User className="w-3 h-3" /> Actors
-                  </label>
-                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto scrollbar-hide">
-                    {actors.slice(0, 15).map((actor) => (
-                      <button
-                        key={actor.id}
-                        onClick={() => {
-                          if (selectedActors.includes(actor.name)) {
-                            setSelectedActors(selectedActors.filter(a => a !== actor.name));
-                          } else {
-                            setSelectedActors([...selectedActors, actor.name]);
-                          }
-                        }}
-                        className={`filter-chip ${selectedActors.includes(actor.name) ? 'active' : ''}`}
-                      >
-                        {actor.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Country Filter */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
-                    Country
-                  </label>
-                  <select 
-                    className="w-full input-cinematic text-sm"
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value && !selectedCountries.includes(value)) {
-                        setSelectedCountries([...selectedCountries, value]);
-                      }
-                    }}
-                  >
-                    <option value="">Select country</option>
-                    {countries.map(c => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                  {selectedCountries.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {selectedCountries.map(country => (
-                        <span key={country} className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs"
-                          style={{ background: 'rgba(220, 38, 38, 0.2)', color: '#ef4444' }}>
-                          {country}
-                          <button onClick={() => setSelectedCountries(selectedCountries.filter(c => c !== country))}>
-                            <X className="w-3 h-3" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Streaming Filter */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
-                    Streaming
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {streamingServices.slice(0, 8).map((service) => (
-                      <button
-                        key={service}
-                        onClick={() => {
-                          if (selectedStreaming.includes(service)) {
-                            setSelectedStreaming(selectedStreaming.filter(s => s !== service));
-                          } else {
-                            setSelectedStreaming([...selectedStreaming, service]);
-                          }
-                        }}
-                        className={`filter-chip ${selectedStreaming.includes(service) ? 'active' : ''}`}
-                      >
-                        {service}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Score Slider */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
-                    Score: {scoreRange[0]} - {scoreRange[1]}
-                  </label>
-                  <Slider 
-                    value={scoreRange}
-                    onValueChange={setScoreRange}
-                    min={0}
-                    max={10}
-                    step={0.1}
-                    className="w-full"
-                  />
-                </div>
-
-                {/* Runtime Slider */}
-                <div className="mb-6">
-                  <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3 block">
-                    Runtime: {runtimeRange[0]} - {runtimeRange[1]} min
-                  </label>
-                  <Slider 
-                    value={runtimeRange}
-                    onValueChange={setRuntimeRange}
-                    min={60}
-                    max={240}
-                    step={5}
-                    className="w-full"
-                  />
-                </div>
-              </>
-            )}
-
-            {/* Spoiler-free Toggle */}
-            <div className="flex items-center justify-between p-4 rounded-xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground">
-                Spoiler-free mode
-              </label>
-              <Switch checked={spoilerFree} onCheckedChange={setSpoilerFree} />
-            </div>
+            {renderFilters()}
           </aside>
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 sm:p-6">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 mb-6">
             <div>
               <h1 className="heading-display text-3xl">Browse Movies</h1>
               <p className="text-muted-foreground text-sm mt-1">
@@ -380,7 +374,7 @@ export function Browse() {
               </p>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               {/* Toggle Filters */}
               <Button 
                 variant="outline" 
@@ -427,6 +421,13 @@ export function Browse() {
               </div>
             </div>
           </div>
+
+          {showFilters && (
+            <div className="lg:hidden mb-6 rounded-2xl border border-white/[0.06] p-4 sm:p-5"
+              style={{ background: 'rgba(10, 10, 15, 0.85)', backdropFilter: 'blur(20px)' }}>
+              {renderFilters()}
+            </div>
+          )}
 
           {/* Active Filters */}
           {activeFiltersCount > 0 && (

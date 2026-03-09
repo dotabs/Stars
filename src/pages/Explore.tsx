@@ -1,436 +1,547 @@
-import { useState, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Compass, Bookmark, RotateCw, Plane, Search } from 'lucide-react';
+import {
+  Bookmark,
+  Compass,
+  Film,
+  MapPinned,
+  Plane,
+  RotateCw,
+  Search,
+  Sparkles,
+  Star,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { FilterChips, PosterImage } from '@/components/ui-custom';
-import { movies, genres } from '@/data/movies';
+import { Input } from '@/components/ui/input';
+import { CinematicGlobe, FilterChips, PosterImage } from '@/components/ui-custom';
+import {
+  defaultExploreCountry,
+  defaultPinnedCountryKeys,
+  exploreCountries,
+  exploreCountryByKey,
+  featuredExploreCountries,
+  type ExploreCountryStat,
+} from '@/data/explore';
 
-interface CountryData {
-  name: string;
-  flag: string;
-  count: number;
-  x: number;
-  y: number;
-}
-
-const countryData: CountryData[] = [
-  { name: 'USA', flag: '🇺🇸', count: 85, x: 22, y: 35 },
-  { name: 'UK', flag: '🇬🇧', count: 42, x: 47, y: 28 },
-  { name: 'France', flag: '🇫🇷', count: 38, x: 49, y: 32 },
-  { name: 'Germany', flag: '🇩🇪', count: 31, x: 52, y: 30 },
-  { name: 'Italy', flag: '🇮🇹', count: 28, x: 52, y: 35 },
-  { name: 'Spain', flag: '🇪🇸', count: 24, x: 47, y: 36 },
-  { name: 'Japan', flag: '🇯🇵', count: 35, x: 82, y: 36 },
-  { name: 'South Korea', flag: '🇰🇷', count: 28, x: 80, y: 38 },
-  { name: 'China', flag: '🇨🇳', count: 32, x: 75, y: 38 },
-  { name: 'India', flag: '🇮🇳', count: 26, x: 68, y: 45 },
-  { name: 'Brazil', flag: '🇧🇷', count: 22, x: 32, y: 62 },
-  { name: 'Australia', flag: '🇦🇺', count: 18, x: 85, y: 72 },
-  { name: 'Canada', flag: '🇨🇦', count: 25, x: 20, y: 28 },
-  { name: 'Mexico', flag: '🇲🇽', count: 19, x: 18, y: 45 },
-  { name: 'Russia', flag: '🇷🇺', count: 21, x: 65, y: 22 },
-];
+type ExploreTab = 'picks' | 'new' | 'genres';
 
 export function Explore() {
   const navigate = useNavigate();
-  const globeRef = useRef<HTMLDivElement>(null);
-  const [selectedCountry, setSelectedCountry] = useState<CountryData>(countryData[6]); // Japan default
-  const [activeTab, setActiveTab] = useState<'picks' | 'new' | 'genres'>('picks');
+  const [selectedCountry, setSelectedCountry] = useState<ExploreCountryStat>(defaultExploreCountry);
+  const [activeTab, setActiveTab] = useState<ExploreTab>('picks');
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const [isSpinning, setIsSpinning] = useState(false);
-  const [rotation, setRotation] = useState(0);
-  const [pinnedCountries, setPinnedCountries] = useState<string[]>(['USA', 'Japan', 'UK']);
+  const [pinnedCountries, setPinnedCountries] = useState<string[]>(defaultPinnedCountryKeys);
   const [searchQuery, setSearchQuery] = useState('');
+  const [spinToken, setSpinToken] = useState(0);
+  const [isSpinning, setIsSpinning] = useState(false);
 
-  const countryMovies = movies.filter(m => 
-    selectedCountry.name === 'USA' ? m.country === 'USA' : 
-    selectedCountry.name === 'UK' ? m.country === 'UK' :
-    selectedCountry.name === 'Japan' ? m.country === 'Japan' :
-    selectedCountry.name === 'South Korea' ? m.country === 'South Korea' :
-    selectedCountry.name === 'France' ? m.country === 'France' :
-    true
-  ).slice(0, 6);
+  useEffect(() => {
+    setSelectedGenres([]);
+  }, [selectedCountry.key]);
 
-  const handleSpin = () => {
-    setIsSpinning(true);
-    const spinDuration = 2000;
-    const startRotation = rotation;
-    const endRotation = startRotation + 720 + Math.random() * 360;
-    const startTime = Date.now();
+  const searchResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return [];
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / spinDuration, 1);
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      const currentRotation = startRotation + (endRotation - startRotation) * easeOut;
-      
-      setRotation(currentRotation);
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setIsSpinning(false);
-        const randomCountry = countryData[Math.floor(Math.random() * countryData.length)];
-        setSelectedCountry(randomCountry);
-      }
-    };
-    
-    requestAnimationFrame(animate);
+    return featuredExploreCountries
+      .filter((country) => country.label.toLowerCase().includes(query))
+      .slice(0, 6);
+  }, [searchQuery]);
+
+  const visibleGenres = useMemo(
+    () => selectedCountry.genreCounts.slice(0, 6).map(({ genre }) => genre),
+    [selectedCountry.genreCounts],
+  );
+
+  const visibleMovies = useMemo(() => {
+    let result = [...selectedCountry.movies];
+
+    if (selectedGenres.length > 0) {
+      result = result.filter((movie) => movie.genres.some((genre) => selectedGenres.includes(genre)));
+    }
+
+    if (activeTab === 'picks') {
+      result.sort((a, b) => b.score - a.score || b.year - a.year);
+    } else if (activeTab === 'new') {
+      result.sort((a, b) => b.year - a.year || b.score - a.score);
+    } else {
+      result.sort((a, b) => {
+        const aMatches = a.genres.filter((genre) => selectedGenres.includes(genre)).length;
+        const bMatches = b.genres.filter((genre) => selectedGenres.includes(genre)).length;
+        return bMatches - aMatches || b.score - a.score;
+      });
+    }
+
+    return result.slice(0, 6);
+  }, [activeTab, selectedCountry.movies, selectedGenres]);
+
+  const exploredCountryCount = useMemo(
+    () => featuredExploreCountries.filter((country) => country.explored).length,
+    [],
+  );
+  const exploredProgress = Math.round((exploredCountryCount / featuredExploreCountries.length) * 100);
+
+  const pinnedCountryData = pinnedCountries
+    .map((countryKey) => exploreCountryByKey.get(countryKey))
+    .filter(Boolean) as ExploreCountryStat[];
+
+  const handleCountrySelect = (country: ExploreCountryStat) => {
+    setSelectedCountry(country);
+    setSearchQuery('');
   };
 
-  const togglePin = (country: string) => {
-    if (pinnedCountries.includes(country)) {
-      setPinnedCountries(pinnedCountries.filter(c => c !== country));
-    } else {
-      setPinnedCountries([...pinnedCountries, country]);
-    }
+  const togglePin = (countryKey: string) => {
+    setPinnedCountries((current) =>
+      current.includes(countryKey)
+        ? current.filter((key) => key !== countryKey)
+        : [...current, countryKey].slice(-6),
+    );
+  };
+
+  const handleSpin = () => {
+    if (featuredExploreCountries.length === 0) return;
+    const randomCountry =
+      featuredExploreCountries[Math.floor(Math.random() * featuredExploreCountries.length)];
+    setSelectedCountry(randomCountry);
+    setSpinToken((value) => value + 1);
   };
 
   return (
     <div className="min-h-screen pt-16">
       <div className="animated-bg" />
-      
-      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-64px)]">
-        {/* Main Content - Globe Area */}
-        <div className="flex-1 relative flex flex-col items-center justify-center p-6 lg:p-10">
-          {/* Title */}
-          <div className="absolute top-6 left-1/2 -translate-x-1/2 text-center z-10">
-            <p className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-1">Movie Universe</p>
-            <h1 className="heading-display text-2xl text-white">Explore by Location</h1>
-          </div>
 
-          {/* Search */}
-          <div className="absolute top-6 left-6 z-10">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input 
-                type="text"
-                placeholder="Search countries..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-cinematic pl-10 pr-4 py-2 w-48 lg:w-64 text-sm"
-              />
-            </div>
-          </div>
+      <div className="relative min-h-[calc(100vh-64px)] overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-90"
+          style={{
+            background:
+              'radial-gradient(circle at 18% 22%, rgba(255,59,59,0.12) 0%, transparent 34%), radial-gradient(circle at 82% 18%, rgba(50,75,130,0.18) 0%, transparent 32%), linear-gradient(180deg, rgba(4,7,13,0.38) 0%, rgba(4,7,13,0.9) 100%)',
+          }}
+        />
 
-          {/* Globe Container */}
-          <div className="relative w-full max-w-lg aspect-square mt-16 lg:mt-0" ref={globeRef}>
-            {/* Outer Glow Ring */}
-            <div className="absolute inset-0 rounded-full"
-              style={{ 
-                background: 'radial-gradient(circle, transparent 60%, rgba(59, 130, 246, 0.1) 100%)',
-                filter: 'blur(20px)'
-              }} />
-            
-            {/* Globe Frame */}
-            <div className="absolute inset-2 rounded-full border border-white/10" />
-            <div className="absolute inset-4 rounded-full border border-white/5" />
-            
-            {/* The Globe */}
-            <div 
-              className="absolute inset-6 rounded-full overflow-hidden"
-              style={{ 
-                transform: `rotate(${rotation}deg)`,
-                transition: isSpinning ? 'none' : 'transform 0.5s ease-out',
-                boxShadow: 'inset -30px -30px 80px rgba(0, 0, 0, 0.8), inset 20px 20px 50px rgba(100, 149, 237, 0.15)'
-              }}
-            >
-              {/* Ocean Base */}
-              <div className="absolute inset-0"
-                style={{ 
-                  background: 'linear-gradient(135deg, #1a3a5c 0%, #0d2137 50%, #1e3a5f 100%)'
-                }} />
-              
-              {/* Continents - SVG Map */}
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" style={{ opacity: 0.8 }}>
-                {/* North America */}
-                <path d="M8 20 Q15 15 25 18 Q30 22 28 32 Q22 38 12 35 Q8 28 8 20 Z" 
-                  fill="#2d5a3d" opacity="0.9" />
-                {/* South America */}
-                <path d="M18 45 Q28 42 30 52 Q28 68 22 75 Q15 68 16 55 Z" 
-                  fill="#2d5a3d" opacity="0.9" />
-                {/* Europe */}
-                <path d="M42 22 Q52 18 58 24 Q55 32 48 30 Q42 28 42 22 Z" 
-                  fill="#2d5a3d" opacity="0.9" />
-                {/* Africa */}
-                <path d="M45 35 Q58 32 60 45 Q58 62 50 68 Q42 58 44 42 Z" 
-                  fill="#2d5a3d" opacity="0.9" />
-                {/* Asia */}
-                <path d="M58 18 Q78 15 82 28 Q78 42 65 40 Q55 35 58 18 Z" 
-                  fill="#2d5a3d" opacity="0.9" />
-                {/* Australia */}
-                <path d="M72 65 Q85 62 88 72 Q85 82 72 78 Z" 
-                  fill="#2d5a3d" opacity="0.9" />
-                
-                {/* Grid Lines */}
-                <ellipse cx="50" cy="50" rx="48" ry="20" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.3" />
-                <ellipse cx="50" cy="50" rx="48" ry="35" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.3" />
-                <line x1="50" y1="2" x2="50" y2="98" stroke="rgba(255,255,255,0.05)" strokeWidth="0.3" />
-                <line x1="2" y1="50" x2="98" y2="50" stroke="rgba(255,255,255,0.05)" strokeWidth="0.3" />
-              </svg>
-              
-              {/* Country Markers */}
-              {countryData.map((country) => (
-                <button
-                  key={country.name}
-                  onClick={() => setSelectedCountry(country)}
-                  className="absolute w-6 h-6 -ml-3 -mt-3 rounded-full flex items-center justify-center text-lg transition-all duration-300 hover:scale-150 z-10"
-                  style={{ 
-                    left: `${country.x}%`, 
-                    top: `${country.y}%`,
-                    background: selectedCountry.name === country.name 
-                      ? 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)' 
-                      : 'rgba(0,0,0,0.6)',
-                    boxShadow: selectedCountry.name === country.name 
-                      ? '0 0 20px rgba(220, 38, 38, 0.8)' 
-                      : '0 0 10px rgba(0,0,0,0.5)',
-                    border: selectedCountry.name === country.name ? '2px solid white' : '1px solid rgba(255,255,255,0.3)'
-                  }}
-                >
-                  {country.flag}
-                </button>
-              ))}
-              
-              {/* Atmosphere Glow */}
-              <div className="absolute inset-0 pointer-events-none"
-                style={{ 
-                  background: 'radial-gradient(circle at 30% 30%, rgba(100, 180, 255, 0.2) 0%, transparent 50%)'
-                }} />
-            </div>
-
-            {/* Outer Shadow */}
-            <div className="absolute inset-6 rounded-full pointer-events-none"
-              style={{ 
-                background: 'linear-gradient(135deg, transparent 50%, rgba(0, 0, 0, 0.5) 100%)'
-              }} />
-
-            {/* Location Indicator */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-              <div className="relative">
-                <div className="w-4 h-4 rounded-full animate-ping absolute"
-                  style={{ background: 'rgba(220, 38, 38, 0.5)' }} />
-                <div className="w-4 h-4 rounded-full relative border-2 border-white"
-                  style={{ background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)' }} />
+        <div className="relative z-10 grid min-h-[calc(100vh-64px)] grid-cols-1 xl:grid-cols-[minmax(0,1fr)_420px]">
+          <section className="flex min-h-0 flex-col px-4 py-5 sm:px-6 lg:px-8 xl:px-10">
+            <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-mono text-xs uppercase tracking-[0.24em] text-white/45">
+                  Movie Universe
+                </p>
+                <h1 className="heading-display mt-3 text-4xl text-white sm:text-5xl lg:text-6xl">
+                  Explore Cinema by Country
+                </h1>
+                <p className="mt-4 max-w-xl text-sm leading-6 text-white/62 sm:text-base">
+                  Spin into new film cultures, chase national classics, and move through the STARS archive
+                  like a passport stamped in posters.
+                </p>
               </div>
-            </div>
-          </div>
 
-          {/* Spin Button */}
-          <Button 
-            onClick={handleSpin}
-            disabled={isSpinning}
-            className="mt-8 w-16 h-16 rounded-full flex items-center justify-center transition-all hover:scale-110 disabled:opacity-50"
-            style={{ 
-              background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
-              boxShadow: '0 0 40px rgba(220, 38, 38, 0.4)'
-            }}
-          >
-            <RotateCw className={`w-7 h-7 ${isSpinning ? 'animate-spin' : ''}`} />
-          </Button>
-          <p className="text-mono text-xs text-muted-foreground mt-3">Spin the Globe</p>
-
-          {/* Pinned Countries */}
-          <div className="absolute bottom-6 left-6">
-            <p className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-3">Pinned Countries</p>
-            <div className="flex gap-2 flex-wrap">
-              {pinnedCountries.map(country => (
-                <button
-                  key={country}
-                  onClick={() => {
-                    const c = countryData.find(cd => cd.name === country);
-                    if (c) setSelectedCountry(c);
-                  }}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all hover:scale-110 ${
-                    selectedCountry.name === country 
-                      ? 'ring-2 ring-white' 
-                      : ''
-                  }`}
-                  style={{ 
-                    background: selectedCountry.name === country 
-                      ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' 
-                      : 'rgba(255,255,255,0.1)',
-                    boxShadow: selectedCountry.name === country 
-                      ? '0 0 20px rgba(220, 38, 38, 0.5)' 
-                      : 'none'
-                  }}
-                >
-                  {countryData.find(c => c.name === country)?.flag}
-                </button>
-              ))}
-              <button className="w-10 h-10 rounded-full flex items-center justify-center border border-dashed border-white/30 text-muted-foreground hover:bg-white/5 transition-all">
-                +
-              </button>
-            </div>
-          </div>
-
-          {/* Film Passport */}
-          <div className="absolute bottom-6 right-6 text-right">
-            <p className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-2">Film Passport</p>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-3xl font-bold" style={{ 
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>12</p>
-                <p className="text-xs text-muted-foreground">countries</p>
-              </div>
-              <div className="w-14 h-14 rounded-full flex items-center justify-center"
-                style={{ 
-                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(251, 191, 36, 0.2) 100%)',
-                  border: '2px solid rgba(245, 158, 11, 0.5)'
-                }}>
-                <Plane className="w-6 h-6" style={{ color: '#fbbf24' }} />
-              </div>
-            </div>
-            <button className="text-sm font-medium mt-2 hover:text-red-400 transition-colors"
-              style={{ color: '#fbbf24' }}>
-              Start World Tour
-            </button>
-          </div>
-        </div>
-
-        {/* Right Panel - Country Hub */}
-        <div className="lg:w-96 flex-shrink-0 p-6 overflow-y-auto border-l border-white/[0.06]"
-          style={{ background: 'rgba(10, 10, 15, 0.8)', backdropFilter: 'blur(20px)' }}>
-          {/* Location Title */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
-              style={{ 
-                background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(185, 28, 28, 0.2) 100%)',
-                border: '1px solid rgba(220, 38, 38, 0.3)'
-              }}>
-              {selectedCountry.flag}
-            </div>
-            <div className="flex-1">
-              <p className="text-mono text-xs uppercase tracking-wider text-muted-foreground">Scene Location</p>
-              <h2 className="text-2xl font-bold">{selectedCountry.name}</h2>
-            </div>
-            <button 
-              onClick={() => togglePin(selectedCountry.name)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
-                pinnedCountries.includes(selectedCountry.name) 
-                  ? '' 
-                  : 'hover:bg-white/5'
-              }`}
-              style={pinnedCountries.includes(selectedCountry.name) ? {
-                background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
-                boxShadow: '0 0 20px rgba(220, 38, 38, 0.4)'
-              } : { background: 'rgba(255,255,255,0.05)' }}
-            >
-              <Bookmark className={`w-4 h-4 ${pinnedCountries.includes(selectedCountry.name) ? 'fill-white' : ''}`} />
-            </button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <div className="p-4 rounded-xl text-center"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-2xl font-bold" style={{ color: '#ef4444' }}>{selectedCountry.count}</p>
-              <p className="text-xs text-muted-foreground">Films</p>
-            </div>
-            <div className="p-4 rounded-xl text-center"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-              <p className="text-2xl font-bold" style={{ color: '#8b5cf6' }}>8.4</p>
-              <p className="text-xs text-muted-foreground">Avg Score</p>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex gap-2 mb-6">
-            {(['picks', 'new', 'genres'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                  activeTab === tab 
-                    ? 'text-white' 
-                    : 'text-muted-foreground hover:text-white'
-                }`}
-                style={activeTab === tab ? {
-                  background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(185, 28, 28, 0.2) 100%)',
-                  boxShadow: '0 0 20px rgba(220, 38, 38, 0.2)'
-                } : { background: 'rgba(255,255,255,0.05)' }}
-              >
-                {tab === 'picks' ? 'Top Picks' : tab === 'new' ? 'New' : 'Genres'}
-              </button>
-            ))}
-          </div>
-
-          {/* Filters */}
-          <div className="space-y-4 mb-6">
-            <div>
-              <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Genre</label>
-              <FilterChips 
-                options={genres.slice(0, 6)} 
-                selected={selectedGenres}
-                onChange={setSelectedGenres}
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Year</label>
-                <select className="w-full input-cinematic text-sm py-2">
-                  <option>All Years</option>
-                  <option>2025</option>
-                  <option>2024</option>
-                  <option>2023</option>
-                  <option>2020s</option>
-                  <option>2010s</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Score</label>
-                <select className="w-full input-cinematic text-sm py-2">
-                  <option>Any Score</option>
-                  <option>9+</option>
-                  <option>8+</option>
-                  <option>7+</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Movie List */}
-          <div className="space-y-3">
-            <p className="text-mono text-xs uppercase tracking-wider text-muted-foreground">
-              {countryMovies.length} films found
-            </p>
-            {countryMovies.map((movie) => (
-              <div 
-                key={movie.id}
-                onClick={() => navigate(`/review/${movie.id}`)}
-                className="flex gap-3 p-3 rounded-xl cursor-pointer transition-all hover:scale-[1.02]"
-                style={{ 
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.06)'
-                }}
-              >
-                <div className="w-12 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                  <PosterImage src={movie.poster} title={movie.title} className="w-full h-full object-cover" />
+              <div className="grid grid-cols-2 gap-3 sm:w-auto sm:grid-cols-3">
+                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                    Countries
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold text-white">{featuredExploreCountries.length}</p>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-sm truncate">{movie.title}</h4>
-                  <p className="text-xs text-muted-foreground">{movie.year}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-bold" style={{ color: '#ef4444' }}>{movie.score.toFixed(1)}</span>
-                    <span className="text-xs text-muted-foreground">•</span>
-                    <span className="text-xs text-muted-foreground">{movie.genres[0]}</span>
+                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                    Films Logged
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold text-white">
+                    {featuredExploreCountries.reduce((total, country) => total + country.filmCount, 0)}
+                  </p>
+                </div>
+                <div className="col-span-2 rounded-2xl border border-[#f3c86a]/20 bg-[#f3c86a]/[0.06] p-4 sm:col-span-1">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-[#f3c86a]/70">
+                    Passport
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold text-white">{exploredProgress}%</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)] xl:mt-8">
+              <div className="space-y-4">
+                <div className="rounded-3xl border border-white/[0.06] bg-[#0c111a]/80 p-4 backdrop-blur-xl">
+                  <label className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/42">
+                    Country Search
+                  </label>
+                  <div className="relative mt-3">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+                    <Input
+                      value={searchQuery}
+                      onChange={(event) => setSearchQuery(event.target.value)}
+                      placeholder="Search a film country..."
+                      className="input-cinematic h-11 border-white/10 bg-white/[0.03] pl-10 text-sm"
+                    />
+                  </div>
+
+                  {searchResults.length > 0 && (
+                    <div className="mt-3 space-y-2 rounded-2xl border border-white/[0.06] bg-black/20 p-2">
+                      {searchResults.map((country) => (
+                        <button
+                          key={country.key}
+                          onClick={() => handleCountrySelect(country)}
+                          className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition-colors hover:bg-white/[0.05]"
+                        >
+                          <div>
+                            <p className="text-sm font-medium text-white">{country.label}</p>
+                            <p className="text-xs text-white/45">{country.filmCount} films explored</p>
+                          </div>
+                          <span className="text-xs text-white/55">{country.flag}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="rounded-3xl border border-white/[0.06] bg-[#0c111a]/80 p-4 backdrop-blur-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/42">
+                        Pinned Countries
+                      </p>
+                      <p className="mt-1 text-xs text-white/50">Quick jumps for your favorite scenes.</p>
+                    </div>
+                    <MapPinned className="h-4 w-4 text-white/40" />
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {pinnedCountryData.map((country) => (
+                      <button
+                        key={country.key}
+                        onClick={() => handleCountrySelect(country)}
+                        className={`rounded-full border px-3 py-2 text-sm font-medium transition-all ${
+                          selectedCountry.key === country.key
+                            ? 'border-white/20 text-white'
+                            : 'border-white/8 text-white/62 hover:border-white/16 hover:text-white'
+                        }`}
+                        style={
+                          selectedCountry.key === country.key
+                            ? {
+                                background:
+                                  'linear-gradient(135deg, rgba(255,59,59,0.18) 0%, rgba(185,28,28,0.18) 100%)',
+                                boxShadow: '0 0 24px rgba(255,59,59,0.18)',
+                              }
+                            : { background: 'rgba(255,255,255,0.03)' }
+                        }
+                      >
+                        {country.flag} {country.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
 
-          {/* CTA */}
-          <Button 
-            onClick={() => navigate('/browse')}
-            className="w-full btn-primary mt-6"
+              <div className="relative rounded-[2rem] border border-white/[0.06] bg-[#09101a]/70 p-4 shadow-[0_30px_100px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:p-5 lg:p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                      Orbital Discovery
+                    </p>
+                    <p className="mt-2 max-w-md text-sm text-white/55">
+                      Drag to rotate. Scroll to zoom. Hover for film intel. Click to land on a country.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Button
+                      onClick={handleSpin}
+                      disabled={isSpinning}
+                      className="btn-primary h-12 rounded-full px-5"
+                    >
+                      <RotateCw className={`mr-2 h-4 w-4 ${isSpinning ? 'animate-spin' : ''}`} />
+                      Spin the Globe
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="mt-6 aspect-square w-full">
+                  <CinematicGlobe
+                    countries={exploreCountries}
+                    selectedCountryKey={selectedCountry.key}
+                    pinnedCountryKeys={pinnedCountries}
+                    spinToken={spinToken}
+                    onCountrySelect={handleCountrySelect}
+                    onSpinStateChange={setIsSpinning}
+                    className="relative h-full w-full"
+                  />
+                </div>
+
+                <div className="mt-6 grid gap-3 md:grid-cols-[1fr_240px]">
+                  <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="flex h-11 w-11 items-center justify-center rounded-full border border-[#FF3B3B]/30 text-sm font-semibold text-white"
+                        style={{
+                          background:
+                            'linear-gradient(135deg, rgba(255,59,59,0.2) 0%, rgba(185,28,28,0.2) 100%)',
+                          boxShadow: '0 0 24px rgba(255,59,59,0.18)',
+                        }}
+                      >
+                        {selectedCountry.flag}
+                      </div>
+                      <div>
+                        <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/42">
+                          Current Orbit
+                        </p>
+                        <h2 className="text-lg font-semibold text-white">{selectedCountry.label}</h2>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {selectedCountry.topGenres.slice(0, 3).map((genre) => (
+                        <span
+                          key={genre}
+                          className="rounded-full border border-white/8 bg-white/[0.04] px-3 py-1 text-xs text-white/72"
+                        >
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-[#f3c86a]/15 bg-[#f3c86a]/[0.05] p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#f3c86a]/35 bg-[#f3c86a]/10">
+                        <Plane className="h-5 w-5 text-[#f3c86a]" />
+                      </div>
+                      <div>
+                        <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-[#f3c86a]/70">
+                          Film Passport
+                        </p>
+                        <p className="text-sm text-white/72">
+                          {exploredCountryCount} of {featuredExploreCountries.length} countries explored
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-4 h-2 rounded-full bg-white/8">
+                      <div
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${exploredProgress}%`,
+                          background: 'linear-gradient(90deg, #f3c86a 0%, #ffdf8c 100%)',
+                          boxShadow: '0 0 20px rgba(243,200,106,0.35)',
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <aside
+            className="border-t border-white/[0.06] px-4 py-5 xl:border-l xl:border-t-0 xl:px-6"
+            style={{ background: 'rgba(8, 12, 20, 0.86)', backdropFilter: 'blur(24px)' }}
           >
-            <Compass className="w-4 h-4 mr-2" />
-            Explore {selectedCountry.name} Cinema
-          </Button>
+            <div key={selectedCountry.key} className="animate-fade-in space-y-6">
+              <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/42">
+                      Scene Location
+                    </p>
+                    <h2 className="mt-2 text-3xl font-semibold text-white">{selectedCountry.label}</h2>
+                    <p className="mt-2 text-sm text-white/52">{selectedCountry.region}</p>
+                  </div>
+
+                  <button
+                    onClick={() => togglePin(selectedCountry.key)}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 transition-all hover:scale-105"
+                    style={
+                      pinnedCountries.includes(selectedCountry.key)
+                        ? {
+                            background:
+                              'linear-gradient(135deg, rgba(255,59,59,0.22) 0%, rgba(185,28,28,0.22) 100%)',
+                            boxShadow: '0 0 24px rgba(255,59,59,0.18)',
+                          }
+                        : { background: 'rgba(255,255,255,0.04)' }
+                    }
+                  >
+                    <Bookmark
+                      className={`h-4 w-4 ${pinnedCountries.includes(selectedCountry.key) ? 'fill-white text-white' : 'text-white/68'}`}
+                    />
+                  </button>
+                </div>
+
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl border border-white/[0.06] bg-[#101724] p-4">
+                    <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">Films</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">{selectedCountry.filmCount}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/[0.06] bg-[#101724] p-4">
+                    <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">Avg Score</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">
+                      {selectedCountry.filmCount > 0 ? selectedCountry.averageScore.toFixed(1) : '--'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                    Top Genres
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-white/70">
+                    {selectedCountry.topGenres.length > 0
+                      ? selectedCountry.topGenres.join(', ')
+                      : 'No STARS titles indexed in this country yet.'}
+                  </p>
+                </div>
+
+                {selectedCountry.posterFilms.length > 0 && (
+                  <div className="mt-5">
+                    <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                      Poster Reel
+                    </p>
+                    <div className="mt-3 grid grid-cols-4 gap-2">
+                      {selectedCountry.posterFilms.map((movie) => (
+                        <button
+                          key={movie.id}
+                          onClick={() => navigate(`/review/${movie.id}`)}
+                          className="overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.03] transition-transform hover:scale-[1.02]"
+                        >
+                          <div className="aspect-[2/3]">
+                            <PosterImage
+                              src={movie.poster}
+                              title={movie.title}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <Button
+                  onClick={() => navigate('/browse')}
+                  className="btn-primary mt-6 w-full justify-center"
+                  disabled={selectedCountry.filmCount === 0}
+                >
+                  <Compass className="mr-2 h-4 w-4" />
+                  Explore {selectedCountry.label} Cinema
+                </Button>
+              </div>
+
+              <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5">
+                <div className="flex gap-2">
+                  {(['picks', 'new', 'genres'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`flex-1 rounded-full px-4 py-2.5 text-sm font-semibold transition-all ${
+                        activeTab === tab ? 'text-white' : 'text-white/54 hover:text-white'
+                      }`}
+                      style={
+                        activeTab === tab
+                          ? {
+                              background:
+                                'linear-gradient(135deg, rgba(255,59,59,0.18) 0%, rgba(185,28,28,0.18) 100%)',
+                              boxShadow: '0 0 20px rgba(255,59,59,0.14)',
+                            }
+                          : { background: 'rgba(255,255,255,0.04)' }
+                      }
+                    >
+                      {tab === 'picks' ? 'Top Picks' : tab === 'new' ? 'Newest' : 'Genres'}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                      Genre Lens
+                    </p>
+                    <div className="mt-3">
+                      <FilterChips
+                        options={visibleGenres}
+                        selected={selectedGenres}
+                        onChange={setSelectedGenres}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/[0.06] bg-[#0f1622] p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                          Highlights
+                        </p>
+                        <p className="mt-2 text-sm text-white/65">
+                          {selectedCountry.topFilms.length > 0
+                            ? selectedCountry.topFilms.slice(0, 3).map((movie) => movie.title).join(', ')
+                            : 'No highlights yet'}
+                        </p>
+                      </div>
+                      <Sparkles className="h-4 w-4 text-[#FF3B3B]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
+                      Results
+                    </p>
+                    <p className="mt-2 text-sm text-white/54">{visibleMovies.length} films in view</p>
+                  </div>
+                  <Star className="h-4 w-4 text-white/45" />
+                </div>
+
+                {visibleMovies.length > 0 ? (
+                  <div className="mt-5 space-y-3">
+                    {visibleMovies.map((movie) => (
+                      <button
+                        key={movie.id}
+                        onClick={() => navigate(`/review/${movie.id}`)}
+                        className="flex w-full gap-3 rounded-2xl border border-white/[0.06] bg-[#0e141f] p-3 text-left transition-all hover:scale-[1.01] hover:border-white/[0.12]"
+                      >
+                        <div className="h-20 w-14 flex-shrink-0 overflow-hidden rounded-xl">
+                          <PosterImage
+                            src={movie.poster}
+                            title={movie.title}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <h3 className="truncate text-sm font-semibold text-white">{movie.title}</h3>
+                              <p className="mt-1 text-xs text-white/48">
+                                {movie.year} · {movie.director}
+                              </p>
+                            </div>
+                            <span className="rounded-full bg-[#FF3B3B]/12 px-2 py-1 text-xs font-semibold text-[#FF8A8A]">
+                              {movie.score.toFixed(1)}
+                            </span>
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-1.5">
+                            {movie.genres.slice(0, 3).map((genre) => (
+                              <span
+                                key={genre}
+                                className="rounded-full bg-white/[0.04] px-2 py-1 text-[11px] text-white/58"
+                              >
+                                {genre}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="mt-5 rounded-2xl border border-white/[0.06] bg-[#0e141f] p-6 text-center">
+                    <Film className="mx-auto h-7 w-7 text-white/35" />
+                    <p className="mt-3 text-sm text-white/62">
+                      No films match the current genre lens for {selectedCountry.label}.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </div>

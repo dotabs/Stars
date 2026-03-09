@@ -343,9 +343,32 @@ export function ControlRoom() {
 
   return (
     <div className="min-h-screen bg-background pt-16">
-      <div className="flex min-h-[calc(100vh-64px)]">
-        {/* Left Menu */}
-        <aside className="w-64 flex-shrink-0 bg-card/30 border-r border-white/[0.06] p-4 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto">
+      <div className="flex min-h-[calc(100vh-64px)] flex-col lg:flex-row">
+        {/* Mobile / Tablet Menu */}
+        <aside className="lg:hidden border-b border-white/[0.06] bg-card/30 px-4 py-4">
+          <h2 className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-4">
+            Control Room
+          </h2>
+          <nav className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveMenu(item.id)}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full whitespace-nowrap transition-all ${
+                  activeMenu === item.id
+                    ? 'bg-primary/20 text-primary'
+                    : 'bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground'
+                }`}
+              >
+                <item.icon className="w-4 h-4" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Desktop Menu */}
+        <aside className="hidden lg:block lg:w-64 lg:flex-shrink-0 bg-card/30 border-r border-white/[0.06] p-4 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto">
           <h2 className="text-mono text-xs uppercase tracking-wider text-muted-foreground mb-4 px-3">
             Control Room
           </h2>
@@ -368,7 +391,7 @@ export function ControlRoom() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <div className="max-w-2xl">
             <h1 className="heading-display text-3xl mb-2">
               {menuItems.find(m => m.id === activeMenu)?.label}
