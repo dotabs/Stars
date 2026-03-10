@@ -39,7 +39,7 @@ export const movies: Movie[] = [
   },
   {
     id: 'mission-impossible-final',
-    title: 'Mission: Impossible â€“ The Final Reckoning',
+    title: 'Mission: Impossible - The Final Reckoning',
     year: 2025,
     genres: ['Action', 'Adventure', 'Thriller'],
     verdict: 'Essential',
@@ -184,7 +184,7 @@ export const movies: Movie[] = [
     score: 9.2,
     poster: '/posters/dune2.jpg',
     director: 'Denis Villeneuve',
-    cast: ['TimothÃ©e Chalamet', 'Zendaya', 'Rebecca Ferguson', 'Austin Butler'],
+    cast: ['Timothee Chalamet', 'Zendaya', 'Rebecca Ferguson', 'Austin Butler'],
     runtime: 166,
     synopsis: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against those who destroyed his family.',
     country: 'USA',
@@ -424,7 +424,7 @@ export const movies: Movie[] = [
     score: 8.8,
     poster: 'https://m.media-amazon.com/images/M/MV5BMmU5NGJlMzAtMGNmOC00YjJjLTgyMzUtNjAyYmE4Njg5YWMyXkEyXkFqcGc@._V1_.jpg',
     director: 'Matt Reeves',
-    cast: ['Robert Pattinson', 'ZoÃ« Kravitz', 'Jeffrey Wright'],
+    cast: ['Robert Pattinson', 'Zoe Kravitz', 'Jeffrey Wright'],
     runtime: 176,
     synopsis: 'When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate.',
     country: 'USA',
@@ -441,7 +441,7 @@ export const movies: Movie[] = [
     score: 8.5,
     poster: 'https://m.media-amazon.com/images/M/MV5BNWIyNmU5MGYtZDZmNi00ZjAwLWJlYjgtZTc0ZGIxMDE4ZGYwXkEyXkFqcGc@._V1_.jpg',
     director: 'Denis Villeneuve',
-    cast: ['TimothÃ©e Chalamet', 'Rebecca Ferguson', 'Oscar Isaac'],
+    cast: ['Timothee Chalamet', 'Rebecca Ferguson', 'Oscar Isaac'],
     runtime: 155,
     synopsis: 'A noble family becomes embroiled in a war for control over the galaxy\'s most valuable asset.',
     country: 'USA',
@@ -699,7 +699,7 @@ export const movies: Movie[] = [
     verdict: 'Masterpiece',
     score: 9.0,
     poster: 'https://m.media-amazon.com/images/M/MV5BYjY4NGI5OTUtY2ZlZS00Zjk4LTk5N2MtN2JmYWVjNGNmMGRlXkEyXkFqcGc@._V1_.jpg',
-    director: 'Fernando Meirelles, KÃ¡tia Lund',
+    director: 'Fernando Meirelles, Katia Lund',
     cast: ['Alexandre Rodrigues', 'Leandro Firmino', 'Matheus Nachtergaele'],
     runtime: 130,
     synopsis: 'In the slums of Rio, two kids\' paths diverge as one struggles to become a photographer and the other a kingpin.',
@@ -1413,7 +1413,7 @@ export const editorLists: MovieList[] = [
   {
     id: 'best-of-2025',
     title: 'Best of 2025 (So Far)',
-    description: 'The films that defined the yearâ€”from blockbusters to hidden gems.',
+    description: 'The films that defined the year, from blockbusters to hidden gems.',
     author: 'STARS Editors',
     movieIds: ['sinners-2025', 'f1-movie', 'superman-2025', 'mission-impossible-final'],
     followers: 18453
@@ -1429,7 +1429,7 @@ export const editorLists: MovieList[] = [
   {
     id: '90s-classics',
     title: '90s Nostalgia',
-    description: 'The films that defined a generationâ€”the best of 1990s cinema.',
+    description: 'The films that defined a generation, the best of 1990s cinema.',
     author: 'STARS Editors',
     movieIds: ['pulp-fiction', 'fight-club', 'the-matrix', 'goodfellas', 'forrest-gump', 'titanic'],
     followers: 28921
@@ -1471,7 +1471,7 @@ export const reviews: Review[] = [
     cons: ['Some political machinations feel rushed', 'Few supporting characters get limited development'],
     sections: {
       story: 'Dune: Part Two picks up immediately after the events of the first film, with Paul Atreides and his mother Jessica integrating into Fremen society.',
-      performances: 'TimothÃ©e Chalamet delivers a career-defining performance, charting Paul\'s evolution from reluctant refugee to messianic leader.',
+      performances: 'Timothee Chalamet delivers a career-defining performance, charting Paul\'s evolution from reluctant refugee to messianic leader.',
       direction: 'Denis Villeneuve operates at the peak of his powers, staging sequences of such scale and clarity that they redefine what\'s possible.',
       visuals: 'Greig Fraser\'s cinematography is nothing short of revolutionary. The IMAX sequences are overwhelming in the best possible way.',
       sound: 'Hans Zimmer\'s score is a character unto itself, blending choral elements with industrial textures.',
@@ -1490,13 +1490,13 @@ export const reviews: Review[] = [
     movieId: 'anora',
     author: 'STARS Editorial',
     date: '2024-09-27',
-    summary: 'Sean Baker delivers a modern masterpieceâ€”a raucous, heartbreaking, and ultimately transcendent exploration of class, love, and dignity.',
+    summary: 'Sean Baker delivers a modern masterpiece: a raucous, heartbreaking, and ultimately transcendent exploration of class, love, and dignity.',
     pros: ['Mikey Madison is a revelation', 'Perfect tonal balance', 'Authentic Brooklyn atmosphere', 'Ending that will haunt you'],
     cons: ['Some may find the pacing unconventional', 'Not for the easily offended'],
     sections: {
-      story: 'Anora begins as a modern Cinderella storyâ€”a stripper from Brooklyn impulsively marries the son of a Russian oligarch.',
+      story: 'Anora begins as a modern Cinderella story: a stripper from Brooklyn impulsively marries the son of a Russian oligarch.',
       performances: 'Mikey Madison delivers one of the great debut performances, capturing Ani\'s toughness and vulnerability.',
-      direction: 'Baker\'s direction is invisible in the best wayâ€”every scene feels discovered rather than staged.',
+      direction: 'Baker\'s direction is invisible in the best way; every scene feels discovered rather than staged.',
       visuals: 'Shot on film, the movie has a grainy, lived-in quality that perfectly captures the less glamorous corners of Brooklyn.',
       sound: 'The sound design immerses us in the cacophony of strip clubs, luxury mansions, and snowy Brooklyn streets.',
       themes: 'At its core, Anora is about class and the illusions we maintain to survive.'

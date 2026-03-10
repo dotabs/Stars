@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,27 +6,26 @@
 
 @layer base {
   :root {
-    /* Premium Dark Theme - Vibrant Colors */
-    --background: 225 25% 5%;
+    --background: 18 28% 6%;
     --foreground: 0 0% 98%;
-    --card: 225 20% 8%;
+    --card: 18 20% 10%;
     --card-foreground: 0 0% 98%;
-    --popover: 225 20% 8%;
+    --popover: 18 20% 10%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 85% 55%;
+    --primary: 10 77% 58%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 225 15% 14%;
+    --secondary: 20 15% 15%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 225 15% 18%;
-    --muted-foreground: 220 10% 60%;
-    --accent: 0 85% 55%;
+    --muted: 22 14% 18%;
+    --muted-foreground: 32 9% 67%;
+    --accent: 35 61% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 225 15% 18%;
-    --input: 225 15% 14%;
-    --ring: 0 85% 55%;
-    --radius: 0.75rem;
+    --border: 24 15% 20%;
+    --input: 24 15% 15%;
+    --ring: 10 77% 58%;
+    --radius: 1rem;
   }
 }
 
@@ -41,8 +40,11 @@
   
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
-    background: linear-gradient(135deg, #0a0a0f 0%, #0d0d14 50%, #0a0a0f 100%);
+    font-family: 'Manrope', system-ui, sans-serif;
+    background:
+      radial-gradient(circle at top, rgba(186, 88, 58, 0.16), transparent 28%),
+      radial-gradient(circle at 85% 20%, rgba(214, 159, 95, 0.08), transparent 24%),
+      linear-gradient(180deg, #15100e 0%, #0d0908 42%, #080706 100%);
     min-height: 100vh;
   }
 }
@@ -56,11 +58,11 @@
   height: 100%;
   z-index: -1;
   background: 
-    radial-gradient(ellipse at 20% 20%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 70%),
-    linear-gradient(135deg, #07070a 0%, #0a0a0f 50%, #07070a 100%);
-  animation: bgPulse 15s ease-in-out infinite;
+    radial-gradient(ellipse at 12% 16%, rgba(190, 90, 58, 0.14) 0%, transparent 38%),
+    radial-gradient(ellipse at 84% 12%, rgba(214, 159, 95, 0.08) 0%, transparent 28%),
+    radial-gradient(ellipse at 72% 72%, rgba(124, 44, 27, 0.14) 0%, transparent 34%),
+    linear-gradient(160deg, #0a0807 0%, #120c0a 44%, #090706 100%);
+  animation: bgPulse 18s ease-in-out infinite;
 }
 
 @keyframes bgPulse {
@@ -88,29 +90,29 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(225 20% 6%);
+  background: #0d0908;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(0 70% 50%), hsl(0 70% 40%));
+  background: linear-gradient(180deg, #d26d47, #8b4028);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, hsl(0 80% 55%), hsl(0 70% 45%));
+  background: linear-gradient(180deg, #e0885f, #9f472a);
 }
 
 /* Typography */
 .heading-display {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
+  font-family: 'Oswald', Impact, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
   text-transform: uppercase;
 }
 
 .heading-gradient {
-  background: linear-gradient(135deg, #fff 0%, #e2e2e2 50%, #fff 100%);
+  background: linear-gradient(135deg, #fff7ef 0%, #f8cfb0 45%, #f4a26d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -149,42 +151,42 @@
 /* Card Styles - Premium Glass */
 .card-cinematic {
   @apply rounded-2xl backdrop-blur-xl;
-  background: linear-gradient(135deg, rgba(20, 20, 28, 0.9) 0%, rgba(15, 15, 22, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(28, 21, 18, 0.92) 0%, rgba(17, 13, 11, 0.98) 100%);
+  border: 1px solid rgba(244, 182, 132, 0.12);
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 30px 70px -28px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 245, 235, 0.05);
 }
 
 .card-cinematic:hover {
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(244, 182, 132, 0.18);
   box-shadow: 
-    0 30px 60px -12px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 35px 80px -26px rgba(0, 0, 0, 0.86),
+    inset 0 1px 0 rgba(255, 245, 235, 0.08);
 }
 
 /* Button Styles */
 .btn-primary {
   @apply rounded-full px-6 py-3 font-semibold transition-all duration-300;
-  background: linear-gradient(135deg, hsl(0 85% 55%) 0%, hsl(0 75% 45%) 100%);
-  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+  background: linear-gradient(135deg, #d26d47 0%, #a64222 100%);
+  box-shadow: 0 10px 26px rgba(166, 66, 34, 0.34);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(220, 38, 38, 0.5);
+  box-shadow: 0 14px 34px rgba(166, 66, 34, 0.45);
   filter: brightness(1.1);
 }
 
 .btn-outline {
   @apply border rounded-full px-6 py-3 font-medium transition-all duration-300;
-  border-color: rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(244, 182, 132, 0.22);
+  background: rgba(255, 248, 242, 0.03);
 }
 
 .btn-outline:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(244, 182, 132, 0.4);
+  background: rgba(255, 248, 242, 0.08);
   transform: translateY(-2px);
 }
 
@@ -196,7 +198,7 @@
 /* Poster Card */
 .poster-card {
   @apply relative rounded-xl overflow-hidden transition-all duration-500;
-  background: linear-gradient(135deg, rgba(20, 20, 28, 0.8) 0%, rgba(15, 15, 22, 0.9) 100%);
+  background: linear-gradient(140deg, rgba(28, 22, 19, 0.88) 0%, rgba(17, 13, 11, 0.96) 100%);
 }
 
 .poster-card:hover {
@@ -316,8 +318,8 @@
 }
 
 .nav-link.active {
-  color: hsl(0 85% 55%);
-  text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+  color: #f4b684;
+  text-shadow: 0 0 20px rgba(210, 109, 71, 0.3);
 }
 
 /* Filter Chip */
@@ -336,10 +338,10 @@
 }
 
 .filter-chip.active {
-  background: linear-gradient(135deg, hsl(0 70% 50% / 0.2) 0%, hsl(0 70% 40% / 0.2) 100%);
-  border-color: hsl(0 70% 50% / 0.5);
-  color: hsl(0 85% 60%);
-  box-shadow: 0 0 20px rgba(220, 38, 38, 0.2);
+  background: linear-gradient(135deg, rgba(210, 109, 71, 0.16) 0%, rgba(132, 58, 36, 0.18) 100%);
+  border-color: rgba(210, 109, 71, 0.4);
+  color: #f2c09b;
+  box-shadow: 0 0 20px rgba(166, 66, 34, 0.18);
 }
 
 /* Score Ring */
@@ -357,7 +359,7 @@
 }
 
 .glow-text {
-  text-shadow: 0 0 30px rgba(220, 38, 38, 0.5);
+  text-shadow: 0 0 30px rgba(210, 109, 71, 0.35);
 }
 
 /* Animation Utilities */
@@ -426,7 +428,7 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(220, 38, 38, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(210, 109, 71, 0.18) 0%, transparent 70%);
   filter: blur(60px);
   pointer-events: none;
 }
@@ -448,8 +450,8 @@
 
 .actor-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(220, 38, 38, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(220, 38, 38, 0.1);
+  border-color: rgba(210, 109, 71, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(210, 109, 71, 0.12);
 }
 
 /* Scrollbar hide utility */
@@ -459,4 +461,38 @@
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+.section-shell {
+  @apply relative px-4 sm:px-6 lg:px-8;
+}
+
+.section-panel {
+  @apply rounded-[2rem] border;
+  border-color: rgba(244, 182, 132, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 247, 239, 0.02) 0%, rgba(255, 247, 239, 0) 24%),
+    linear-gradient(145deg, rgba(26, 20, 17, 0.88) 0%, rgba(14, 11, 10, 0.96) 100%);
+  box-shadow:
+    0 30px 80px -35px rgba(0, 0, 0, 0.78),
+    inset 0 1px 0 rgba(255, 248, 242, 0.04);
+}
+
+.section-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 0.72rem;
+  color: rgba(244, 182, 132, 0.78);
+}
+
+.editorial-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(244, 182, 132, 0) 0%, rgba(244, 182, 132, 0.24) 50%, rgba(244, 182, 132, 0) 100%);
+}
+
+.soft-ring {
+  box-shadow:
+    inset 0 0 0 1px rgba(244, 182, 132, 0.14),
+    0 24px 70px -35px rgba(166, 66, 34, 0.4);
 }

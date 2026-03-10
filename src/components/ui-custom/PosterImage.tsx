@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getPosterFallback, resolvePosterUrl } from '@/lib/posters';
 
 interface PosterImageProps {
@@ -18,13 +18,10 @@ export function PosterImage({
   height,
   loading,
 }: PosterImageProps) {
-  const [currentSrc, setCurrentSrc] = useState(() =>
-    resolvePosterUrl(src, title, { width, height }),
-  );
-
-  useEffect(() => {
-    setCurrentSrc(resolvePosterUrl(src, title, { width, height }));
-  }, [src, title, width, height]);
+  const resolvedSrc = resolvePosterUrl(src, title, { width, height });
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const currentSrc =
+    failedSrc === resolvedSrc ? getPosterFallback(title, { width, height }) : resolvedSrc;
 
   return (
     <img
@@ -32,7 +29,7 @@ export function PosterImage({
       alt={title}
       className={className}
       loading={loading}
-      onError={() => setCurrentSrc(getPosterFallback(title, { width, height }))}
+      onError={() => setFailedSrc(resolvedSrc)}
     />
   );
 }

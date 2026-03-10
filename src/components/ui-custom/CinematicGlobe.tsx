@@ -99,7 +99,7 @@ export function CinematicGlobe({
   const lastSelectedKeyRef = useRef(selectedCountryKey);
   const dragTimeoutRef = useRef<number | null>(null);
   const [size, setSize] = useState(620);
-  const [rotation, setRotation] = useState<Rotation>(rotationRef.current);
+  const [rotation, setRotation] = useState<Rotation>([18, -18, 0]);
   const [scale, setScale] = useState(1);
   const [hoveredCountryName, setHoveredCountryName] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<GlobeTooltipState | null>(null);
@@ -316,8 +316,10 @@ export function CinematicGlobe({
     if (spinToken !== lastSpinTokenRef.current) {
       lastSpinTokenRef.current = spinToken;
       lastSelectedKeyRef.current = selectedCountryKey;
-      setIsSpinning(true);
-      onSpinStateChange?.(true);
+      requestAnimationFrame(() => {
+        setIsSpinning(true);
+        onSpinStateChange?.(true);
+      });
       animateToRotation(targetRotation, {
         duration: 2200,
         extraTurns: 2,

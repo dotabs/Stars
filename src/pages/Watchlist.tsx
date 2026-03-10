@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid3X3, List, Filter, Check, Heart, Clock, Globe, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,10 @@ import { Switch } from '@/components/ui/switch';
 import { MovieCard, PosterImage, VerdictBadge } from '@/components/ui-custom';
 import { movies, countries } from '@/data/movies';
 import type { WatchlistTab, ViewMode } from '@/types';
+
+const watchlistIds = ['dune-part-two', 'anora', 'the-brutalist', 'wicked'];
+const watchedIds = ['the-substance', 'conclave'];
+const favoritesIds = ['dune-part-two', 'anora'];
 
 export function Watchlist() {
   const navigate = useNavigate();
@@ -18,26 +22,21 @@ export function Watchlist() {
   const [selectedCountry, setSelectedCountry] = useState<string>('');
   const [selectedVerdict, setSelectedVerdict] = useState<string>('');
 
-  // Mock data - in real app would come from user state
-  const watchlistIds = ['dune-part-two', 'anora', 'the-brutalist', 'wicked'];
-  const watchedIds = ['the-substance', 'conclave'];
-  const favoritesIds = ['dune-part-two', 'anora'];
-
-  const getMoviesForTab = () => {
+  const tabMovies = useMemo(() => {
     switch (activeTab) {
       case 'watchlist':
-        return movies.filter(m => watchlistIds.includes(m.id));
+        return movies.filter((movie) => watchlistIds.includes(movie.id));
       case 'watched':
-        return movies.filter(m => watchedIds.includes(m.id));
+        return movies.filter((movie) => watchedIds.includes(movie.id));
       case 'favorites':
-        return movies.filter(m => favoritesIds.includes(m.id));
+        return movies.filter((movie) => favoritesIds.includes(movie.id));
       default:
         return [];
     }
-  };
+  }, [activeTab]);
 
   const filteredMovies = useMemo(() => {
-    let result = getMoviesForTab();
+    let result = tabMovies;
     
     if (availableOnMyServices) {
       result = result.filter(m => m.streaming && m.streaming.length > 0);
@@ -56,7 +55,7 @@ export function Watchlist() {
     }
     
     return result;
-  }, [activeTab, availableOnMyServices, underTwoHours, selectedCountry, selectedVerdict]);
+  }, [availableOnMyServices, selectedCountry, selectedVerdict, tabMovies, underTwoHours]);
 
   const tabs: { id: WatchlistTab; label: string; icon: React.ElementType; count: number }[] = [
     { id: 'watchlist', label: 'Watchlist', icon: Check, count: watchlistIds.length },
@@ -200,7 +199,7 @@ export function Watchlist() {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="font-semibold">{movie.title}</h3>
-                        <p className="text-sm text-muted-foreground">{movie.year} • {movie.runtime} min</p>
+                        <p className="text-sm text-muted-foreground">{movie.year} - {movie.runtime} min</p>
                       </div>
                       <VerdictBadge verdict={movie.verdict} score={movie.score} size="sm" />
                     </div>
@@ -225,7 +224,7 @@ export function Watchlist() {
                activeTab === 'watched' ? 'No movies watched yet' : 'No favorites yet'}
             </h3>
             <p className="text-muted-foreground mb-6">
-              {activeTab === 'watchlist' ? 'Start saving films—hit the + on any poster.' : 
+              {activeTab === 'watchlist' ? 'Start saving films-hit the + on any poster.' : 
                activeTab === 'watched' ? 'Mark movies as watched to see them here.' : 'Add movies to your favorites to see them here.'}
             </p>
             <Button onClick={() => navigate('/browse')} className="btn-primary">
@@ -237,3 +236,4 @@ export function Watchlist() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Bookmark,
@@ -35,10 +35,6 @@ export function Explore() {
   const [spinToken, setSpinToken] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
 
-  useEffect(() => {
-    setSelectedGenres([]);
-  }, [selectedCountry.key]);
-
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return [];
@@ -47,6 +43,12 @@ export function Explore() {
       .filter((country) => country.label.toLowerCase().includes(query))
       .slice(0, 6);
   }, [searchQuery]);
+
+  const selectCountry = (country: ExploreCountryStat) => {
+    setSelectedCountry(country);
+    setSelectedGenres([]);
+    setSearchQuery('');
+  };
 
   const visibleGenres = useMemo(
     () => selectedCountry.genreCounts.slice(0, 6).map(({ genre }) => genre),
@@ -86,8 +88,7 @@ export function Explore() {
     .filter(Boolean) as ExploreCountryStat[];
 
   const handleCountrySelect = (country: ExploreCountryStat) => {
-    setSelectedCountry(country);
-    setSearchQuery('');
+    selectCountry(country);
   };
 
   const togglePin = (countryKey: string) => {
@@ -102,7 +103,7 @@ export function Explore() {
     if (featuredExploreCountries.length === 0) return;
     const randomCountry =
       featuredExploreCountries[Math.floor(Math.random() * featuredExploreCountries.length)];
-    setSelectedCountry(randomCountry);
+    selectCountry(randomCountry);
     setSpinToken((value) => value + 1);
   };
 
@@ -510,7 +511,7 @@ export function Explore() {
                             <div className="min-w-0">
                               <h3 className="truncate text-sm font-semibold text-white">{movie.title}</h3>
                               <p className="mt-1 text-xs text-white/48">
-                                {movie.year} · {movie.director}
+                                {movie.year} - {movie.director}
                               </p>
                             </div>
                             <span className="rounded-full bg-[#FF3B3B]/12 px-2 py-1 text-xs font-semibold text-[#FF8A8A]">
@@ -547,3 +548,4 @@ export function Explore() {
     </div>
   );
 }
+
