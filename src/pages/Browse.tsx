@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SearchResultGridCard, SearchResultRow } from '@/components/ui-custom/GlobalSearchResults';
+import { SearchResultCard } from '@/components/ui-custom/GlobalSearchResults';
 import { FilterChips, MovieCard, PosterImage, VerdictBadge } from '@/components/ui-custom';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useGlobalSearch } from '@/hooks/use-global-search';
@@ -991,12 +991,10 @@ export function Browse() {
           {hasGlobalSearchQuery ? (
             isGlobalSearchLoading ? (
               <div
-                className={`grid gap-5 ${
-                  viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'
-                }`}
+                className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
               >
-                {Array.from({ length: viewMode === 'grid' ? 10 : 6 }).map((_, index) => (
-                  <BrowseCardSkeleton key={index} viewMode={viewMode} />
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <BrowseCardSkeleton key={index} viewMode="grid" />
                 ))}
               </div>
             ) : globalSearchError ? (
@@ -1004,18 +1002,18 @@ export function Browse() {
                 {globalSearchError}
               </div>
             ) : globalSearchResults.length > 0 ? (
-              <div
-                className={`grid gap-5 ${
-                  viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'
-                }`}
-              >
-                {globalSearchResults.map((result) =>
-                  viewMode === 'grid' ? (
-                    <SearchResultGridCard key={`${result.mediaType}-${result.id}`} result={result} />
-                  ) : (
-                    <SearchResultRow key={`${result.mediaType}-${result.id}`} result={result} />
-                  ),
-                )}
+              <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {globalSearchResults.map((result) => (
+                  <SearchResultCard
+                    key={`${result.mediaType}-${result.id}`}
+                    result={result}
+                    onOpen={(href) => navigate(href)}
+                    isInWatchlist={watchlistSet.has(`tmdb-${result.id}`)}
+                    isLiked={favoritesSet.has(`tmdb-${result.id}`)}
+                    onToggleWatchlist={() => handleToggleWatchlist(`tmdb-${result.id}`)}
+                    onToggleLike={() => handleToggleLike(`tmdb-${result.id}`)}
+                  />
+                ))}
               </div>
             ) : (
               <div className="py-20 text-center">

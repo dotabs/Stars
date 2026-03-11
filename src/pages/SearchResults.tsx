@@ -1,12 +1,13 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { SearchResultRow, SearchResultSkeleton } from '@/components/ui-custom/GlobalSearchResults';
+import { SearchResultCard, SearchResultCardSkeleton } from '@/components/ui-custom/GlobalSearchResults';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useGlobalSearch } from '@/hooks/use-global-search';
+import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
 import { cn } from '@/lib/utils';
 import type { SearchResult, SearchViewType } from '@/types';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const searchDebounceMs = 250;
 const searchViewOrder: SearchViewType[] = ['all', 'person', 'tv', 'movie'];
@@ -38,7 +39,9 @@ function filterResults(results: SearchResult[], selectedType: SearchViewType) {
 }
 
 export function SearchResults() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [library, setLibrary] = useState(() => getUserLibrary());
   const initialQuery = searchParams.get('q') ?? '';
   const selectedType = normalizeSearchView(searchParams.get('type'));
   const [searchInputValue, setSearchInputValue] = useState(initialQuery);
@@ -67,8 +70,21 @@ export function SearchResults() {
     setSearchParams(nextParams, { replace: true });
   }, [debouncedQuery, searchParams, setSearchParams]);
 
+  useEffect(() => {
+    const syncLibrary = () => setLibrary(getUserLibrary());
+    window.addEventListener('stars:library-updated', syncLibrary);
+    window.addEventListener('storage', syncLibrary);
+
+    return () => {
+      window.removeEventListener('stars:library-updated', syncLibrary);
+      window.removeEventListener('storage', syncLibrary);
+    };
+  }, []);
+
   const counts = useMemo(() => getResultCounts(results), [results]);
   const visibleResults = useMemo(() => filterResults(results, selectedType), [results, selectedType]);
+  const watchlistSet = useMemo(() => new Set(library.watchlist), [library.watchlist]);
+  const favoritesSet = useMemo(() => new Set(library.favorites), [library.favorites]);
 
   return (
     <div className="min-h-screen pt-16">
@@ -152,9 +168,9 @@ export function SearchResults() {
                     <Search className="h-4 w-4 text-[#f4b684]" />
                     Searching across all result types...
                   </div>
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {Array.from({ length: 6 }).map((_, index) => (
-                      <SearchResultSkeleton key={index} />
+                      <SearchResultCardSkeleton key={index} />
                     ))}
                   </div>
                 </div>
@@ -192,9 +208,23 @@ export function SearchResults() {
                     </p>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {visibleResults.map((result) => (
-                      <SearchResultRow key={`${result.mediaType}-${result.id}`} result={result} />
+                      <SearchResultCard
+                        key={`${result.mediaType}-${result.id}`}
+                        result={result}
+                        onOpen={(href) => navigate(href)}
+                        isInWatchlist={watchlistSet.has(`tmdb-${result.id}`)}
+                        isLiked={favoritesSet.has(`tmdb-${result.id}`)}
+                        onToggleWatchlist={() => {
+                          const nextState = toggleLibraryItem('watchlist', `tmdb-${result.id}`);
+                          setLibrary(nextState);
+                        }}
+                        onToggleLike={() => {
+                          const nextState = toggleLibraryItem('favorites', `tmdb-${result.id}`);
+                          setLibrary(nextState);
+                        }}
+                      />
                     ))}
                   </div>
                 </div>

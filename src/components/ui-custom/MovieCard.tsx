@@ -1,11 +1,37 @@
 import { memo, useEffect, useState } from 'react';
 import { Bookmark, Heart, MessageSquareText, Play, Star, Users } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { Movie } from '@/types';
 import { getPosterFallback, resolvePosterUrl } from '@/lib/posters';
 import { fetchTmdbMovieByRouteId } from '@/lib/tmdb-movies';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { PosterImage } from './PosterImage';
 import { VerdictBadge } from './VerdictBadge';
+
+type MovieCardBadge = {
+  label: string;
+  icon: LucideIcon;
+  tone?: 'primary' | 'secondary';
+};
+
+type MovieCardPreviewSection = {
+  label: string;
+  value: string;
+};
+
+type MovieCardDisplayOverrides = {
+  posterUrl?: string;
+  title?: string;
+  subtitle?: string;
+  synopsis?: string;
+  badges?: MovieCardBadge[];
+  tags?: string[];
+  previewTitle?: string;
+  previewSubtitle?: string;
+  previewSynopsis?: string;
+  previewSections?: MovieCardPreviewSection[];
+  fallbackIcon?: LucideIcon;
+};
 
 interface MovieCardProps {
   movie: Movie;
@@ -20,6 +46,7 @@ interface MovieCardProps {
   showRank?: number;
   isInWatchlist?: boolean;
   isLiked?: boolean;
+  display?: MovieCardDisplayOverrides;
 }
 
 function getReviewCount(movie: Movie) {
@@ -68,6 +95,7 @@ export const MovieCard = memo(function MovieCard({
   showRank,
   isInWatchlist = false,
   isLiked = false,
+  display,
 }: MovieCardProps) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewMovie, setPreviewMovie] = useState(movie);
@@ -98,13 +126,53 @@ export const MovieCard = memo(function MovieCard({
     };
   }, [isPreviewOpen, movie, variant]);
 
-  const posterUrl = resolvePosterUrl(movie.poster, movie.title) || getPosterFallback(movie.title);
+  const titleText = display?.title ?? movie.title;
+  const rawPosterSource = display?.posterUrl ?? movie.poster;
+  const resolvedPosterUrl = resolvePosterUrl(rawPosterSource, titleText);
+  const shouldUseIconFallback = Boolean(display?.fallbackIcon) && !rawPosterSource && !resolvedPosterUrl;
+  const posterUrl = shouldUseIconFallback ? '' : resolvedPosterUrl || getPosterFallback(titleText);
   const displayMovie = variant === 'compact' ? previewMovie : movie;
   const reviewCount = getReviewCount(displayMovie);
   const reviewCountLabel = `${reviewCount.toLocaleString()} reviews`;
   const runtimeLabel = displayMovie.runtime ? `${displayMovie.runtime} min` : 'Runtime pending';
   const previewDirector = normalizePreviewDirector(displayMovie);
   const topCast = normalizePreviewCast(displayMovie);
+  const subtitleText = display?.subtitle ?? `${movie.year}${movie.runtime ? ` / ${runtimeLabel}` : ''}`;
+  const badges = display?.badges ?? [
+    {
+      label: movie.score.toFixed(1),
+      icon: Star,
+      tone: 'primary' as const,
+    },
+    {
+      label: reviewCountLabel,
+      icon: Users,
+      tone: 'secondary' as const,
+    },
+  ];
+  const tags = display?.tags ?? movie.genres.slice(0, 3);
+  const previewSections = display?.previewSections ?? [
+    { label: 'Director', value: previewDirector },
+    { label: 'Top Cast', value: topCast },
+  ];
+  const previewTitle = display?.previewTitle ?? titleText;
+  const previewSubtitle = display?.previewSubtitle ?? `${movie.year} / ${runtimeLabel}`;
+  const previewSynopsis = display?.previewSynopsis ?? display?.synopsis ?? displayMovie.synopsis;
+  const FallbackIcon = display?.fallbackIcon;
+  const compactActions = [
+    {
+      label: isInWatchlist ? 'Saved' : 'Watchlist',
+      icon: Bookmark,
+      onPress: onToggleWatchlist ?? onSave,
+      active: isInWatchlist,
+    },
+    {
+      label: isLiked ? 'Liked' : 'Like',
+      icon: Heart,
+      onPress: onToggleLike,
+      active: isLiked,
+    },
+  ].filter((action) => action.onPress);
 
   if (variant === 'horizontal') {
     return (
@@ -119,7 +187,7 @@ export const MovieCard = memo(function MovieCard({
         <div className="relative h-28 w-20 flex-shrink-0 overflow-hidden rounded-lg">
           <PosterImage
             src={posterUrl}
-            title={movie.title}
+            title={titleText}
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             width={160}
             height={224}
@@ -127,9 +195,7 @@ export const MovieCard = memo(function MovieCard({
           />
         </div>
         <div className="min-w-0 flex-1 py-1">
-          <h3 className="truncate font-bold text-foreground transition-colors group-hover:text-[#f4b684]">
-            {movie.title}
-          </h3>
+          <h3 className="truncate font-bold text-foreground transition-colors group-hover:text-[#f4b684]">{titleText}</h3>
           <p className="mt-0.5 text-sm text-muted-foreground">{movie.year} / {movie.director}</p>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1">
@@ -176,33 +242,26 @@ export const MovieCard = memo(function MovieCard({
             >
               <PosterImage
                 src={posterUrl}
-                title={movie.title}
+                title={titleText}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                 loading="lazy"
                 width={342}
                 height={513}
                 sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 44vw"
               />
+              {shouldUseIconFallback && FallbackIcon && (
+                <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(145deg,rgba(28,21,18,0.96),rgba(17,13,11,0.99))]">
+                  <FallbackIcon className="h-10 w-10 text-white/38" />
+                </div>
+              )}
 
               <div
                 className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
               >
-                <div className="absolute inset-x-0 bottom-0 p-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    {[
-                      {
-                        label: isInWatchlist ? 'Saved' : 'Watchlist',
-                        icon: Bookmark,
-                        onPress: onToggleWatchlist ?? onSave,
-                        active: isInWatchlist,
-                      },
-                      {
-                        label: isLiked ? 'Liked' : 'Like',
-                        icon: Heart,
-                        onPress: onToggleLike,
-                        active: isLiked,
-                      },
-                    ].map((action) => (
+                {compactActions.length > 0 && (
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <div className={`grid gap-3 ${compactActions.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                      {compactActions.map((action) => (
                       <button
                         key={action.label}
                         type="button"
@@ -219,9 +278,10 @@ export const MovieCard = memo(function MovieCard({
                         <action.icon className={`h-3.5 w-3.5 ${action.active ? 'fill-current' : ''}`} />
                         {action.label}
                       </button>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/45 to-transparent" />
@@ -240,35 +300,47 @@ export const MovieCard = memo(function MovieCard({
             </div>
             <div className="mt-3 px-1">
               <h3 className="line-clamp-1 text-[1.02rem] font-semibold text-foreground transition-colors group-hover:text-[#f4b684]">
-                {movie.title}
+                {titleText}
               </h3>
-              <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
-                {movie.year}{movie.runtime ? ` / ${runtimeLabel}` : ''}
-              </p>
+              <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{subtitleText}</p>
               <div className="mt-2 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/25 bg-[#d26d47]/10 px-2.5 py-1 font-bold text-[#f4b684]">
-                  <Star className="h-3.5 w-3.5" />
-                  {movie.score.toFixed(1)}
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-full border border-[#f4b684]/20 bg-[#f4b684]/10 px-2.5 py-1 text-[11px] font-semibold text-[#f9d0b0]">
-                  <Users className="h-3.5 w-3.5" />
-                  {reviewCountLabel}
-                </span>
+                {badges.map((badge) => (
+                  <span
+                    key={`${badge.label}-${badge.tone ?? 'primary'}`}
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                      badge.tone === 'secondary'
+                        ? 'border border-[#f4b684]/20 bg-[#f4b684]/10 text-[#f9d0b0]'
+                        : 'border border-[#d26d47]/25 bg-[#d26d47]/10 font-bold text-[#f4b684]'
+                    }`}
+                  >
+                    <badge.icon className="h-3.5 w-3.5" />
+                    {badge.label}
+                  </span>
+                ))}
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {movie.genres.slice(0, 3).map((genre) => (
-                  <button
-                    key={genre}
-                    type="button"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      onGenreClick?.(genre);
-                    }}
-                    className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:border-[#d26d47]/40 hover:text-[#f4b684]"
-                  >
-                    {genre}
-                  </button>
-                ))}
+                {tags.map((genre) =>
+                  onGenreClick ? (
+                    <button
+                      key={genre}
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onGenreClick(genre);
+                      }}
+                      className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:border-[#d26d47]/40 hover:text-[#f4b684]"
+                    >
+                      {genre}
+                    </button>
+                  ) : (
+                    <span
+                      key={genre}
+                      className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-muted-foreground"
+                    >
+                      {genre}
+                    </span>
+                  ),
+                )}
               </div>
             </div>
           </div>
@@ -280,19 +352,17 @@ export const MovieCard = memo(function MovieCard({
         >
           <div className="space-y-4">
             <div>
-              <h4 className="text-lg font-semibold">{movie.title}</h4>
-              <p className="mt-1 text-sm text-white/65">{movie.year} / {runtimeLabel}</p>
+              <h4 className="text-lg font-semibold">{previewTitle}</h4>
+              <p className="mt-1 text-sm text-white/65">{previewSubtitle}</p>
             </div>
-            <p className="line-clamp-4 text-sm leading-6 text-white/75">{displayMovie.synopsis}</p>
+            <p className="line-clamp-4 text-sm leading-6 text-white/75">{previewSynopsis}</p>
             <div className="space-y-3 text-sm">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">Director</p>
-                <p className="mt-1 text-white/88">{previewDirector}</p>
-              </div>
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">Top Cast</p>
-                <p className="mt-1 text-white/88">{topCast}</p>
-              </div>
+              {previewSections.map((section) => (
+                <div key={section.label}>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">{section.label}</p>
+                  <p className="mt-1 text-white/88">{section.value}</p>
+                </div>
+              ))}
             </div>
           </div>
         </HoverCardContent>
@@ -315,7 +385,7 @@ export const MovieCard = memo(function MovieCard({
         >
           <PosterImage
             src={posterUrl}
-            title={movie.title}
+            title={titleText}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             width={420}
             height={630}
@@ -326,7 +396,7 @@ export const MovieCard = memo(function MovieCard({
 
           <div className="absolute bottom-0 left-0 right-0 p-5">
             <VerdictBadge verdict={movie.verdict} score={movie.score} size="md" />
-            <h3 className="mt-3 line-clamp-2 text-xl font-bold text-white">{movie.title}</h3>
+            <h3 className="mt-3 line-clamp-2 text-xl font-bold text-white">{titleText}</h3>
             <p className="mt-1 text-sm text-white/70">{movie.year} - {movie.genres[0]}</p>
 
             <div className="mt-4 flex translate-y-4 gap-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
@@ -375,7 +445,7 @@ export const MovieCard = memo(function MovieCard({
       >
         <PosterImage
           src={posterUrl}
-          title={movie.title}
+          title={titleText}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
           width={342}
           height={513}
@@ -403,9 +473,7 @@ export const MovieCard = memo(function MovieCard({
         </button>
       </div>
       <div className="mt-3">
-        <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-[#f4b684]">
-          {movie.title}
-        </h3>
+        <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-[#f4b684]">{titleText}</h3>
         <div className="mt-1 flex items-center justify-between gap-3">
           <span className="text-sm text-muted-foreground">{movie.year}</span>
           <span className="inline-flex items-center gap-1 text-sm font-bold text-[#f4b684]">
