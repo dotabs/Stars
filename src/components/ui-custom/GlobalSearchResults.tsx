@@ -163,16 +163,13 @@ export function SearchResultCard({
 }) {
   const baseState = useMemo(() => buildBaseResolvedState(result), [result]);
   const cacheKey = `${result.mediaType}-${result.id}`;
-  const [resolvedState, setResolvedState] = useState<SearchResultCardResolvedState | null>(
-    () => resolvedStateCache.get(cacheKey) ?? null,
-  );
+  const [resolvedStateMap, setResolvedStateMap] = useState<Record<string, SearchResultCardResolvedState>>({});
 
   useEffect(() => {
     let cancelled = false;
     const cachedState = resolvedStateCache.get(cacheKey);
 
     if (cachedState) {
-      setResolvedState(cachedState);
       return () => {
         cancelled = true;
       };
@@ -239,7 +236,13 @@ export function SearchResultCard({
       resolvedStateCache.set(cacheKey, nextState);
       resolvedStatePromiseCache.delete(cacheKey);
       if (!cancelled) {
-        setResolvedState(nextState);
+        setResolvedStateMap((currentState) => {
+          if (currentState[cacheKey] === nextState) return currentState;
+          return {
+            ...currentState,
+            [cacheKey]: nextState,
+          };
+        });
       }
     });
 
@@ -248,6 +251,7 @@ export function SearchResultCard({
     };
   }, [baseState, cacheKey, result]);
 
+  const resolvedState = resolvedStateCache.get(cacheKey) ?? resolvedStateMap[cacheKey] ?? null;
   const { movie, subtitle, previewSynopsis, previewSections } = resolvedState ?? baseState;
 
   const display = useMemo(() => {

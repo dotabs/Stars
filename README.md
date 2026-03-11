@@ -10,11 +10,19 @@ Editorial-style film review frontend built with React, TypeScript, and Vite.
 npm install
 ```
 
-2. Use the local env file:
+2. Create your local env file from the example:
 
-[.env.local](/abs/path/c:/Users/newna/OneDrive/Documents/Desktop/app/.env.local)
+```bash
+cp .env.example .env.local
+```
 
-3. Paste your TMDB key in `.env.local`:
+PowerShell:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+3. Edit `.env.local` and add your TMDB credential:
 
 ```env
 VITE_TMDB_API_KEY=your_tmdb_api_key_here
@@ -27,6 +35,8 @@ VITE_TMDB_READ_ACCESS_TOKEN=your_tmdb_read_access_token_here
 ```bash
 npm run dev
 ```
+
+If you leave the TMDB values empty, the app still starts, but TMDB-backed features will be unavailable.
 
 ## TMDB
 
