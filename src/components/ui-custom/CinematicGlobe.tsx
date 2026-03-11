@@ -3,8 +3,8 @@ import * as d3 from 'd3';
 import { feature } from 'topojson-client';
 import worldAtlas from 'world-atlas/countries-110m.json';
 import type { Feature, FeatureCollection, Geometry } from 'geojson';
-import type { ExploreCountryStat } from '@/data/explore';
-import { exploreCountryByGlobeName } from '@/data/explore';
+import { exploreCatalogByGlobeName, type ExploreCountryStat } from '@/data/explore';
+import type { CountryCatalogEntry } from '@/lib/country-catalog';
 
 type Rotation = [number, number, number];
 
@@ -58,6 +58,29 @@ function getEmptyCountryStat(name: string): ExploreCountryStat {
 
   emptyCountryCache.set(name, created);
   return created;
+}
+
+function toExploreCountryStat(country: CountryCatalogEntry | ExploreCountryStat): ExploreCountryStat {
+  if ('filmCount' in country) return country;
+
+  return {
+    key: country.key,
+    label: country.label,
+    globeName: country.globeName,
+    flag: country.flag,
+    region: country.region,
+    filmCount: 0,
+    averageScore: 0,
+    topGenres: [],
+    genreCounts: [],
+    topFilms: [],
+    posterFilms: [],
+    movies: [],
+    explored: false,
+    totalPoolResults: 0,
+    source: 'local',
+    standoutTitles: [],
+  };
 }
 
 function clampLatitude(value: number) {
@@ -137,6 +160,10 @@ export function CinematicGlobe({
   const selectedCountry = useMemo(
     () => countries.find((country) => country.key === selectedCountryKey) ?? countries[0],
     [countries, selectedCountryKey],
+  );
+  const countryByGlobeName = useMemo(
+    () => new Map(countries.map((country) => [country.globeName, country] as const)),
+    [countries],
   );
 
   const projection = useMemo(
@@ -356,7 +383,11 @@ export function CinematicGlobe({
   const setTooltipForCountry = useCallback(
     (countryName: string, clientX: number, clientY: number) => {
       const bounds = wrapperRef.current?.getBoundingClientRect();
-      const country = exploreCountryByGlobeName.get(countryName) ?? getEmptyCountryStat(countryName);
+      const countryCandidate =
+        countryByGlobeName.get(countryName) ??
+        exploreCatalogByGlobeName.get(countryName) ??
+        getEmptyCountryStat(countryName);
+      const country = toExploreCountryStat(countryCandidate);
       if (!bounds) {
         setTooltip({ country, x: 0, y: 0 });
         return;
@@ -368,14 +399,14 @@ export function CinematicGlobe({
         y: clientY - bounds.top,
       });
     },
-    [],
+    [countryByGlobeName],
   );
 
   const markerData = useMemo(() => {
     return countries
       .map((country) => {
         const currentFeature = featureByName.get(country.globeName);
-        if (!currentFeature || country.filmCount === 0) return null;
+        if (!currentFeature) return null;
 
         const coordinates = d3.geoCentroid(currentFeature);
         const projected = projection(coordinates);
@@ -388,7 +419,7 @@ export function CinematicGlobe({
           country,
           coordinates,
           projected,
-          radius: markerRadiusScale(country.filmCount),
+          radius: markerRadiusScale(Math.max(country.filmCount, 8)),
         };
       })
       .filter(Boolean) as Array<{
@@ -462,7 +493,9 @@ export function CinematicGlobe({
 
         {countryFeatures.map((country) => {
           const countryName = country.properties?.name ?? '';
-          const stat = exploreCountryByGlobeName.get(countryName);
+          const statCandidate =
+            countryByGlobeName.get(countryName) ?? exploreCatalogByGlobeName.get(countryName);
+          const stat = statCandidate ? toExploreCountryStat(statCandidate) : null;
           const isSelected = stat?.key === selectedCountryKey;
           const isHovered = hoveredCountryName === countryName;
           const isPinned = stat ? pinnedCountryKeys.includes(stat.key) : false;

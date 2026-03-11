@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, Instagram, Star, Twitter, Youtube } from 'lucide-react';
+import { ArrowUpRight, Star } from 'lucide-react';
 
 export function Footer() {
   return (
     <footer className="mt-16 border-t border-white/[0.06]" style={{ background: 'rgba(10, 8, 7, 0.92)' }}>
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr_0.9fr_1fr] lg:gap-12">
+        <div className="grid gap-10 lg:grid-cols-[0.95fr_0.9fr_0.9fr_1fr] lg:gap-12">
           <div>
             <Link to="/" className="group mb-5 flex items-center gap-3">
               <div
@@ -17,28 +17,8 @@ export function Footer() {
               >
                 <Star className="h-5 w-5 fill-white text-white" />
               </div>
-              <div>
-                <span className="heading-display heading-gradient block text-3xl">STARS</span>
-                <span className="section-kicker !text-[0.58rem] !tracking-[0.28em] text-white/45">
-                  Editorial Film Guide
-                </span>
-              </div>
+              <span className="heading-display heading-gradient block text-3xl">STARS</span>
             </Link>
-            <p className="max-w-sm text-sm leading-7 text-muted-foreground">
-              A sharper-looking front page deserves a sharper closing note. STARS should read like a publication,
-              not a utility dashboard.
-            </p>
-            <div className="mt-6 flex items-center gap-3">
-              <Link to="/lists" className="flex h-10 w-10 items-center justify-center rounded-full transition-all hover:scale-110" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                <Twitter className="h-4 w-4" />
-              </Link>
-              <Link to="/explore" className="flex h-10 w-10 items-center justify-center rounded-full transition-all hover:scale-110" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                <Instagram className="h-4 w-4" />
-              </Link>
-              <Link to="/signup" className="flex h-10 w-10 items-center justify-center rounded-full transition-all hover:scale-110" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                <Youtube className="h-4 w-4" />
-              </Link>
-            </div>
           </div>
 
           <div>
@@ -81,9 +61,8 @@ export function Footer() {
 
       <div className="border-t border-white/[0.06]">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <div className="flex items-center justify-center md:justify-start">
             <p className="text-sm text-muted-foreground">Copyright 2026 STARS. All rights reserved.</p>
-            <p className="text-sm text-muted-foreground">Built to feel more like a journal and less like a dashboard.</p>
           </div>
         </div>
       </div>

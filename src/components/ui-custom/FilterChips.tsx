@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { X } from 'lucide-react';
 
 interface FilterChipsProps {
@@ -7,10 +8,17 @@ interface FilterChipsProps {
   multiSelect?: boolean;
 }
 
-export function FilterChips({ options, selected, onChange, multiSelect = true }: FilterChipsProps) {
+export const FilterChips = memo(function FilterChips({
+  options,
+  selected,
+  onChange,
+  multiSelect = true,
+}: FilterChipsProps) {
+  const selectedSet = useMemo(() => new Set(selected), [selected]);
+
   const toggleOption = (option: string) => {
-    if (selected.includes(option)) {
-      onChange(selected.filter(s => s !== option));
+    if (selectedSet.has(option)) {
+      onChange(selected.filter((selectedOption) => selectedOption !== option));
     } else {
       if (multiSelect) {
         onChange([...selected, option]);
@@ -26,14 +34,14 @@ export function FilterChips({ options, selected, onChange, multiSelect = true }:
         <button
           key={option}
           onClick={() => toggleOption(option)}
-          className={`filter-chip ${selected.includes(option) ? 'active' : ''}`}
+          className={`filter-chip ${selectedSet.has(option) ? 'active' : ''}`}
         >
           {option}
-          {selected.includes(option) && multiSelect && (
+          {selectedSet.has(option) && multiSelect && (
             <X className="w-3 h-3 ml-1" />
           )}
         </button>
       ))}
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Calendar,
@@ -16,14 +16,36 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FilterChips, MovieCard, PosterImage, VerdictBadge } from '@/components/ui-custom';
+import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { browseCountries, browseDecades, browseGenres, browseStreamingPlatforms } from '@/lib/movie-constants';
-import { fetchBrowseMovies, fetchTrendingMovies } from '@/lib/tmdb-movies';
+import { fetchBrowseMovies, fetchTrendingMovies, serializeBrowseMovieQuery } from '@/lib/tmdb-movies';
 import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
-import type { Movie, SortOption, Verdict } from '@/types';
 import type { BrowseMovieQuery } from '@/lib/tmdb-movies';
+import type { Movie, SortOption, Verdict } from '@/types';
 
 const yearBounds = [1940, new Date().getFullYear()] as const;
 const initialCatalogPages = 1;
+const searchDebounceMs = 250;
+const initialRenderCount = {
+  grid: 20,
+  list: 10,
+} as const;
+const renderBatchSize = {
+  grid: 20,
+  list: 8,
+} as const;
+
+type CatalogState = {
+  movies: Movie[];
+  totalResults: number;
+  totalPages: number;
+  loadedPage: number;
+  source: 'tmdb' | 'local';
+  isInitialLoading: boolean;
+  isRefreshing: boolean;
+  isLoadingMore: boolean;
+  loadError: string;
+};
 
 function dedupeMovies(movies: Movie[]) {
   return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
@@ -106,6 +128,155 @@ function BrowseCardSkeleton({ viewMode }: { viewMode: 'grid' | 'list' }) {
   );
 }
 
+type GridMovieCardProps = {
+  movie: Movie;
+  isInWatchlist: boolean;
+  isLiked: boolean;
+  showRank?: number;
+  openMovie: (movieId: string) => void;
+  openCompose: (movieId: string) => void;
+  toggleWatchlist: (movieId: string) => void;
+  toggleLike: (movieId: string) => void;
+  onGenreClick: (genre: string) => void;
+};
+
+const BrowseGridMovieCard = memo(function BrowseGridMovieCard({
+  movie,
+  isInWatchlist,
+  isLiked,
+  showRank,
+  openMovie,
+  openCompose,
+  toggleWatchlist,
+  toggleLike,
+  onGenreClick,
+}: GridMovieCardProps) {
+  return (
+    <MovieCard
+      movie={movie}
+      variant="compact"
+      showRank={showRank}
+      onClick={() => openMovie(movie.id)}
+      onViewDetails={() => openMovie(movie.id)}
+      onWriteReview={() => openCompose(movie.id)}
+      onToggleWatchlist={() => toggleWatchlist(movie.id)}
+      onToggleLike={() => toggleLike(movie.id)}
+      isInWatchlist={isInWatchlist}
+      isLiked={isLiked}
+      onGenreClick={onGenreClick}
+    />
+  );
+});
+
+type ListMovieRowProps = {
+  movie: Movie;
+  isInWatchlist: boolean;
+  isLiked: boolean;
+  openMovie: (movieId: string) => void;
+  toggleWatchlist: (movieId: string) => void;
+  toggleLike: (movieId: string) => void;
+  onGenreClick: (genre: string) => void;
+};
+
+const BrowseListMovieRow = memo(function BrowseListMovieRow({
+  movie,
+  isInWatchlist,
+  isLiked,
+  openMovie,
+  toggleWatchlist,
+  toggleLike,
+  onGenreClick,
+}: ListMovieRowProps) {
+  return (
+    <div
+      onClick={() => openMovie(movie.id)}
+      className="flex cursor-pointer gap-4 rounded-[1.35rem] border border-white/[0.06] bg-[rgba(20,20,28,0.8)] p-4 transition-colors hover:bg-[rgba(24,24,34,0.88)]"
+    >
+      <div className="group relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-xl sm:h-36">
+        <PosterImage
+          src={movie.poster}
+          title={movie.title}
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          width={160}
+          height={240}
+          sizes="160px"
+        />
+        <div className="absolute inset-x-2 bottom-2 flex justify-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              toggleWatchlist(movie.id);
+            }}
+            className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${
+              isInWatchlist
+                ? 'border-[#d26d47]/40 bg-[#d26d47]/20 text-[#f4b684]'
+                : 'border-white/15 bg-black/40 text-white'
+            }`}
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              toggleLike(movie.id);
+            }}
+            className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${
+              isLiked
+                ? 'border-[#d26d47]/40 bg-[#d26d47]/20 text-[#f4b684]'
+                : 'border-white/15 bg-black/40 text-white'
+            }`}
+          >
+            Like
+          </button>
+        </div>
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h3 className="text-lg font-semibold">{movie.title}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {movie.year} / {movie.genres.slice(0, 3).join(' / ')}
+            </p>
+          </div>
+          <VerdictBadge verdict={movie.verdict} score={movie.score} size="sm" />
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/25 bg-[#d26d47]/10 px-3 py-1 font-semibold text-[#f4b684]">
+            <Star className="h-3.5 w-3.5" />
+            Community {movie.score.toFixed(1)}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full border border-[#f4b684]/20 bg-[#f4b684]/10 px-3 py-1 font-semibold text-[#f7c59e]">
+            <MessageSquareText className="h-3.5 w-3.5" />
+            {(movie.reviewCount ?? 0).toLocaleString()} reviews
+          </span>
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">{movie.country}</span>
+          {movie.runtime > 0 && (
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">{movie.runtime} min</span>
+          )}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {movie.genres.slice(0, 4).map((genre) => (
+            <button
+              key={genre}
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onGenreClick(genre);
+              }}
+              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-[#d26d47]/40 hover:text-[#f4b684]"
+            >
+              {genre}
+            </button>
+          ))}
+        </div>
+        <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{movie.synopsis}</p>
+      </div>
+    </div>
+  );
+});
+
 export function Browse() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -119,22 +290,61 @@ export function Browse() {
   const [minRating, setMinRating] = useState([0]);
   const [yearRange, setYearRange] = useState([yearBounds[0], yearBounds[1]]);
   const [runtimeRange, setRuntimeRange] = useState([0, 240]);
-  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState(() => searchParams.get('country') ?? '');
   const [exactYear, setExactYear] = useState('');
   const [directorQuery, setDirectorQuery] = useState('');
   const [castQuery, setCastQuery] = useState('');
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
-  const [catalogMovies, setCatalogMovies] = useState<Movie[]>([]);
-  const [catalogTotalResults, setCatalogTotalResults] = useState(0);
-  const [catalogTotalPages, setCatalogTotalPages] = useState(1);
-  const [loadedCatalogPage, setLoadedCatalogPage] = useState(0);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [loadError, setLoadError] = useState('');
-  const [catalogSource, setCatalogSource] = useState<'tmdb' | 'local'>('tmdb');
+  const [catalogState, setCatalogState] = useState<CatalogState>({
+    movies: [],
+    totalResults: 0,
+    totalPages: 1,
+    loadedPage: 0,
+    source: 'tmdb',
+    isInitialLoading: true,
+    isRefreshing: false,
+    isLoadingMore: false,
+    loadError: '',
+  });
+  const [renderLimit, setRenderLimit] = useState<number>(initialRenderCount.grid);
   const [library, setLibrary] = useState(() => getUserLibrary());
   const searchInputRef = useRef<HTMLInputElement | null>(null);
-  const searchQuery = searchParams.get('q') ?? '';
+  const renderMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const urlSearchQuery = searchParams.get('q') ?? '';
+  const urlCountryFilter = searchParams.get('country') ?? '';
+  const [searchInputValue, setSearchInputValue] = useState(urlSearchQuery);
+  const deferredSearchInput = useDeferredValue(searchInputValue);
+  const debouncedSearchQuery = useDebouncedValue(deferredSearchInput, searchDebounceMs);
+
+  useEffect(() => {
+    setSearchInputValue(urlSearchQuery);
+  }, [urlSearchQuery]);
+
+  useEffect(() => {
+    setSelectedCountry(urlCountryFilter);
+  }, [urlCountryFilter]);
+
+  useEffect(() => {
+    const normalizedInput = debouncedSearchQuery.trim();
+    const normalizedUrlValue = urlSearchQuery.trim();
+    const normalizedCountryValue = selectedCountry.trim();
+    const normalizedUrlCountryValue = urlCountryFilter.trim();
+    if (normalizedInput === normalizedUrlValue && normalizedCountryValue === normalizedUrlCountryValue) return;
+
+    const nextParams = new URLSearchParams(searchParams);
+    if (normalizedInput) {
+      nextParams.set('q', normalizedInput);
+    } else {
+      nextParams.delete('q');
+    }
+    if (normalizedCountryValue) {
+      nextParams.set('country', normalizedCountryValue);
+    } else {
+      nextParams.delete('country');
+    }
+    setSearchParams(nextParams, { replace: true });
+  }, [debouncedSearchQuery, searchParams, selectedCountry, setSearchParams, urlCountryFilter, urlSearchQuery]);
 
   useEffect(() => {
     let cancelled = false;
@@ -190,27 +400,37 @@ export function Browse() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const activeFiltersCount =
-    selectedGenres.length +
-    selectedVerdicts.length +
-    selectedDecades.length +
-    selectedStreamingServices.length +
-    Number(Boolean(selectedCountry)) +
-    Number(Boolean(exactYear)) +
-    Number(Boolean(directorQuery.trim())) +
-    Number(Boolean(castQuery.trim())) +
-    Number(minRating[0] > 0) +
-    Number(yearRange[0] !== yearBounds[0] || yearRange[1] !== yearBounds[1]) +
-    Number(runtimeRange[0] > 0 || runtimeRange[1] < 240);
-
-  const isDefaultBrowseState =
-    !searchQuery.trim() &&
-    activeFiltersCount === 0 &&
-    !sortBy;
+  const activeFiltersCount = useMemo(
+    () =>
+      selectedGenres.length +
+      selectedVerdicts.length +
+      selectedDecades.length +
+      selectedStreamingServices.length +
+      Number(Boolean(selectedCountry)) +
+      Number(Boolean(exactYear)) +
+      Number(Boolean(directorQuery.trim())) +
+      Number(Boolean(castQuery.trim())) +
+      Number(minRating[0] > 0) +
+      Number(yearRange[0] !== yearBounds[0] || yearRange[1] !== yearBounds[1]) +
+      Number(runtimeRange[0] > 0 || runtimeRange[1] < 240),
+    [
+      castQuery,
+      directorQuery,
+      exactYear,
+      minRating,
+      runtimeRange,
+      selectedCountry,
+      selectedDecades,
+      selectedGenres,
+      selectedStreamingServices,
+      selectedVerdicts,
+      yearRange,
+    ],
+  );
 
   const browseApiQuery = useMemo<BrowseMovieQuery>(
     () => ({
-      query: searchQuery.trim() || undefined,
+      query: debouncedSearchQuery.trim() || undefined,
       genres: selectedGenres,
       verdicts: selectedVerdicts,
       decades: selectedDecades,
@@ -228,11 +448,11 @@ export function Browse() {
     }),
     [
       castQuery,
+      debouncedSearchQuery,
       directorQuery,
       exactYear,
       minRating,
       runtimeRange,
-      searchQuery,
       selectedCountry,
       selectedDecades,
       selectedGenres,
@@ -242,20 +462,28 @@ export function Browse() {
       yearRange,
     ],
   );
+  const deferredBrowseQuery = useDeferredValue(browseApiQuery);
+  const browseQueryKey = useMemo(() => serializeBrowseMovieQuery(deferredBrowseQuery), [deferredBrowseQuery]);
+  const hasSearchQuery = Boolean(deferredBrowseQuery.query?.trim());
+  const isDefaultBrowseState = !hasSearchQuery && activeFiltersCount === 0 && !sortBy;
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadCatalog() {
-      setIsInitialLoading(true);
-      setIsLoadingMore(false);
-      setLoadError('');
+      setCatalogState((current) => ({
+        ...current,
+        isInitialLoading: current.movies.length === 0,
+        isRefreshing: current.movies.length > 0,
+        isLoadingMore: false,
+        loadError: '',
+      }));
 
       try {
         const responses = await Promise.all(
           Array.from({ length: initialCatalogPages }, (_, index) =>
             fetchBrowseMovies({
-              ...browseApiQuery,
+              ...deferredBrowseQuery,
               page: index + 1,
             }),
           ),
@@ -263,25 +491,33 @@ export function Browse() {
 
         if (!cancelled) {
           const mergedMovies = dedupeMovies(responses.flatMap((response) => response.movies));
-          setCatalogMovies(sortBy ? mergedMovies : mixBrowseMovies(mergedMovies));
-          setCatalogTotalResults(Math.max(...responses.map((response) => response.totalResults)));
-          setCatalogTotalPages(Math.max(...responses.map((response) => response.totalPages)));
-          setLoadedCatalogPage(Math.max(...responses.map((response) => response.page)));
-          setCatalogSource(responses[0]?.source ?? 'tmdb');
+          setCatalogState({
+            movies: sortBy ? mergedMovies : mixBrowseMovies(mergedMovies),
+            totalResults: Math.max(...responses.map((response) => response.totalResults)),
+            totalPages: Math.max(...responses.map((response) => response.totalPages)),
+            loadedPage: Math.max(...responses.map((response) => response.page)),
+            source: responses[0]?.source ?? 'tmdb',
+            isInitialLoading: false,
+            isRefreshing: false,
+            isLoadingMore: false,
+            loadError: '',
+          });
         }
       } catch (error) {
         console.error('Failed to load browse catalog', error);
         if (!cancelled) {
-          setCatalogMovies([]);
-          setCatalogTotalResults(0);
-          setCatalogTotalPages(1);
-          setLoadedCatalogPage(0);
-          setCatalogSource('tmdb');
-          setLoadError('TMDB browse is currently unavailable.');
-        }
-      } finally {
-        if (!cancelled) {
-          setIsInitialLoading(false);
+          setCatalogState((current) => ({
+            ...current,
+            movies: current.movies.length ? current.movies : [],
+            totalResults: current.movies.length ? current.totalResults : 0,
+            totalPages: current.movies.length ? current.totalPages : 1,
+            loadedPage: current.movies.length ? current.loadedPage : 0,
+            source: current.movies.length ? current.source : 'tmdb',
+            isInitialLoading: false,
+            isRefreshing: false,
+            isLoadingMore: false,
+            loadError: 'TMDB browse is currently unavailable.',
+          }));
         }
       }
     }
@@ -291,25 +527,46 @@ export function Browse() {
     return () => {
       cancelled = true;
     };
-  }, [browseApiQuery, sortBy]);
-
-  const updateSearchQuery = (value: string) => {
-    const nextParams = new URLSearchParams(searchParams);
-    if (value.trim()) {
-      nextParams.set('q', value);
-    } else {
-      nextParams.delete('q');
-    }
-    setSearchParams(nextParams, { replace: true });
-  };
+  }, [browseQueryKey, deferredBrowseQuery, sortBy]);
 
   const visibleMovies = useMemo(
-    () => (sortBy ? sortMovies(catalogMovies, sortBy) : catalogMovies),
-    [catalogMovies, sortBy],
+    () => (sortBy ? sortMovies(catalogState.movies, sortBy) : catalogState.movies),
+    [catalogState.movies, sortBy],
   );
-  const canLoadMore = loadedCatalogPage < catalogTotalPages && !isInitialLoading && !isLoadingMore;
 
-  const resetBrowseState = () => {
+  useEffect(() => {
+    setRenderLimit(Math.min(visibleMovies.length, initialRenderCount[viewMode]));
+  }, [browseQueryKey, viewMode, visibleMovies.length]);
+
+  const hasMoreToRender = renderLimit < visibleMovies.length;
+  const renderedMovies = useMemo(() => visibleMovies.slice(0, renderLimit), [renderLimit, visibleMovies]);
+
+  useEffect(() => {
+    const target = renderMoreRef.current;
+    if (!target || !hasMoreToRender) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0]?.isIntersecting) return;
+        setRenderLimit((current) => Math.min(visibleMovies.length, current + renderBatchSize[viewMode]));
+      },
+      { rootMargin: '500px 0px' },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMoreToRender, viewMode, visibleMovies.length]);
+
+  const watchlistSet = useMemo(() => new Set(library.watchlist), [library.watchlist]);
+  const favoritesSet = useMemo(() => new Set(library.favorites), [library.favorites]);
+
+  const canLoadMore =
+    catalogState.loadedPage < catalogState.totalPages &&
+    !catalogState.isInitialLoading &&
+    !catalogState.isLoadingMore &&
+    !catalogState.isRefreshing;
+
+  const resetBrowseState = useCallback(() => {
     setSelectedGenres([]);
     setSelectedVerdicts([]);
     setSelectedDecades([]);
@@ -322,198 +579,231 @@ export function Browse() {
     setDirectorQuery('');
     setCastQuery('');
     setSortBy(null);
+    setSearchInputValue('');
     const nextParams = new URLSearchParams(searchParams);
     nextParams.delete('q');
+    nextParams.delete('country');
     setSearchParams(nextParams, { replace: true });
-  };
+  }, [searchParams, setSearchParams]);
 
-  const handleLoadMore = async () => {
-    const nextPage = loadedCatalogPage + 1;
-    if (nextPage > catalogTotalPages || isLoadingMore) return;
+  const handleLoadMore = useCallback(async () => {
+    const nextPage = catalogState.loadedPage + 1;
+    if (nextPage > catalogState.totalPages || catalogState.isLoadingMore || catalogState.isRefreshing) return;
 
-    setIsLoadingMore(true);
+    setCatalogState((current) => ({
+      ...current,
+      isLoadingMore: true,
+      loadError: '',
+    }));
 
     try {
       const response = await fetchBrowseMovies({
-        ...browseApiQuery,
+        ...deferredBrowseQuery,
         page: nextPage,
       });
-      setCatalogMovies((current) => {
-        const mergedMovies = dedupeMovies([...current, ...response.movies]);
-        return sortBy ? mergedMovies : mixBrowseMovies(mergedMovies);
+      setCatalogState((current) => {
+        const mergedMovies = dedupeMovies([...current.movies, ...response.movies]);
+        return {
+          ...current,
+          movies: sortBy ? mergedMovies : mixBrowseMovies(mergedMovies),
+          totalResults: Math.max(current.totalResults, response.totalResults),
+          totalPages: Math.max(current.totalPages, response.totalPages),
+          loadedPage: response.page,
+          source: response.source,
+          isLoadingMore: false,
+          loadError: '',
+        };
       });
-      setCatalogTotalResults((current) => Math.max(current, response.totalResults));
-      setCatalogTotalPages((current) => Math.max(current, response.totalPages));
-      setLoadedCatalogPage(response.page);
-      setCatalogSource(response.source);
-      setLoadError('');
     } catch (error) {
       console.error('Failed to load more browse movies', error);
-      setLoadError('Could not load more movies from TMDB right now.');
-    } finally {
-      setIsLoadingMore(false);
+      setCatalogState((current) => ({
+        ...current,
+        isLoadingMore: false,
+        loadError: 'Could not load more movies from TMDB right now.',
+      }));
     }
-  };
+  }, [
+    catalogState.isLoadingMore,
+    catalogState.isRefreshing,
+    catalogState.loadedPage,
+    catalogState.totalPages,
+    deferredBrowseQuery,
+    sortBy,
+  ]);
 
-  const handleGenreClick = (genre: string) => {
+  const handleGenreClick = useCallback((genre: string) => {
     setSelectedGenres((current) => (current.includes(genre) ? current : [...current, genre]));
     setShowFilters(true);
-  };
+  }, []);
 
-  const handleToggleWatchlist = (movieId: string) => {
+  const handleToggleWatchlist = useCallback((movieId: string) => {
     const nextState = toggleLibraryItem('watchlist', movieId);
     setLibrary(nextState);
-  };
+  }, []);
 
-  const handleToggleLike = (movieId: string) => {
+  const handleToggleLike = useCallback((movieId: string) => {
     const nextState = toggleLibraryItem('favorites', movieId);
     setLibrary(nextState);
-  };
+  }, []);
 
-  const renderFilters = () => (
-    <>
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <div>
-          <h2 className="flex items-center gap-2 font-bold">
-            <SlidersHorizontal className="h-4 w-4" />
-            Filters
-          </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {activeFiltersCount ? `${activeFiltersCount} active` : 'All filters cleared'}
-          </p>
+  const openMovie = useCallback((movieId: string) => {
+    navigate(`/review/${movieId}`);
+  }, [navigate]);
+
+  const openCompose = useCallback((movieId: string) => {
+    navigate(`/review/${movieId}?compose=1`);
+  }, [navigate]);
+
+  const filtersPanel = useMemo(
+    () => (
+      <>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <div>
+            <h2 className="flex items-center gap-2 font-bold">
+              <SlidersHorizontal className="h-4 w-4" />
+              Filters
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {activeFiltersCount ? `${activeFiltersCount} active` : 'All filters cleared'}
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={resetBrowseState}
+            disabled={isDefaultBrowseState}
+            className="border-white/10 bg-white/[0.03] hover:bg-white/5"
+          >
+            Clear All
+          </Button>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={resetBrowseState}
-          disabled={isDefaultBrowseState}
-          className="border-white/10 bg-white/[0.03] hover:bg-white/5"
-        >
-          Clear All
-        </Button>
-      </div>
 
-      <div className="mb-6">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <label className="block text-mono text-xs uppercase tracking-wider text-muted-foreground">Sort</label>
-          {sortBy && (
-            <button
-              type="button"
-              onClick={() => {
-                setSortBy(null);
-              }}
-              className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55 transition-colors hover:text-white"
-            >
-              Clear sort
-            </button>
-          )}
-        </div>
-        <div className="grid gap-2">
-          {[
-            { value: 'highestRated', label: 'Highest Rated' },
-            { value: 'mostPopular', label: 'Most Popular' },
-            { value: 'mostReviewed', label: 'Most Reviewed' },
-            { value: 'newest', label: 'Release Date: Newest First' },
-            { value: 'releaseDate', label: 'Release Date: Oldest First' },
-          ].map((option) => {
-            const isSelected = sortBy === option.value;
-
-            return (
+        <div className="mb-6">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <label className="block text-mono text-xs uppercase tracking-wider text-muted-foreground">Sort</label>
+            {sortBy && (
               <button
-                key={option.value}
                 type="button"
                 onClick={() => {
-                  setSortBy((current) => (current === option.value ? null : (option.value as SortOption)));
+                  setSortBy(null);
                 }}
-                className={`rounded-xl border px-3 py-2 text-left text-sm transition-all ${
-                  isSelected
-                    ? 'border-[#d26d47]/40 bg-[#d26d47]/14 text-white'
-                    : 'border-white/10 bg-white/[0.03] text-muted-foreground hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
-                }`}
-                aria-pressed={isSelected}
+                className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55 transition-colors hover:text-white"
               >
-                {option.label}
+                Clear sort
               </button>
-            );
-          })}
+            )}
+          </div>
+          <div className="grid gap-2">
+            {[
+              { value: 'highestRated', label: 'Highest Rated' },
+              { value: 'mostPopular', label: 'Most Popular' },
+              { value: 'mostReviewed', label: 'Most Reviewed' },
+              { value: 'newest', label: 'Release Date: Newest First' },
+              { value: 'releaseDate', label: 'Release Date: Oldest First' },
+            ].map((option) => {
+              const isSelected = sortBy === option.value;
+
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => {
+                    setSortBy((current) => (current === option.value ? null : (option.value as SortOption)));
+                  }}
+                  className={`rounded-xl border px-3 py-2 text-left text-sm transition-colors ${
+                    isSelected
+                      ? 'border-[#d26d47]/40 bg-[#d26d47]/14 text-white'
+                      : 'border-white/10 bg-white/[0.03] text-muted-foreground hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
+                  }`}
+                  aria-pressed={isSelected}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Sorting is optional. Leave this unset to browse the full catalog in a mixed order.
+          </p>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Sorting is optional. Leave this unset to browse the full catalog in a mixed order.
-        </p>
-      </div>
 
-      <div className="mb-6">
-        <label className="mb-3 block text-mono text-xs uppercase tracking-wider text-muted-foreground">Genre</label>
-        <FilterChips
-          options={browseGenres}
-          selected={selectedGenres}
-          onChange={(nextGenres) => {
-            setSelectedGenres(nextGenres);
-          }}
-        />
-      </div>
-
-      <div className="mb-6">
-        <label className="mb-3 flex items-center gap-2 text-mono text-xs uppercase tracking-wider text-muted-foreground">
-          <Calendar className="h-3 w-3" /> Decade
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {browseDecades.map((decade) => (
-            <button
-              key={decade}
-              type="button"
-              onClick={() => {
-                setSelectedDecades((current) =>
-                  current.includes(decade) ? current.filter((value) => value !== decade) : [...current, decade],
-                );
-              }}
-              className={`filter-chip ${selectedDecades.includes(decade) ? 'active' : ''}`}
-            >
-              {decade}s
-            </button>
-          ))}
+        <div className="mb-6">
+          <label className="mb-3 block text-mono text-xs uppercase tracking-wider text-muted-foreground">Genre</label>
+          <FilterChips options={browseGenres} selected={selectedGenres} onChange={setSelectedGenres} />
         </div>
-      </div>
 
-      <div className="mb-6">
-        <label className="mb-3 block text-mono text-xs uppercase tracking-wider text-muted-foreground">Country</label>
-        <select
-          value={selectedCountry}
-          onChange={(event) => {
-            setSelectedCountry(event.target.value);
-          }}
-          className="input-cinematic w-full py-2 text-sm"
-        >
-          <option value="">Any country</option>
-          {browseCountries.map((country) => (
-            <option key={country} value={country}>
-              {country}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div className="mb-6">
+          <label className="mb-3 flex items-center gap-2 text-mono text-xs uppercase tracking-wider text-muted-foreground">
+            <Calendar className="h-3 w-3" /> Decade
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {browseDecades.map((decade) => (
+              <button
+                key={decade}
+                type="button"
+                onClick={() => {
+                  setSelectedDecades((current) =>
+                    current.includes(decade) ? current.filter((value) => value !== decade) : [...current, decade],
+                  );
+                }}
+                className={`filter-chip ${selectedDecades.includes(decade) ? 'active' : ''}`}
+              >
+                {decade}s
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <div className="mb-6">
-        <label className="mb-3 block text-mono text-xs uppercase tracking-wider text-muted-foreground">Streaming Service</label>
-        <FilterChips
-          options={browseStreamingPlatforms.map((platform) => platform.label)}
-          selected={selectedStreamingServices}
-          onChange={(services) => {
-            setSelectedStreamingServices(services);
-          }}
-        />
-      </div>
+        <div className="mb-6">
+          <label className="mb-3 block text-mono text-xs uppercase tracking-wider text-muted-foreground">Country</label>
+          <select
+            value={selectedCountry}
+            onChange={(event) => {
+              setSelectedCountry(event.target.value);
+            }}
+            className="input-cinematic w-full py-2 text-sm"
+          >
+            <option value="">Any country</option>
+            {browseCountries.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+        </div>
 
-    </>
+        <div className="mb-6">
+          <label className="mb-3 block text-mono text-xs uppercase tracking-wider text-muted-foreground">
+            Streaming Service
+          </label>
+          <FilterChips
+            options={browseStreamingPlatforms.map((platform) => platform.label)}
+            selected={selectedStreamingServices}
+            onChange={setSelectedStreamingServices}
+          />
+        </div>
+      </>
+    ),
+    [
+      activeFiltersCount,
+      isDefaultBrowseState,
+      resetBrowseState,
+      selectedCountry,
+      selectedDecades,
+      selectedGenres,
+      selectedStreamingServices,
+      sortBy,
+    ],
   );
 
-  const hasSearchQuery = Boolean(searchQuery.trim());
+  const showSkeletons = catalogState.isInitialLoading && catalogState.movies.length === 0;
   const hasActiveSort = Boolean(sortBy);
-  const showSkeletons = isInitialLoading && catalogMovies.length === 0;
   const resultSummary = showSkeletons
     ? 'Loading movies from the full catalog...'
-    : `Showing ${visibleMovies.length.toLocaleString()} matching movies`;
+    : catalogState.isRefreshing
+      ? `Updating ${visibleMovies.length.toLocaleString()} matching movies...`
+      : `Showing ${visibleMovies.length.toLocaleString()} matching movies`;
   const resultCaption = showSkeletons
     ? 'Loading state'
     : visibleMovies.length === 0
@@ -536,34 +826,45 @@ export function Browse() {
 
   return (
     <div className="min-h-screen pt-16">
-      <div className="animated-bg" />
       <div className="flex flex-col lg:flex-row">
         {showFilters && (
           <aside
             className="hidden border-r border-white/[0.06] p-5 lg:sticky lg:top-16 lg:block lg:h-[calc(100vh-64px)] lg:w-80 lg:flex-shrink-0 lg:overflow-y-auto"
             style={{ background: 'rgba(10, 10, 15, 0.9)', backdropFilter: 'blur(20px)' }}
           >
-            {renderFilters()}
+            {filtersPanel}
           </aside>
         )}
 
         <main className="flex-1 p-4 sm:p-6">
-          <div className="mb-6 rounded-[1.8rem] border border-white/[0.08] p-5 sm:p-6" style={{ background: 'linear-gradient(135deg, rgba(23, 17, 18, 0.92) 0%, rgba(17, 16, 27, 0.92) 100%)', backdropFilter: 'blur(18px)' }}>
+          <div
+            className="mb-6 rounded-[1.8rem] border border-white/[0.08] p-5 sm:p-6"
+            style={{
+              background: 'linear-gradient(135deg, rgba(23, 17, 18, 0.92) 0%, rgba(17, 16, 27, 0.92) 100%)',
+              backdropFilter: 'blur(18px)',
+            }}
+          >
             <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
               <div>
                 <h1 className="heading-display text-3xl">Browse Movies</h1>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {resultSummary}
-                </p>
+                <p className="mt-2 text-sm text-muted-foreground">{resultSummary}</p>
                 <p className="mt-1 text-xs uppercase tracking-[0.22em] text-white/45">
-                  {catalogMovies.length > 0
-                    ? `${resultCaption} | page ${loadedCatalogPage} of ${Math.max(1, catalogTotalPages)} | ${catalogTotalResults.toLocaleString()} TMDB results scanned`
+                  {catalogState.movies.length > 0
+                    ? `${resultCaption} | page ${catalogState.loadedPage} of ${Math.max(
+                        1,
+                        catalogState.totalPages,
+                      )} | ${catalogState.totalResults.toLocaleString()} TMDB results scanned`
                     : resultCaption}
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)} className="border-white/10 hover:bg-white/5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowFilters((current) => !current)}
+                  className="border-white/10 hover:bg-white/5"
+                >
                   <SlidersHorizontal className="mr-2 h-4 w-4" />
                   {showFilters ? 'Hide' : 'Show'} Filters
                 </Button>
@@ -573,7 +874,9 @@ export function Browse() {
                     onClick={() => {
                       setViewMode('grid');
                     }}
-                    className={`flex items-center gap-2 px-3 py-2.5 text-sm ${viewMode === 'grid' ? '' : 'hover:bg-white/5'}`}
+                    className={`flex items-center gap-2 px-3 py-2.5 text-sm ${
+                      viewMode === 'grid' ? '' : 'hover:bg-white/5'
+                    }`}
                     style={viewMode === 'grid' ? { background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' } : {}}
                   >
                     <Grid3X3 className="h-4 w-4" />
@@ -584,7 +887,9 @@ export function Browse() {
                     onClick={() => {
                       setViewMode('list');
                     }}
-                    className={`flex items-center gap-2 px-3 py-2.5 text-sm ${viewMode === 'list' ? '' : 'hover:bg-white/5'}`}
+                    className={`flex items-center gap-2 px-3 py-2.5 text-sm ${
+                      viewMode === 'list' ? '' : 'hover:bg-white/5'
+                    }`}
                     style={viewMode === 'list' ? { background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' } : {}}
                   >
                     <List className="h-4 w-4" />
@@ -601,13 +906,13 @@ export function Browse() {
                   ref={searchInputRef}
                   type="search"
                   placeholder="Search by movie title..."
-                  value={searchQuery}
-                  onChange={(event) => updateSearchQuery(event.target.value)}
+                  value={searchInputValue}
+                  onChange={(event) => setSearchInputValue(event.target.value)}
                   className="input-cinematic search-input-field search-input-field-with-action h-12"
                 />
                 <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-2">
-                  {searchQuery && (
-                    <button type="button" onClick={() => updateSearchQuery('')} aria-label="Clear search">
+                  {searchInputValue && (
+                    <button type="button" onClick={() => setSearchInputValue('')} aria-label="Clear search">
                       <X className="h-4 w-4 text-muted-foreground" />
                     </button>
                   )}
@@ -619,25 +924,35 @@ export function Browse() {
             </div>
             {!showSkeletons && (
               <p className="mt-3 text-xs uppercase tracking-[0.18em] text-white/40">
-                {catalogSource === 'tmdb' ? 'TMDB connected' : 'TMDB unavailable - local fallback catalog'}
+                {catalogState.source === 'tmdb' ? 'TMDB connected' : 'TMDB unavailable - local fallback catalog'}
+                {catalogState.isRefreshing ? ' | refreshing results' : ''}
               </p>
             )}
           </div>
 
           {showFilters && (
-            <div className="mb-6 rounded-2xl border border-white/[0.06] p-4 sm:p-5 lg:hidden" style={{ background: 'rgba(10, 10, 15, 0.85)', backdropFilter: 'blur(20px)' }}>
-              {renderFilters()}
+            <div
+              className="mb-6 rounded-2xl border border-white/[0.06] p-4 sm:p-5 lg:hidden"
+              style={{ background: 'rgba(10, 10, 15, 0.85)', backdropFilter: 'blur(20px)' }}
+            >
+              {filtersPanel}
             </div>
           )}
 
-          {loadError && (
+          {catalogState.loadError && (
             <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-100">
-              {loadError}
+              {catalogState.loadError}
             </div>
           )}
 
           {isDefaultBrowseState && trendingMovies.length > 0 && (
-            <section className="mb-8 rounded-[1.8rem] border border-white/[0.08] p-5 sm:p-6" style={{ background: 'linear-gradient(135deg, rgba(40, 18, 16, 0.88) 0%, rgba(16, 14, 22, 0.92) 100%)', backdropFilter: 'blur(18px)' }}>
+            <section
+              className="mb-8 rounded-[1.8rem] border border-white/[0.08] p-5 sm:p-6"
+              style={{
+                background: 'linear-gradient(135deg, rgba(40, 18, 16, 0.88) 0%, rgba(16, 14, 22, 0.92) 100%)',
+                backdropFilter: 'blur(18px)',
+              }}
+            >
               <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
                   <p className="mb-1 flex items-center gap-2 text-mono text-xs uppercase tracking-[0.28em] text-[#f4b684]">
@@ -649,18 +964,16 @@ export function Browse() {
               </div>
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                 {trendingMovies.map((movie, index) => (
-                  <MovieCard
+                  <BrowseGridMovieCard
                     key={movie.id}
                     movie={movie}
-                    variant="compact"
                     showRank={index + 1}
-                    onClick={() => navigate(`/review/${movie.id}`)}
-                    onViewDetails={() => navigate(`/review/${movie.id}`)}
-                    onWriteReview={() => navigate(`/review/${movie.id}?compose=1`)}
-                    onToggleWatchlist={() => handleToggleWatchlist(movie.id)}
-                    onToggleLike={() => handleToggleLike(movie.id)}
-                    isInWatchlist={library.watchlist.includes(movie.id)}
-                    isLiked={library.favorites.includes(movie.id)}
+                    openMovie={openMovie}
+                    openCompose={openCompose}
+                    toggleWatchlist={handleToggleWatchlist}
+                    toggleLike={handleToggleLike}
+                    isInWatchlist={watchlistSet.has(movie.id)}
+                    isLiked={favoritesSet.has(movie.id)}
                     onGenreClick={handleGenreClick}
                   />
                 ))}
@@ -669,106 +982,63 @@ export function Browse() {
           )}
 
           {showSkeletons ? (
-            <div className={`grid gap-5 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'}`}>
+            <div
+              className={`grid gap-5 ${
+                viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'
+              }`}
+            >
               {Array.from({ length: viewMode === 'grid' ? 10 : 6 }).map((_, index) => (
                 <BrowseCardSkeleton key={index} viewMode={viewMode} />
               ))}
             </div>
           ) : visibleMovies.length > 0 ? (
             <>
-              <div className={`grid gap-5 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'}`}>
-                {visibleMovies.map((movie) =>
+              <div
+                className={`grid gap-5 ${
+                  viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'
+                }`}
+              >
+                {renderedMovies.map((movie) =>
                   viewMode === 'grid' ? (
-                    <MovieCard
+                    <BrowseGridMovieCard
                       key={movie.id}
                       movie={movie}
-                      variant="compact"
-                      onClick={() => navigate(`/review/${movie.id}`)}
-                      onViewDetails={() => navigate(`/review/${movie.id}`)}
-                      onWriteReview={() => navigate(`/review/${movie.id}?compose=1`)}
-                      onToggleWatchlist={() => handleToggleWatchlist(movie.id)}
-                      onToggleLike={() => handleToggleLike(movie.id)}
-                      isInWatchlist={library.watchlist.includes(movie.id)}
-                      isLiked={library.favorites.includes(movie.id)}
+                      openMovie={openMovie}
+                      openCompose={openCompose}
+                      toggleWatchlist={handleToggleWatchlist}
+                      toggleLike={handleToggleLike}
+                      isInWatchlist={watchlistSet.has(movie.id)}
+                      isLiked={favoritesSet.has(movie.id)}
                       onGenreClick={handleGenreClick}
                     />
                   ) : (
-                    <div
+                    <BrowseListMovieRow
                       key={movie.id}
-                      onClick={() => navigate(`/review/${movie.id}`)}
-                      className="flex cursor-pointer gap-4 rounded-[1.35rem] p-4 transition-all hover:scale-[1.01]"
-                      style={{ background: 'rgba(20, 20, 28, 0.8)', border: '1px solid rgba(255, 255, 255, 0.06)' }}
-                    >
-                      <div className="group relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-xl sm:h-36">
-                        <PosterImage src={movie.poster} title={movie.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                        <div className="absolute inset-x-2 bottom-2 flex justify-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                          <button
-                            type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              handleToggleWatchlist(movie.id);
-                            }}
-                            className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${library.watchlist.includes(movie.id) ? 'border-[#d26d47]/40 bg-[#d26d47]/20 text-[#f4b684]' : 'border-white/15 bg-black/40 text-white'}`}
-                          >
-                            Save
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              handleToggleLike(movie.id);
-                            }}
-                            className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${library.favorites.includes(movie.id) ? 'border-[#d26d47]/40 bg-[#d26d47]/20 text-[#f4b684]' : 'border-white/15 bg-black/40 text-white'}`}
-                          >
-                            Like
-                          </button>
-                        </div>
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="min-w-0">
-                            <h3 className="text-lg font-semibold">{movie.title}</h3>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {movie.year} / {movie.genres.slice(0, 3).join(' / ')}
-                            </p>
-                          </div>
-                          <VerdictBadge verdict={movie.verdict} score={movie.score} size="sm" />
-                        </div>
-                        <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                          <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/25 bg-[#d26d47]/10 px-3 py-1 font-semibold text-[#f4b684]">
-                            <Star className="h-3.5 w-3.5" />
-                            Community {movie.score.toFixed(1)}
-                          </span>
-                          <span className="inline-flex items-center gap-1 rounded-full border border-[#f4b684]/20 bg-[#f4b684]/10 px-3 py-1 font-semibold text-[#f7c59e]">
-                            <MessageSquareText className="h-3.5 w-3.5" />
-                            {(movie.reviewCount ?? 0).toLocaleString()} reviews
-                          </span>
-                          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">{movie.country}</span>
-                          {movie.runtime > 0 && <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">{movie.runtime} min</span>}
-                        </div>
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {movie.genres.slice(0, 4).map((genre) => (
-                            <button
-                              key={genre}
-                              type="button"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                handleGenreClick(genre);
-                              }}
-                              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-[#d26d47]/40 hover:text-[#f4b684]"
-                            >
-                              {genre}
-                            </button>
-                          ))}
-                        </div>
-                        <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{movie.synopsis}</p>
-                      </div>
-                    </div>
+                      movie={movie}
+                      openMovie={openMovie}
+                      toggleWatchlist={handleToggleWatchlist}
+                      toggleLike={handleToggleLike}
+                      isInWatchlist={watchlistSet.has(movie.id)}
+                      isLiked={favoritesSet.has(movie.id)}
+                      onGenreClick={handleGenreClick}
+                    />
                   ),
                 )}
               </div>
 
-              {canLoadMore && (
+              {(hasMoreToRender || canLoadMore || catalogState.isLoadingMore) && (
+                <div className="mt-6">
+                  {hasMoreToRender && (
+                    <div className="mb-4 text-center text-xs uppercase tracking-[0.18em] text-white/40">
+                      Rendering {renderedMovies.length.toLocaleString()} of {visibleMovies.length.toLocaleString()} loaded
+                      movies
+                    </div>
+                  )}
+                  <div ref={renderMoreRef} className="h-1 w-full" />
+                </div>
+              )}
+
+              {canLoadMore && !hasMoreToRender && (
                 <div className="mt-8 flex justify-center">
                   <Button onClick={handleLoadMore} className="btn-primary min-w-40">
                     Load More
@@ -776,7 +1046,7 @@ export function Browse() {
                 </div>
               )}
 
-              {isLoadingMore && (
+              {catalogState.isLoadingMore && (
                 <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {Array.from({ length: 4 }).map((_, index) => (
                     <BrowseCardSkeleton key={index} viewMode="grid" />
@@ -786,7 +1056,10 @@ export function Browse() {
             </>
           ) : (
             <div className="py-20 text-center">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full" style={{ background: 'rgba(255,255,255,0.05)' }}>
+              <div
+                className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full"
+                style={{ background: 'rgba(255,255,255,0.05)' }}
+              >
                 <Film className="h-8 w-8 text-muted-foreground" />
               </div>
               <h3 className="mb-2 text-xl font-semibold">No movies found</h3>

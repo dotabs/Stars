@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { getPosterFallback, resolvePosterUrl } from '@/lib/posters';
 
 interface PosterImageProps {
@@ -8,20 +8,27 @@ interface PosterImageProps {
   width?: number;
   height?: number;
   loading?: 'eager' | 'lazy';
+  sizes?: string;
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
-export function PosterImage({
+export const PosterImage = memo(function PosterImage({
   src,
   title,
   className,
   width,
   height,
   loading,
+  sizes,
+  fetchPriority,
 }: PosterImageProps) {
-  const resolvedSrc = resolvePosterUrl(src, title, { width, height });
+  const resolvedSrc = useMemo(() => resolvePosterUrl(src, title, { width, height }), [height, src, title, width]);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
-  const currentSrc =
-    failedSrc === resolvedSrc ? getPosterFallback(title, { width, height }) : resolvedSrc;
+
+  const currentSrc = useMemo(
+    () => (failedSrc === resolvedSrc ? getPosterFallback(title, { width, height }) : resolvedSrc),
+    [failedSrc, height, resolvedSrc, title, width],
+  );
 
   return (
     <img
@@ -30,7 +37,11 @@ export function PosterImage({
       className={className}
       loading={loading ?? 'lazy'}
       decoding="async"
+      width={width}
+      height={height}
+      sizes={sizes}
+      fetchPriority={fetchPriority}
       onError={() => setFailedSrc(resolvedSrc)}
     />
   );
-}
+});

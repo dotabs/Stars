@@ -150,6 +150,9 @@ let genreMapPromise: Promise<Map<number, string>> | null = null;
 const detailCache = new Map<number, Promise<{ movie: Movie; review: Review; similarMovies: Movie[] }>>();
 const browseMovieCache = new Map<number, Promise<Movie>>();
 const personSearchCache = new Map<string, Promise<number[]>>();
+const browsePageCache = new Map<string, Promise<BrowsePage>>();
+const trendingCache = new Map<number, Promise<Movie[]>>();
+const listCache = new Map<string, Promise<Movie[]>>();
 
 const supportedStreamingLabels = new Set(browseStreamingPlatforms.map((platform) => platform.label));
 const streamingLabelByProviderId = new Map(
@@ -178,6 +181,26 @@ const streamingLabelAliases: Record<string, string> = {
 
 function toTmdbMovieId(id: number) {
   return `tmdb-${id}`;
+}
+
+function sortStrings(values: string[] | undefined) {
+  return values ? [...values].sort((left, right) => left.localeCompare(right)) : undefined;
+}
+
+function sortNumbers(values: number[] | undefined) {
+  return values ? [...values].sort((left, right) => left - right) : undefined;
+}
+
+export function serializeBrowseMovieQuery(query: BrowseMovieQuery = {}) {
+  return JSON.stringify({
+    ...query,
+    genres: sortStrings(query.genres),
+    verdicts: sortStrings(query.verdicts),
+    decades: sortNumbers(query.decades),
+    streamingPlatforms: sortStrings(query.streamingPlatforms),
+    page: query.page ?? 1,
+    sortBy: query.sortBy ?? null,
+  });
 }
 
 function fromTmdbMovieId(id: string) {
@@ -400,9 +423,17 @@ function buildSyntheticReview(movie: Movie): Review {
 }
 
 async function fetchList(endpoint: string, limit = 12) {
-  const genreMap = await getGenreMap();
-  const response = await tmdbFetch<TmdbListResponse>(endpoint);
-  return response.results.slice(0, limit).map((movie) => mapSummaryMovie(movie, genreMap));
+  const cacheKey = `${endpoint}:${limit}`;
+  if (!listCache.has(cacheKey)) {
+    listCache.set(
+      cacheKey,
+      Promise.all([getGenreMap(), tmdbFetch<TmdbListResponse>(endpoint)]).then(([genreMap, response]) =>
+        response.results.slice(0, limit).map((movie) => mapSummaryMovie(movie, genreMap)),
+      ),
+    );
+  }
+
+  return listCache.get(cacheKey)!;
 }
 
 export async function fetchHomeFeed(): Promise<HomeFeed> {
@@ -712,29 +743,47 @@ async function fetchBrowseCatalogPage(query: BrowseMovieQuery) {
 }
 
 export async function fetchBrowseMovies(query: BrowseMovieQuery = {}) {
-  try {
-    return await fetchBrowseCatalogPage(query);
-  } catch {
-    const fallbackMovies = localMovies.filter((movie) => matchesBrowseMovie(movie, query));
-    const page = query.page ?? 1;
-    const pageSize = 20;
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
+  const cacheKey = serializeBrowseMovieQuery(query);
 
-    return {
-      movies: fallbackMovies.slice(start, end),
-      page,
-      totalPages: Math.max(1, Math.ceil(fallbackMovies.length / pageSize)),
-      totalResults: fallbackMovies.length,
-      source: 'local',
-    } satisfies BrowsePage;
+  if (!browsePageCache.has(cacheKey)) {
+    browsePageCache.set(
+      cacheKey,
+      (async () => {
+        try {
+          return await fetchBrowseCatalogPage(query);
+        } catch {
+          const fallbackMovies = localMovies.filter((movie) => matchesBrowseMovie(movie, query));
+          const page = query.page ?? 1;
+          const pageSize = 20;
+          const start = (page - 1) * pageSize;
+          const end = start + pageSize;
+
+          return {
+            movies: fallbackMovies.slice(start, end),
+            page,
+            totalPages: Math.max(1, Math.ceil(fallbackMovies.length / pageSize)),
+            totalResults: fallbackMovies.length,
+            source: 'local',
+          } satisfies BrowsePage;
+        }
+      })(),
+    );
   }
+
+  return browsePageCache.get(cacheKey)!;
 }
 
 export async function fetchTrendingMovies(limit = 6) {
-  const genreMap = await getGenreMap();
-  const response = await tmdbFetch<TmdbListResponse>('/trending/movie/week');
-  return response.results.slice(0, limit).map((movie) => mapSummaryMovie(movie, genreMap));
+  if (!trendingCache.has(limit)) {
+    trendingCache.set(
+      limit,
+      Promise.all([getGenreMap(), tmdbFetch<TmdbListResponse>('/trending/movie/week')]).then(
+        ([genreMap, response]) => response.results.slice(0, limit).map((movie) => mapSummaryMovie(movie, genreMap)),
+      ),
+    );
+  }
+
+  return trendingCache.get(limit)!;
 }
 
 export async function fetchTmdbMovieByRouteId(routeId: string) {

@@ -97,9 +97,9 @@ export function Home() {
 
   return (
     <div className="min-h-screen pb-16 pt-16">
-      <section className="section-shell pt-6 md:pt-10">
+      <section className="section-shell pt-5 md:pt-8">
         <div className="mx-auto max-w-7xl">
-          <div className="section-panel relative overflow-hidden px-5 py-8 sm:px-8 lg:px-10 lg:py-12">
+          <div className="section-panel relative overflow-hidden px-5 py-6 sm:px-7 sm:py-7 lg:px-9 lg:py-9">
             <div className="absolute inset-0 opacity-90">
               <div
                 className="absolute inset-0"
@@ -111,20 +111,34 @@ export function Home() {
               />
             </div>
 
-            <div className="relative z-10 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-              <div className="max-w-3xl">
+            <div className="relative z-10 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,360px)] lg:items-center lg:gap-8">
+              <div className="max-w-2xl xl:max-w-[42rem]">
                 <div className="flex flex-wrap items-center gap-3">
                   <p className="section-kicker">Live Front Page</p>
                   <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
                     TMDB only
                   </span>
                 </div>
-                <h1 className="heading-display heading-gradient mt-5 max-w-3xl text-5xl sm:text-6xl lg:text-[5.4rem]">
+                <h1 className="heading-display heading-gradient mt-4 max-w-2xl text-[3.55rem] sm:text-[4.4rem] lg:text-[4.8rem] xl:text-[5.1rem]">
                   {spotlightMovie.title}
                 </h1>
-                <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{spotlightMovie.synopsis}</p>
+                <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                  {spotlightMovie.synopsis}
+                </p>
 
-                <div className="mt-8 flex flex-wrap gap-3">
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  {spotlightStats.map((stat) => (
+                    <div key={stat.label} className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 backdrop-blur-sm">
+                      <div className="flex items-center gap-2 text-[0.8rem] text-muted-foreground">
+                        <stat.icon className="h-4 w-4" />
+                        <span>{stat.label}</span>
+                      </div>
+                      <p className="mt-1.5 text-sm font-semibold text-white">{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex flex-wrap gap-3">
                   <Button onClick={() => navigate(`/review/${spotlightMovie.id}`)} className="btn-primary">
                     Open Review
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -140,20 +154,24 @@ export function Home() {
                 </div>
               </div>
 
-              <div className="grid gap-4">
-                <div className="rounded-[1.8rem] border border-white/10 bg-black/25 p-5 backdrop-blur-sm">
-                  <PosterImage src={spotlightMovie.poster} title={spotlightMovie.title} className="aspect-[2/3] w-full rounded-[1.5rem] object-cover" />
+              <div className="mx-auto w-full max-w-[20rem] lg:mx-0 lg:justify-self-end">
+                <div className="rounded-[1.6rem] border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
+                  <PosterImage
+                    src={spotlightMovie.poster}
+                    title={spotlightMovie.title}
+                    className="aspect-[2/3] max-h-[30rem] w-full rounded-[1.35rem] object-cover"
+                  />
                   <div className="mt-4">
                     <VerdictBadge verdict={spotlightMovie.verdict} score={spotlightMovie.score} size="lg" />
                   </div>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-                    {spotlightStats.map((stat) => (
+                  <div className="mt-4 grid gap-2.5">
+                    {spotlightStats.slice(0, 2).map((stat) => (
                       <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <stat.icon className="h-4 w-4" />
                           <span>{stat.label}</span>
                         </div>
-                        <p className="mt-2 text-sm font-semibold text-white">{stat.value}</p>
+                        <p className="mt-1.5 text-sm font-semibold text-white">{stat.value}</p>
                       </div>
                     ))}
                   </div>

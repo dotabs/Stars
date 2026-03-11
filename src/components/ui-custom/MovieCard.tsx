@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Bookmark, Eye, Heart, MessageSquareText, PenSquare, Play, Star, Users } from 'lucide-react';
 import type { Movie } from '@/types';
 import { getPosterFallback, resolvePosterUrl } from '@/lib/posters';
@@ -49,7 +49,15 @@ function needsPreviewCredits(movie: Movie) {
   return movie.source === 'tmdb' && (normalizePreviewDirector(movie) === 'Not available' || normalizePreviewCast(movie) === 'Not available');
 }
 
-export function MovieCard({
+let reviewRoutePreloaded = false;
+
+function preloadReviewRoute() {
+  if (reviewRoutePreloaded) return;
+  reviewRoutePreloaded = true;
+  void import('@/pages/Review');
+}
+
+export const MovieCard = memo(function MovieCard({
   movie,
   variant = 'default',
   onClick,
@@ -63,7 +71,6 @@ export function MovieCard({
   isInWatchlist = false,
   isLiked = false,
 }: MovieCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewMovie, setPreviewMovie] = useState(movie);
 
@@ -110,17 +117,16 @@ export function MovieCard({
           background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
           border: '1px solid rgba(244, 182, 132, 0.1)',
         }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(244, 182, 132, 0.22)';
-          e.currentTarget.style.transform = 'translateY(-2px)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(244, 182, 132, 0.1)';
-          e.currentTarget.style.transform = 'translateY(0)';
-        }}
       >
         <div className="relative h-28 w-20 flex-shrink-0 overflow-hidden rounded-lg">
-          <PosterImage src={posterUrl} title={movie.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+          <PosterImage
+            src={posterUrl}
+            title={movie.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            width={160}
+            height={224}
+            sizes="160px"
+          />
         </div>
         <div className="min-w-0 flex-1 py-1">
           <h3 className="truncate font-bold text-foreground transition-colors group-hover:text-[#f4b684]">
@@ -147,28 +153,41 @@ export function MovieCard({
 
   if (variant === 'compact') {
     return (
-      <HoverCard openDelay={120} closeDelay={80} onOpenChange={setIsPreviewOpen}>
+      <HoverCard
+        openDelay={180}
+        closeDelay={80}
+        onOpenChange={(open) => {
+          if (open) {
+            preloadReviewRoute();
+          }
+          setIsPreviewOpen(open);
+        }}
+      >
         <HoverCardTrigger asChild>
           <div
             onClick={onClick}
             className="group relative cursor-pointer"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onPointerEnter={preloadReviewRoute}
           >
             <div
-              className="relative aspect-[2/3] overflow-hidden rounded-[1.45rem] border border-white/10"
+              className="relative aspect-[2/3] overflow-hidden rounded-[1.45rem] border border-white/10 transition-transform duration-200 will-change-transform group-hover:-translate-y-1"
               style={{
                 background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
-                boxShadow: isHovered
-                  ? '0 34px 62px -24px rgba(0, 0, 0, 0.72)'
-                  : '0 18px 36px -22px rgba(0, 0, 0, 0.58)',
-                transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
+                boxShadow: '0 18px 36px -22px rgba(0, 0, 0, 0.58)',
               }}
             >
-              <PosterImage src={posterUrl} title={movie.title} className="h-full w-full object-cover transition-all duration-500" loading="lazy" />
+              <PosterImage
+                src={posterUrl}
+                title={movie.title}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                loading="lazy"
+                width={342}
+                height={513}
+                sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 44vw"
+              />
 
               <div
-                className={`absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+                className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
               >
                 <div className="absolute inset-x-0 bottom-0 p-4">
                   <div className="grid grid-cols-2 gap-2.5">
@@ -300,8 +319,6 @@ export function MovieCard({
       <div
         onClick={onClick}
         className="relative group cursor-pointer"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         <div
           className="relative aspect-[2/3] overflow-hidden rounded-2xl"
@@ -310,7 +327,14 @@ export function MovieCard({
             boxShadow: '0 30px 60px -15px rgba(0, 0, 0, 0.6)',
           }}
         >
-          <PosterImage src={posterUrl} title={movie.title} className="h-full w-full object-cover transition-all duration-700" />
+          <PosterImage
+            src={posterUrl}
+            title={movie.title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            width={420}
+            height={630}
+            sizes="(min-width: 1024px) 30vw, 70vw"
+          />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
 
@@ -319,9 +343,7 @@ export function MovieCard({
             <h3 className="mt-3 line-clamp-2 text-xl font-bold text-white">{movie.title}</h3>
             <p className="mt-1 text-sm text-white/70">{movie.year} - {movie.genres[0]}</p>
 
-            <div
-              className={`mt-4 flex gap-2 transition-all duration-300 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
-            >
+            <div className="mt-4 flex translate-y-4 gap-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -357,20 +379,25 @@ export function MovieCard({
     <div
       onClick={onClick}
       className="relative group cursor-pointer"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div
         className="relative aspect-[2/3] overflow-hidden rounded-xl border border-white/8"
         style={{
           background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
-          boxShadow: isHovered ? '0 25px 50px -12px rgba(0, 0, 0, 0.6)' : '0 10px 30px -10px rgba(0, 0, 0, 0.4)',
+          boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.4)',
         }}
       >
-        <PosterImage src={posterUrl} title={movie.title} className="h-full w-full object-cover transition-all duration-500" />
+        <PosterImage
+          src={posterUrl}
+          title={movie.title}
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          width={342}
+          height={513}
+          sizes="(min-width: 1024px) 22vw, 45vw"
+        />
 
         <div
-          className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+          className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
         >
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <VerdictBadge verdict={movie.verdict} score={movie.score} size="sm" />
@@ -383,9 +410,7 @@ export function MovieCard({
             e.stopPropagation();
             onSave?.();
           }}
-          className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300 ${
-            isHovered ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'
-          }`}
+          className="absolute right-3 top-3 flex h-9 w-9 -translate-y-2 items-center justify-center rounded-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
           style={{ background: 'rgba(14, 11, 10, 0.72)', backdropFilter: 'blur(8px)' }}
         >
           <Bookmark className="h-4 w-4" />
@@ -405,4 +430,4 @@ export function MovieCard({
       </div>
     </div>
   );
-}
+});
