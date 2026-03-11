@@ -82,9 +82,9 @@ type TmdbWatchProviderResponse = {
   results?: Partial<Record<
     string,
     {
-      flatrate?: Array<{ provider_name: string }>;
-      rent?: Array<{ provider_name: string }>;
-      buy?: Array<{ provider_name: string }>;
+      flatrate?: Array<{ provider_id?: number; provider_name: string }>;
+      rent?: Array<{ provider_id?: number; provider_name: string }>;
+      buy?: Array<{ provider_id?: number; provider_name: string }>;
     }
   >>;
 };
@@ -152,6 +152,29 @@ const browseMovieCache = new Map<number, Promise<Movie>>();
 const personSearchCache = new Map<string, Promise<number[]>>();
 
 const supportedStreamingLabels = new Set(browseStreamingPlatforms.map((platform) => platform.label));
+const streamingLabelByProviderId = new Map(
+  browseStreamingPlatforms.map((platform) => [Number(platform.value), platform.label] as const),
+);
+
+const streamingLabelAliases: Record<string, string> = {
+  'amazon prime': 'Amazon Prime',
+  'amazon prime video': 'Amazon Prime',
+  'amazon video': 'Amazon Prime',
+  'apple tv+': 'Apple TV+',
+  'apple tv plus': 'Apple TV+',
+  'disney+': 'Disney+',
+  'disney plus': 'Disney+',
+  'hbo max': 'Max',
+  hulu: 'Hulu',
+  max: 'Max',
+  mubi: 'MUBI',
+  netflix: 'Netflix',
+  peacock: 'Peacock',
+  'peacock premium': 'Peacock',
+  'peacock premium plus': 'Peacock',
+  'paramount+': 'Paramount+',
+  'paramount plus': 'Paramount+',
+};
 
 function toTmdbMovieId(id: number) {
   return `tmdb-${id}`;
@@ -178,6 +201,11 @@ function scoreToVerdict(score: number): Movie['verdict'] {
   if (score >= 6.8) return 'Recommended';
   if (score >= 5.5) return 'Mixed';
   return 'Skip';
+}
+
+function normalizeStreamingLabel(label: string) {
+  const normalized = label.trim().toLowerCase();
+  return streamingLabelAliases[normalized] ?? label.trim();
 }
 
 async function getGenreMap() {
@@ -280,7 +308,13 @@ async function fetchBrowseMovieDetails(tmdbId: number, genreMap: Map<number, str
           ...(usProviders?.rent ?? []),
           ...(usProviders?.buy ?? []),
         ]
-          .map((provider) => provider.provider_name)
+          .map((provider) => {
+            if (provider.provider_id !== undefined) {
+              return streamingLabelByProviderId.get(provider.provider_id) ?? normalizeStreamingLabel(provider.provider_name);
+            }
+
+            return normalizeStreamingLabel(provider.provider_name);
+          })
           .filter((providerName, index, current) => current.indexOf(providerName) === index)
           .filter((providerName) => supportedStreamingLabels.has(providerName));
 
@@ -438,6 +472,13 @@ function getBrowseSamplePages(totalPages: number, logicalPage: number) {
   return sequence.slice(start, start + browseSamplePageSize);
 }
 
+function getBrowseSequentialPages(totalPages: number, logicalPage: number) {
+  const start = Math.max(0, logicalPage - 1) * browseSamplePageSize + 1;
+  const end = Math.min(totalPages, start + browseSamplePageSize - 1);
+
+  return Array.from({ length: Math.max(0, end - start + 1) }, (_, index) => start + index);
+}
+
 function dedupeBrowseMovies(movies: Movie[]) {
   return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
 }
@@ -451,6 +492,20 @@ function needsBrowseDetails(query: BrowseMovieQuery) {
       query.minRuntime !== undefined ||
       query.maxRuntime !== undefined,
   );
+}
+
+function matchesStreamingPlatforms(
+  movie: Movie,
+  selectedPlatforms: string[] | undefined,
+  options?: { skipMissingMovieStreaming?: boolean },
+) {
+  if (!selectedPlatforms?.length) return true;
+  if (options?.skipMissingMovieStreaming && !(movie.streaming ?? []).length) return true;
+
+  const normalizedSelectedPlatforms = new Set(selectedPlatforms.map(normalizeStreamingLabel));
+  const normalizedMoviePlatforms = (movie.streaming ?? []).map(normalizeStreamingLabel);
+
+  return normalizedMoviePlatforms.some((service) => normalizedSelectedPlatforms.has(service));
 }
 
 function getDateRange(query: BrowseMovieQuery) {
@@ -507,7 +562,11 @@ async function buildBrowseDiscoverQuery(query: BrowseMovieQuery) {
   } satisfies TmdbQueryParams;
 }
 
-function matchesBrowseMovie(movie: Movie, query: BrowseMovieQuery) {
+function matchesBrowseMovie(
+  movie: Movie,
+  query: BrowseMovieQuery,
+  options?: { skipStreamingPlatforms?: boolean },
+) {
   const normalizedSearch = query.query?.trim().toLowerCase() ?? '';
   const normalizedDirectorQuery = query.directorQuery?.trim().toLowerCase() ?? '';
   const normalizedCastQuery = query.castQuery?.trim().toLowerCase() ?? '';
@@ -517,8 +576,9 @@ function matchesBrowseMovie(movie: Movie, query: BrowseMovieQuery) {
     (!(query.genres?.length) || movie.genres.some((genre) => query.genres?.includes(genre))) &&
     (!(query.verdicts?.length) || query.verdicts.includes(movie.verdict)) &&
     (!(query.decades?.length) || query.decades.includes(movie.decade)) &&
-    (!(query.streamingPlatforms?.length) ||
-      (movie.streaming ?? []).some((service) => query.streamingPlatforms?.includes(service))) &&
+    matchesStreamingPlatforms(movie, query.streamingPlatforms, {
+      skipMissingMovieStreaming: options?.skipStreamingPlatforms,
+    }) &&
     (query.minRating === undefined || movie.score >= query.minRating) &&
     (query.releaseYearMin === undefined || movie.year >= query.releaseYearMin) &&
     (query.releaseYearMax === undefined || movie.year <= query.releaseYearMax) &&
@@ -547,11 +607,30 @@ async function fetchBrowseCatalogPage(query: BrowseMovieQuery) {
   const normalizedQuery = query.query?.trim();
   const endpoint = normalizedQuery ? '/search/movie' : '/discover/movie';
   const requestedPage = query.page ?? 1;
+  const shouldExpandSearchPages = Boolean(
+    normalizedQuery &&
+      (query.genres?.length ||
+        query.verdicts?.length ||
+        query.decades?.length ||
+        query.minRating !== undefined ||
+        query.releaseYearMin !== undefined ||
+        query.releaseYearMax !== undefined ||
+        query.exactYear !== undefined ||
+        query.minRuntime !== undefined ||
+        query.maxRuntime !== undefined ||
+        query.country ||
+        query.streamingPlatforms?.length ||
+        query.directorQuery?.trim() ||
+        query.castQuery?.trim()),
+  );
+  const actualRequestedPage = shouldExpandSearchPages
+    ? Math.max(1, (requestedPage - 1) * browseSamplePageSize + 1)
+    : requestedPage;
   const requestQuery: TmdbQueryParams = normalizedQuery
     ? {
         include_adult: false,
         language: 'en-US',
-        page: requestedPage,
+        page: actualRequestedPage,
         query: normalizedQuery,
         primary_release_year: query.exactYear,
         year: query.exactYear,
@@ -565,8 +644,22 @@ async function fetchBrowseCatalogPage(query: BrowseMovieQuery) {
     },
   });
 
-  const useSampledBrowsePages = !normalizedQuery && !query.sortBy;
-  const pageResponses = useSampledBrowsePages
+  const useSampledBrowsePages = !normalizedQuery && !query.sortBy && !needsBrowseDetails(query);
+  const pageResponses = shouldExpandSearchPages
+    ? await Promise.all(
+        getBrowseSequentialPages(response.total_pages, requestedPage).map((page) =>
+          page === response.page
+            ? Promise.resolve(response)
+            : tmdbFetch<TmdbListResponse>(endpoint, {
+                query: {
+                  ...requestQuery,
+                  page,
+                  'primary_release_date.lte': releaseDateUpperBound,
+                },
+              }),
+        ),
+      )
+    : useSampledBrowsePages
     ? await Promise.all(
         getBrowseSamplePages(response.total_pages, requestedPage).map((page) =>
           page === response.page
@@ -585,8 +678,11 @@ async function fetchBrowseCatalogPage(query: BrowseMovieQuery) {
   const summaryMovies = dedupeBrowseMovies(
     pageResponses.flatMap((pageResponse) => pageResponse.results).map((movie) => mapSummaryMovie(movie, genreMap)),
   );
+  const canTrustTmdbStreamingQuery = endpoint === '/discover/movie' && Boolean(query.streamingPlatforms?.length);
 
-  let movies = summaryMovies.filter((movie) => matchesBrowseMovie(movie, query));
+  let movies = summaryMovies.filter((movie) =>
+    matchesBrowseMovie(movie, query, { skipStreamingPlatforms: canTrustTmdbStreamingQuery }),
+  );
 
   if (needsBrowseDetails(query)) {
     const detailedMovies = await Promise.all(
@@ -598,13 +694,18 @@ async function fetchBrowseCatalogPage(query: BrowseMovieQuery) {
 
     if (filteredDetailedMovies.length > 0) {
       movies = filteredDetailedMovies;
+    } else if (query.streamingPlatforms?.length && !canTrustTmdbStreamingQuery) {
+      movies = [];
     }
   }
 
   return {
     movies,
     page: requestedPage,
-    totalPages: useSampledBrowsePages ? Math.max(1, Math.ceil(response.total_pages / browseSamplePageSize)) : response.total_pages,
+    totalPages:
+      useSampledBrowsePages || shouldExpandSearchPages
+        ? Math.max(1, Math.ceil(response.total_pages / browseSamplePageSize))
+        : response.total_pages,
     totalResults: response.total_results,
     source: 'tmdb',
   } satisfies BrowsePage;
