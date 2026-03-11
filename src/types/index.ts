@@ -76,3 +76,64 @@ export type ViewMode = 'grid' | 'compact' | 'list';
 export type SortOption = 'newest' | 'highestRated' | 'mostPopular' | 'releaseDate' | 'mostReviewed';
 
 export type WatchlistTab = 'watchlist' | 'watched' | 'favorites';
+
+export type SearchResultType = 'movie' | 'tv' | 'person';
+export type SearchViewType = 'all' | SearchResultType;
+
+export interface SearchResult {
+  id: number;
+  mediaType: SearchResultType;
+  title: string;
+  subtitle: string;
+  yearLabel?: string;
+  metadataLine: string;
+  knownForDepartment?: string;
+  knownForTitles?: string[];
+  imageUrl: string;
+  overview: string;
+  score?: number;
+  popularity: number;
+  relevanceScore: number;
+}
+
+export interface TvShowSummary {
+  id: number;
+  title: string;
+  yearLabel: string;
+  posterUrl: string;
+  backdropUrl: string;
+  overview: string;
+  score: number;
+  genres: string[];
+}
+
+export interface TvShowDetails extends TvShowSummary {
+  firstAirDate?: string;
+  lastAirDate?: string;
+  seasons: number;
+  episodes: number;
+  status: string;
+  creators: string[];
+  networks: string[];
+  cast: string[];
+}
+
+export interface PersonCredit {
+  id: number;
+  mediaType: 'movie' | 'tv';
+  title: string;
+  subtitle: string;
+  imageUrl: string;
+}
+
+export interface PersonDetails {
+  id: number;
+  name: string;
+  knownForDepartment: string;
+  biography: string;
+  birthday?: string;
+  placeOfBirth: string;
+  imageUrl: string;
+  backdropUrl: string;
+  knownFor: PersonCredit[];
+}

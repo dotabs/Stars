@@ -6,17 +6,13 @@ import {
   Grid3X3,
   List,
   MessageSquareText,
-  Search,
   SlidersHorizontal,
   Star,
   TrendingUp,
-  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FilterChips, MovieCard, PosterImage, VerdictBadge } from '@/components/ui-custom';
-import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { browseCountries, browseDecades, browseGenres, browseStreamingPlatforms } from '@/lib/movie-constants';
 import { fetchBrowseMovies, fetchTrendingMovies, serializeBrowseMovieQuery } from '@/lib/tmdb-movies';
 import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
@@ -25,7 +21,6 @@ import type { Movie, SortOption, Verdict } from '@/types';
 
 const yearBounds = [1940, new Date().getFullYear()] as const;
 const initialCatalogPages = 1;
-const searchDebounceMs = 250;
 const initialRenderCount = {
   grid: 20,
   list: 10,
@@ -308,43 +303,26 @@ export function Browse() {
   });
   const [renderLimit, setRenderLimit] = useState<number>(initialRenderCount.grid);
   const [library, setLibrary] = useState(() => getUserLibrary());
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const renderMoreRef = useRef<HTMLDivElement | null>(null);
-
-  const urlSearchQuery = searchParams.get('q') ?? '';
   const urlCountryFilter = searchParams.get('country') ?? '';
-  const [searchInputValue, setSearchInputValue] = useState(urlSearchQuery);
-  const deferredSearchInput = useDeferredValue(searchInputValue);
-  const debouncedSearchQuery = useDebouncedValue(deferredSearchInput, searchDebounceMs);
-
-  useEffect(() => {
-    setSearchInputValue(urlSearchQuery);
-  }, [urlSearchQuery]);
 
   useEffect(() => {
     setSelectedCountry(urlCountryFilter);
   }, [urlCountryFilter]);
 
   useEffect(() => {
-    const normalizedInput = debouncedSearchQuery.trim();
-    const normalizedUrlValue = urlSearchQuery.trim();
     const normalizedCountryValue = selectedCountry.trim();
     const normalizedUrlCountryValue = urlCountryFilter.trim();
-    if (normalizedInput === normalizedUrlValue && normalizedCountryValue === normalizedUrlCountryValue) return;
+    if (normalizedCountryValue === normalizedUrlCountryValue) return;
 
     const nextParams = new URLSearchParams(searchParams);
-    if (normalizedInput) {
-      nextParams.set('q', normalizedInput);
-    } else {
-      nextParams.delete('q');
-    }
     if (normalizedCountryValue) {
       nextParams.set('country', normalizedCountryValue);
     } else {
       nextParams.delete('country');
     }
     setSearchParams(nextParams, { replace: true });
-  }, [debouncedSearchQuery, searchParams, selectedCountry, setSearchParams, urlCountryFilter, urlSearchQuery]);
+  }, [searchParams, selectedCountry, setSearchParams, urlCountryFilter]);
 
   useEffect(() => {
     let cancelled = false;
@@ -380,26 +358,6 @@ export function Browse() {
     };
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const isEditableTarget =
-        target instanceof HTMLInputElement ||
-        target instanceof HTMLTextAreaElement ||
-        target instanceof HTMLSelectElement ||
-        Boolean(target?.isContentEditable);
-
-      if (event.key === '/' && !event.metaKey && !event.ctrlKey && !event.altKey && !isEditableTarget) {
-        event.preventDefault();
-        searchInputRef.current?.focus();
-        searchInputRef.current?.select();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   const activeFiltersCount = useMemo(
     () =>
       selectedGenres.length +
@@ -430,7 +388,6 @@ export function Browse() {
 
   const browseApiQuery = useMemo<BrowseMovieQuery>(
     () => ({
-      query: debouncedSearchQuery.trim() || undefined,
       genres: selectedGenres,
       verdicts: selectedVerdicts,
       decades: selectedDecades,
@@ -448,7 +405,6 @@ export function Browse() {
     }),
     [
       castQuery,
-      debouncedSearchQuery,
       directorQuery,
       exactYear,
       minRating,
@@ -464,8 +420,7 @@ export function Browse() {
   );
   const deferredBrowseQuery = useDeferredValue(browseApiQuery);
   const browseQueryKey = useMemo(() => serializeBrowseMovieQuery(deferredBrowseQuery), [deferredBrowseQuery]);
-  const hasSearchQuery = Boolean(deferredBrowseQuery.query?.trim());
-  const isDefaultBrowseState = !hasSearchQuery && activeFiltersCount === 0 && !sortBy;
+  const isDefaultBrowseState = activeFiltersCount === 0 && !sortBy;
 
   useEffect(() => {
     let cancelled = false;
@@ -579,9 +534,7 @@ export function Browse() {
     setDirectorQuery('');
     setCastQuery('');
     setSortBy(null);
-    setSearchInputValue('');
     const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete('q');
     nextParams.delete('country');
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
@@ -808,21 +761,17 @@ export function Browse() {
     ? 'Loading state'
     : visibleMovies.length === 0
       ? 'Empty state'
-      : activeFiltersCount > 0 || hasSearchQuery
+      : activeFiltersCount > 0
         ? 'Filtered view'
         : hasActiveSort
           ? 'Sorted view'
           : 'Default view';
   const browseStateLabel =
-    activeFiltersCount > 0 && hasSearchQuery
-      ? `${activeFiltersCount} filters + search active`
-      : activeFiltersCount > 0
-        ? `${activeFiltersCount} filters active`
-        : hasSearchQuery
-          ? 'Search active'
-          : hasActiveSort
-            ? 'Sorted browse state'
-            : 'Default browse state';
+    activeFiltersCount > 0
+      ? `${activeFiltersCount} filters active`
+      : hasActiveSort
+        ? 'Sorted browse state'
+        : 'Default browse state';
 
   return (
     <div className="min-h-screen pt-16">
@@ -900,23 +849,9 @@ export function Browse() {
             </div>
 
             <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-center">
-              <div className="search-input-shell flex-1">
-                <Search className="search-input-icon" />
-                <Input
-                  ref={searchInputRef}
-                  type="search"
-                  placeholder="Search by movie title..."
-                  value={searchInputValue}
-                  onChange={(event) => setSearchInputValue(event.target.value)}
-                  className="input-cinematic search-input-field search-input-field-with-action h-12"
-                />
-                <div className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center gap-2">
-                  {searchInputValue && (
-                    <button type="button" onClick={() => setSearchInputValue('')} aria-label="Clear search">
-                      <X className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  )}
-                </div>
+              <div className="flex-1 rounded-[1.4rem] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-muted-foreground">
+                Browse keeps its own movie-only filters. Use the global search bar above to search movies, TV shows, and
+                people.
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-muted-foreground">
                 {browseStateLabel}
@@ -1064,12 +999,12 @@ export function Browse() {
               </div>
               <h3 className="mb-2 text-xl font-semibold">No movies found</h3>
               <p className="mb-2 text-muted-foreground">
-                {activeFiltersCount || hasSearchQuery
-                  ? 'The current search and filters do not match any loaded movies.'
+                {activeFiltersCount
+                  ? 'The current filters do not match any loaded movies.'
                   : 'The catalog finished loading without any movies to display.'}
               </p>
               <p className="mb-6 text-sm text-white/45">
-                {activeFiltersCount || hasSearchQuery
+                {activeFiltersCount
                   ? 'Clear or relax the active filters to broaden the result set.'
                   : 'Try reloading the page if TMDB is temporarily unavailable.'}
               </p>

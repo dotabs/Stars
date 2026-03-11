@@ -1,17 +1,11 @@
 import { useState } from 'react';
-import type { FormEvent } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowUpRight, Bell, Menu, Search, Star, X } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Link, useLocation } from 'react-router-dom';
+import { ArrowUpRight, Bell, Menu, Star, X } from 'lucide-react';
+import { SiteSearch } from './SiteSearch';
 
 export function Navbar() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState(searchParams.get('q') ?? '');
-  const browseSearchValue = searchParams.get('q') ?? '';
-  const inputValue = location.pathname === '/browse' ? browseSearchValue : searchValue;
 
   const navLinks = [
     { path: '/', label: 'Home' },
@@ -24,33 +18,6 @@ export function Navbar() {
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
-  };
-
-  const handleSearchChange = (value: string) => {
-    if (location.pathname === '/browse') {
-      navigate(value.trim() ? `/browse?q=${encodeURIComponent(value)}` : '/browse', { replace: true });
-      return;
-    }
-
-    setSearchValue(value);
-  };
-
-  const submitSearch = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const query = inputValue.trim();
-
-    navigate(query ? `/browse?q=${encodeURIComponent(query)}` : '/browse');
-    setMobileMenuOpen(false);
-  };
-
-  const clearSearch = () => {
-    if (location.pathname !== '/browse') {
-      setSearchValue('');
-    }
-
-    if (location.pathname === '/browse' && searchParams.get('q')) {
-      navigate('/browse');
-    }
   };
 
   return (
@@ -98,38 +65,7 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
-            <form
-              onSubmit={submitSearch}
-              className="search-input-shell hidden lg:block"
-              role="search"
-              aria-label="Search movies"
-            >
-              <Search className="search-input-icon" />
-              <Input
-                type="search"
-                value={inputValue}
-                onChange={(event) => handleSearchChange(event.target.value)}
-                placeholder="Search movies"
-                className="search-input-field search-input-field-with-action h-10 w-56 rounded-full border-white/10 bg-black/20 text-sm text-white placeholder:text-muted-foreground hover:border-white/20 focus-visible:ring-white/20"
-              />
-              {inputValue && (
-                <button
-                  type="button"
-                  onClick={clearSearch}
-                  className="absolute right-11 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-white"
-                  aria-label="Clear search"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-              <button
-                type="submit"
-                className="absolute right-1.5 top-1/2 flex h-7 min-w-7 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-2 text-[11px] font-semibold text-white transition-all hover:border-white/20 hover:bg-white/[0.08]"
-                aria-label="Submit search"
-              >
-                Go
-              </button>
-            </form>
+            <SiteSearch variant="desktop" />
             <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all hover:border-white/10 hover:bg-white/5 hover:text-white">
               <Bell className="h-4 w-4" />
               <span
@@ -170,34 +106,9 @@ export function Navbar() {
           style={{ background: 'rgba(12, 9, 8, 0.96)' }}
         >
           <div className="space-y-1 px-4 py-4">
-            <form onSubmit={submitSearch} className="mb-3 md:hidden" role="search" aria-label="Search movies">
-              <div className="search-input-shell">
-                <Search className="search-input-icon" />
-                <Input
-                  type="search"
-                  value={inputValue}
-                  onChange={(event) => handleSearchChange(event.target.value)}
-                  placeholder="Search movies"
-                  className="search-input-field search-input-field-with-clear-and-action h-11 rounded-xl border-white/10 bg-black/20 text-white"
-                />
-                {inputValue && (
-                  <button
-                    type="button"
-                    onClick={clearSearch}
-                    className="absolute right-12 top-1/2 -translate-y-1/2 text-muted-foreground"
-                    aria-label="Clear search"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-                <button
-                  type="submit"
-                  className="absolute right-1.5 top-1/2 rounded-lg border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-semibold text-white -translate-y-1/2"
-                >
-                  Search
-                </button>
-              </div>
-            </form>
+            <div className="mb-3 md:hidden">
+              <SiteSearch variant="mobile" onAfterNavigate={() => setMobileMenuOpen(false)} />
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.path}

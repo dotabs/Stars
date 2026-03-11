@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { Bookmark, Eye, Heart, MessageSquareText, PenSquare, Play, Star, Users } from 'lucide-react';
+import { Bookmark, Heart, MessageSquareText, Play, Star, Users } from 'lucide-react';
 import type { Movie } from '@/types';
 import { getPosterFallback, resolvePosterUrl } from '@/lib/posters';
 import { fetchTmdbMovieByRouteId } from '@/lib/tmdb-movies';
@@ -64,8 +64,6 @@ export const MovieCard = memo(function MovieCard({
   onSave,
   onToggleWatchlist,
   onToggleLike,
-  onWriteReview,
-  onViewDetails,
   onGenreClick,
   showRank,
   isInWatchlist = false,
@@ -190,25 +188,13 @@ export const MovieCard = memo(function MovieCard({
                 className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
               >
                 <div className="absolute inset-x-0 bottom-0 p-4">
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-2 gap-3">
                     {[
                       {
                         label: isInWatchlist ? 'Saved' : 'Watchlist',
                         icon: Bookmark,
                         onPress: onToggleWatchlist ?? onSave,
                         active: isInWatchlist,
-                      },
-                      {
-                        label: 'Write Review',
-                        icon: PenSquare,
-                        onPress: onWriteReview,
-                        active: false,
-                      },
-                      {
-                        label: 'View Details',
-                        icon: Eye,
-                        onPress: onViewDetails ?? onClick,
-                        active: false,
                       },
                       {
                         label: isLiked ? 'Liked' : 'Like',
@@ -224,7 +210,7 @@ export const MovieCard = memo(function MovieCard({
                           event.stopPropagation();
                           action.onPress?.();
                         }}
-                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2 text-[11px] font-semibold transition-all ${
+                        className={`flex min-h-11 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-[11px] font-semibold transition-all ${
                           action.active
                             ? 'border-[#d26d47]/50 bg-[#d26d47]/20 text-[#f7c59e]'
                             : 'border-white/15 bg-black/35 text-white hover:border-white/30 hover:bg-black/50'

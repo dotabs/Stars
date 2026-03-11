@@ -7,7 +7,12 @@ import './App.css';
 const Home = lazy(() => import('@/pages/Home').then((module) => ({ default: module.Home })));
 const Explore = lazy(() => import('@/pages/Explore').then((module) => ({ default: module.Explore })));
 const Browse = lazy(() => import('@/pages/Browse').then((module) => ({ default: module.Browse })));
+const SearchResults = lazy(() =>
+  import('@/pages/SearchResults').then((module) => ({ default: module.SearchResults })),
+);
 const Review = lazy(() => import('@/pages/Review').then((module) => ({ default: module.Review })));
+const TvShow = lazy(() => import('@/pages/TvShow').then((module) => ({ default: module.TvShow })));
+const Person = lazy(() => import('@/pages/Person').then((module) => ({ default: module.Person })));
 const Watchlist = lazy(() =>
   import('@/pages/Watchlist').then((module) => ({ default: module.Watchlist })),
 );
@@ -79,7 +84,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/browse" element={<Browse />} />
+            <Route path="/search" element={<SearchResults />} />
             <Route path="/review/:id" element={<Review />} />
+            <Route path="/tv/:id" element={<TvShow />} />
+            <Route path="/person/:id" element={<Person />} />
             <Route path="/watchlist" element={<Watchlist />} />
             <Route path="/lists" element={<Lists />} />
             <Route path="/control-room" element={<ControlRoom />} />

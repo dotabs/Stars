@@ -313,7 +313,6 @@ export function Explore() {
 
   return (
     <div className="min-h-screen pt-16">
-      <div className="animated-bg" />
       <div className="relative min-h-[calc(100vh-64px)] overflow-hidden">
         <div
           className="pointer-events-none absolute inset-0 opacity-90"
