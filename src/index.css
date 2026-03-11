@@ -273,6 +273,30 @@
   box-shadow: 0 0 20px rgba(220, 38, 38, 0.2);
 }
 
+.search-input-shell {
+  @apply relative min-w-0;
+}
+
+.search-input-icon {
+  @apply pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground;
+}
+
+.search-input-field {
+  @apply min-w-0 pl-12;
+}
+
+.search-input-field-with-clear {
+  @apply pr-10;
+}
+
+.search-input-field-with-action {
+  @apply pr-20;
+}
+
+.search-input-field-with-clear-and-action {
+  @apply pr-24;
+}
+
 /* Slider Styles */
 .slider-cinematic {
   @apply appearance-none w-full h-2 rounded-full outline-none;
