@@ -19,6 +19,10 @@ type SiteSearchProps = {
   onDropdownVisibilityChange?: (isVisible: boolean) => void;
 };
 
+type SiteSearchInnerProps = SiteSearchProps & {
+  listboxId: string;
+};
+
 const searchDebounceMs = 250;
 
 function buildFullSearchHref(query: string) {
@@ -31,9 +35,9 @@ function SiteSearchInner({
   value,
   onValueChange,
   onDropdownVisibilityChange,
-}: SiteSearchProps) {
+  listboxId,
+}: SiteSearchInnerProps) {
   const navigate = useNavigate();
-  const listboxId = useId();
   const rootRef = useRef<HTMLFormElement | null>(null);
   const [uncontrolledQuery, setUncontrolledQuery] = useState('');
   const query = value ?? uncontrolledQuery;
@@ -69,16 +73,6 @@ function SiteSearchInner({
   useEffect(() => {
     onDropdownVisibilityChange?.(dropdownVisible);
   }, [dropdownVisible, onDropdownVisibilityChange]);
-
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    setIsOpen(false);
-    setActiveIndex(-1);
-    if (value === undefined) {
-      setUncontrolledQuery('');
-    }
-  }, [pathname, value]);
 
   const inputClassName =
     variant === 'desktop'
@@ -313,5 +307,14 @@ function SiteSearchInner({
 }
 
 export function SiteSearch(props: SiteSearchProps) {
-  return <SiteSearchInner {...props} />;
+  const { pathname } = useLocation();
+  const listboxId = useId();
+
+  return (
+    <SiteSearchInner
+      key={`${pathname}:${props.value === undefined ? 'uncontrolled' : 'controlled'}`}
+      listboxId={listboxId}
+      {...props}
+    />
+  );
 }

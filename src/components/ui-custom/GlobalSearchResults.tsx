@@ -106,6 +106,46 @@ function buildPersonMovie(details: Awaited<ReturnType<typeof fetchPersonById>>):
   };
 }
 
+type SearchResultCardResolvedState = {
+  movie: Movie;
+  subtitle: string;
+  previewSynopsis: string;
+  previewSections: Array<{ label: string; value: string }>;
+};
+
+const resolvedStateCache = new Map<string, SearchResultCardResolvedState>();
+const resolvedStatePromiseCache = new Map<string, Promise<SearchResultCardResolvedState>>();
+
+function buildBaseResolvedState(result: SearchResult): SearchResultCardResolvedState {
+  if (result.mediaType === 'person') {
+    return {
+      movie: buildSearchFallbackMovie(result),
+      subtitle: result.subtitle || result.metadataLine,
+      previewSynopsis: result.overview,
+      previewSections: [
+        { label: 'Department', value: result.knownForDepartment || 'Person' },
+        { label: 'Known For', value: (result.knownForTitles ?? []).join(', ') || 'Not available' },
+      ],
+    };
+  }
+
+  return {
+    movie: buildSearchFallbackMovie(result),
+    subtitle: result.subtitle || result.metadataLine,
+    previewSynopsis: result.overview,
+    previewSections: [
+      {
+        label: result.mediaType === 'tv' ? 'Format' : 'Director',
+        value: result.mediaType === 'tv' ? 'TV Series' : 'Not available',
+      },
+      {
+        label: result.mediaType === 'tv' ? 'Overview' : 'Top Cast',
+        value: result.mediaType === 'tv' ? result.metadataLine : 'Not available',
+      },
+    ],
+  };
+}
+
 export function SearchResultCard({
   result,
   onOpen,
@@ -121,103 +161,94 @@ export function SearchResultCard({
   onToggleWatchlist?: () => void;
   onToggleLike?: () => void;
 }) {
-  const [movie, setMovie] = useState<Movie>(() => buildSearchFallbackMovie(result));
-  const [subtitle, setSubtitle] = useState<string>(() => result.subtitle || result.metadataLine);
-  const [previewSynopsis, setPreviewSynopsis] = useState<string>(result.overview);
-  const [previewSections, setPreviewSections] = useState<Array<{ label: string; value: string }>>(() => {
-    if (result.mediaType === 'person') {
-      return [
-        { label: 'Department', value: result.knownForDepartment || 'Person' },
-        { label: 'Known For', value: (result.knownForTitles ?? []).join(', ') || 'Not available' },
-      ];
-    }
-
-    return [
-      { label: result.mediaType === 'tv' ? 'Format' : 'Director', value: result.mediaType === 'tv' ? 'TV Series' : 'Not available' },
-      { label: result.mediaType === 'tv' ? 'Overview' : 'Top Cast', value: result.mediaType === 'tv' ? result.metadataLine : 'Not available' },
-    ];
-  });
+  const baseState = useMemo(() => buildBaseResolvedState(result), [result]);
+  const cacheKey = `${result.mediaType}-${result.id}`;
+  const [resolvedState, setResolvedState] = useState<SearchResultCardResolvedState | null>(
+    () => resolvedStateCache.get(cacheKey) ?? null,
+  );
 
   useEffect(() => {
     let cancelled = false;
+    const cachedState = resolvedStateCache.get(cacheKey);
 
-    setMovie(buildSearchFallbackMovie(result));
-    setSubtitle(result.subtitle || result.metadataLine);
-    setPreviewSynopsis(result.overview);
-
-    if (result.mediaType === 'movie') {
-      void fetchTmdbMovieByRouteId(`tmdb-${result.id}`)
-        .then((response) => {
-          if (!cancelled && response?.movie) {
-            setMovie(response.movie);
-            setSubtitle(`${response.movie.year}${response.movie.runtime ? ` / ${response.movie.runtime} min` : ''}`);
-            setPreviewSynopsis(response.movie.synopsis);
-            setPreviewSections([
-              { label: 'Director', value: response.movie.director || 'Not available' },
-              { label: 'Top Cast', value: response.movie.cast.slice(0, 3).join(', ') || 'Not available' },
-            ]);
-          }
-        })
-        .catch(() => {
-          if (!cancelled) {
-            setPreviewSections([
-              { label: 'Director', value: 'Not available' },
-              { label: 'Top Cast', value: 'Not available' },
-            ]);
-          }
-        });
+    if (cachedState) {
+      setResolvedState(cachedState);
+      return () => {
+        cancelled = true;
+      };
     }
 
-    if (result.mediaType === 'tv') {
-      void fetchTvShowById(result.id)
-        .then((details) => {
-          if (!cancelled) {
-            setMovie(buildTvMovie(details));
-            setSubtitle(`${details.yearLabel} / ${details.seasons} season${details.seasons === 1 ? '' : 's'}`);
-            setPreviewSynopsis(details.overview);
-            setPreviewSections([
-              { label: 'Creators', value: details.creators.join(', ') || 'Not available' },
-              { label: 'Top Cast', value: details.cast.slice(0, 3).join(', ') || 'Not available' },
-            ]);
-          }
-        })
-        .catch(() => {
-          if (!cancelled) {
-            setPreviewSections([
-              { label: 'Creators', value: 'Not available' },
-              { label: 'Top Cast', value: 'Not available' },
-            ]);
-          }
-        });
-    }
+    const readOrCreatePromise = () => {
+      const existingPromise = resolvedStatePromiseCache.get(cacheKey);
+      if (existingPromise) return existingPromise;
 
-    if (result.mediaType === 'person') {
-      void fetchPersonById(result.id)
-        .then((details) => {
-          if (!cancelled) {
-            setMovie(buildPersonMovie(details));
-            setSubtitle(details.birthday ? `${details.birthday} / ${details.knownForDepartment}` : details.knownForDepartment);
-            setPreviewSynopsis(details.biography);
-            setPreviewSections([
-              { label: 'Department', value: details.knownForDepartment },
-              { label: 'Place of Birth', value: details.placeOfBirth || 'Not available' },
-            ]);
-          }
-        })
-        .catch(() => {
-          if (!cancelled) {
-            setPreviewSections([
-              { label: 'Department', value: result.knownForDepartment || 'Person' },
-              { label: 'Known For', value: (result.knownForTitles ?? []).join(', ') || 'Not available' },
-            ]);
-          }
-        });
-    }
+      const nextPromise =
+        result.mediaType === 'movie'
+          ? fetchTmdbMovieByRouteId(`tmdb-${result.id}`)
+              .then((response) => {
+                if (!response?.movie) {
+                  return baseState;
+                }
+
+                return {
+                  movie: response.movie,
+                  subtitle: `${response.movie.year}${response.movie.runtime ? ` / ${response.movie.runtime} min` : ''}`,
+                  previewSynopsis: response.movie.synopsis,
+                  previewSections: [
+                    { label: 'Director', value: response.movie.director || 'Not available' },
+                    { label: 'Top Cast', value: response.movie.cast.slice(0, 3).join(', ') || 'Not available' },
+                  ],
+                } satisfies SearchResultCardResolvedState;
+              })
+              .catch(() => baseState)
+          : result.mediaType === 'tv'
+            ? fetchTvShowById(result.id)
+                .then((details) => ({
+                  movie: buildTvMovie(details),
+                  subtitle: `${details.yearLabel} / ${details.seasons} season${details.seasons === 1 ? '' : 's'}`,
+                  previewSynopsis: details.overview,
+                  previewSections: [
+                    { label: 'Creators', value: details.creators.join(', ') || 'Not available' },
+                    { label: 'Top Cast', value: details.cast.slice(0, 3).join(', ') || 'Not available' },
+                  ],
+                }))
+                .catch(() => ({
+                  ...baseState,
+                  previewSections: [
+                    { label: 'Creators', value: 'Not available' },
+                    { label: 'Top Cast', value: 'Not available' },
+                  ],
+                }))
+            : fetchPersonById(result.id)
+                .then((details) => ({
+                  movie: buildPersonMovie(details),
+                  subtitle: details.birthday ? `${details.birthday} / ${details.knownForDepartment}` : details.knownForDepartment,
+                  previewSynopsis: details.biography,
+                  previewSections: [
+                    { label: 'Department', value: details.knownForDepartment },
+                    { label: 'Place of Birth', value: details.placeOfBirth || 'Not available' },
+                  ],
+                }))
+                .catch(() => baseState);
+
+      resolvedStatePromiseCache.set(cacheKey, nextPromise);
+      return nextPromise;
+    };
+
+    void readOrCreatePromise().then((nextState) => {
+      resolvedStateCache.set(cacheKey, nextState);
+      resolvedStatePromiseCache.delete(cacheKey);
+      if (!cancelled) {
+        setResolvedState(nextState);
+      }
+    });
 
     return () => {
       cancelled = true;
     };
-  }, [result]);
+  }, [baseState, cacheKey, result]);
+
+  const { movie, subtitle, previewSynopsis, previewSections } = resolvedState ?? baseState;
 
   const display = useMemo(() => {
     if (result.mediaType === 'movie') {
@@ -302,8 +333,4 @@ export function SearchResultEmptyCard() {
       <p className="mt-2 max-w-lg text-sm text-muted-foreground">Try a broader title, series, or person search.</p>
     </div>
   );
-}
-
-export function SearchResultSectionIcon() {
-  return <Clapperboard className="h-4 w-4 text-[#f4b684]" />;
 }

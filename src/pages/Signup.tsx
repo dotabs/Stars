@@ -41,22 +41,13 @@ export function Signup() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background - Movie Poster Mosaic */}
       <div className="absolute inset-0">
-        <div 
+        <div
           className="absolute inset-0 opacity-30"
           style={{
-            backgroundImage: `
-              url(/posters/dune2.jpg), 
-              url(/posters/anora.jpg), 
-              url(/posters/brutalist.jpg),
-              url(/posters/wicked.jpg),
-              url(/posters/substance.jpg),
-              url(/posters/conclave.jpg)
-            `,
-            backgroundSize: '33.33% 50%',
-            backgroundPosition: 'top left, top center, top right, bottom left, bottom center, bottom right',
-            filter: 'blur(60px) brightness(0.3)'
+            background:
+              'radial-gradient(circle at 14% 18%, rgba(244,182,132,0.24) 0%, transparent 26%), radial-gradient(circle at 82% 14%, rgba(210,109,71,0.22) 0%, transparent 24%), radial-gradient(circle at 74% 80%, rgba(159,71,42,0.18) 0%, transparent 22%), radial-gradient(circle at 24% 78%, rgba(255,255,255,0.07) 0%, transparent 20%), linear-gradient(135deg, rgba(19,14,12,0.98) 0%, rgba(11,9,8,0.97) 38%, rgba(19,18,28,0.94) 100%)',
+            filter: 'blur(48px) saturate(118%)'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/60" />

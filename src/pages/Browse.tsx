@@ -136,7 +136,6 @@ type GridMovieCardProps = {
   isLiked: boolean;
   showRank?: number;
   openMovie: (movieId: string) => void;
-  openCompose: (movieId: string) => void;
   toggleWatchlist: (movieId: string) => void;
   toggleLike: (movieId: string) => void;
   onGenreClick: (genre: string) => void;
@@ -148,7 +147,6 @@ const BrowseGridMovieCard = memo(function BrowseGridMovieCard({
   isLiked,
   showRank,
   openMovie,
-  openCompose,
   toggleWatchlist,
   toggleLike,
   onGenreClick,
@@ -159,8 +157,6 @@ const BrowseGridMovieCard = memo(function BrowseGridMovieCard({
       variant="compact"
       showRank={showRank}
       onClick={() => openMovie(movie.id)}
-      onViewDetails={() => openMovie(movie.id)}
-      onWriteReview={() => openCompose(movie.id)}
       onToggleWatchlist={() => toggleWatchlist(movie.id)}
       onToggleLike={() => toggleLike(movie.id)}
       isInWatchlist={isInWatchlist}
@@ -639,10 +635,6 @@ export function Browse() {
     navigate(`/review/${movieId}`);
   }, [navigate]);
 
-  const openCompose = useCallback((movieId: string) => {
-    navigate(`/review/${movieId}?compose=1`);
-  }, [navigate]);
-
   const filtersPanel = useMemo(
     () => (
       <>
@@ -976,7 +968,6 @@ export function Browse() {
                     movie={movie}
                     showRank={index + 1}
                     openMovie={openMovie}
-                    openCompose={openCompose}
                     toggleWatchlist={handleToggleWatchlist}
                     toggleLike={handleToggleLike}
                     isInWatchlist={watchlistSet.has(movie.id)}
@@ -1056,7 +1047,6 @@ export function Browse() {
                       key={movie.id}
                       movie={movie}
                       openMovie={openMovie}
-                      openCompose={openCompose}
                       toggleWatchlist={handleToggleWatchlist}
                       toggleLike={handleToggleLike}
                       isInWatchlist={watchlistSet.has(movie.id)}
