@@ -366,3 +366,13 @@ input[type='search']::-webkit-search-results-decoration {
   font-size: 0.72rem;
   color: rgba(244, 182, 132, 0.78);
 }
+@layer base {
+  #root {
+    min-height: 100vh;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    text-align: initial;
+  }
+}

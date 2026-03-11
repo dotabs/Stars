@@ -21,22 +21,13 @@ export function Login() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background - Movie Poster Mosaic */}
       <div className="absolute inset-0">
-        <div 
+        <div
           className="absolute inset-0 opacity-30"
           style={{
-            backgroundImage: `
-              url(/posters/dune2.jpg), 
-              url(/posters/anora.jpg), 
-              url(/posters/brutalist.jpg),
-              url(/posters/wicked.jpg),
-              url(/posters/substance.jpg),
-              url(/posters/conclave.jpg)
-            `,
-            backgroundSize: '33.33% 50%',
-            backgroundPosition: 'top left, top center, top right, bottom left, bottom center, bottom right',
-            filter: 'blur(60px) brightness(0.3)'
+            background:
+              'radial-gradient(circle at 18% 20%, rgba(210,109,71,0.28) 0%, transparent 28%), radial-gradient(circle at 76% 18%, rgba(244,182,132,0.18) 0%, transparent 24%), radial-gradient(circle at 28% 78%, rgba(164,56,32,0.18) 0%, transparent 26%), radial-gradient(circle at 82% 72%, rgba(255,255,255,0.08) 0%, transparent 22%), linear-gradient(135deg, rgba(23,17,15,0.98) 0%, rgba(10,8,7,0.96) 42%, rgba(18,20,28,0.94) 100%)',
+            filter: 'blur(48px) saturate(115%)'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/60" />

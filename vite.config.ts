@@ -20,8 +20,20 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks(id) {
             if (!id.includes('node_modules')) return undefined;
+            if (id.includes('\\react\\') || id.includes('/react/')) {
+              return 'react-vendor';
+            }
+            if (id.includes('react-dom') || id.includes('scheduler')) {
+              return 'react-vendor';
+            }
+            if (id.includes('react-router')) {
+              return 'router-vendor';
+            }
             if (id.includes('world-atlas') || id.includes('topojson-client') || id.includes('\\d3\\')) {
               return 'globe-vendor';
+            }
+            if (id.includes('@radix-ui') || id.includes('lucide-react') || id.includes('class-variance-authority')) {
+              return 'ui-vendor';
             }
             return undefined;
           },

@@ -40,8 +40,6 @@ interface MovieCardProps {
   onSave?: () => void;
   onToggleWatchlist?: () => void;
   onToggleLike?: () => void;
-  onWriteReview?: () => void;
-  onViewDetails?: () => void;
   onGenreClick?: (genre: string) => void;
   showRank?: number;
   isInWatchlist?: boolean;
@@ -77,6 +75,8 @@ function needsPreviewCredits(movie: Movie) {
 }
 
 let reviewRoutePreloaded = false;
+const previewMovieCache = new Map<string, Movie>();
+const previewMoviePromiseCache = new Map<string, Promise<Movie | null>>();
 
 function preloadReviewRoute() {
   if (reviewRoutePreloaded) return;
@@ -109,17 +109,32 @@ export const MovieCard = memo(function MovieCard({
       return;
     }
 
-    let cancelled = false;
+    const cachedMovie = previewMovieCache.get(movie.id);
+    if (cachedMovie) {
+      setPreviewMovie(cachedMovie);
+      return;
+    }
 
-    void fetchTmdbMovieByRouteId(movie.id)
-      .then((result) => {
-        if (!cancelled && result?.movie) {
-          setPreviewMovie(result.movie);
-        }
-      })
-      .catch(() => {
-        // Leave previewMovie unchanged and fall back to a clean placeholder label.
-      });
+    let cancelled = false;
+    const existingPromise = previewMoviePromiseCache.get(movie.id);
+    const previewPromise =
+      existingPromise ??
+      fetchTmdbMovieByRouteId(movie.id)
+        .then((result) => result?.movie ?? null)
+        .catch(() => null);
+
+    if (!existingPromise) {
+      previewMoviePromiseCache.set(movie.id, previewPromise);
+    }
+
+    void previewPromise.then((nextMovie) => {
+      previewMoviePromiseCache.delete(movie.id);
+      if (!nextMovie) return;
+      previewMovieCache.set(movie.id, nextMovie);
+      if (!cancelled) {
+        setPreviewMovie(nextMovie);
+      }
+    });
 
     return () => {
       cancelled = true;

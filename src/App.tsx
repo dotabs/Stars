@@ -1,8 +1,8 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, HashRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AppErrorBoundary, Footer, Navbar } from '@/components/ui-custom';
 import { appEnv } from '@/lib/env';
-import './App.css';
+import { preloadCoreRoutes } from '@/lib/route-preload';
 
 const Home = lazy(() => import('@/pages/Home').then((module) => ({ default: module.Home })));
 const Explore = lazy(() => import('@/pages/Explore').then((module) => ({ default: module.Explore })));
@@ -55,7 +55,20 @@ function NotFound() {
 function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
-  
+
+  useEffect(() => {
+    const schedulePreload = () => preloadCoreRoutes();
+
+    if (typeof window === 'undefined') return;
+    if (typeof window.requestIdleCallback === 'function') {
+      const idleCallbackId = window.requestIdleCallback(schedulePreload, { timeout: 1200 });
+      return () => window.cancelIdleCallback(idleCallbackId);
+    }
+
+    const timeoutId = window.setTimeout(schedulePreload, 300);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   return (
     <div className="min-h-screen relative">
       {/* Animated Background */}

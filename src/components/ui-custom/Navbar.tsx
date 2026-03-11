@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ArrowUpRight, Bell, Menu, Star, X } from 'lucide-react';
+import { preloadAppRoute } from '@/lib/route-preload';
+
+const navLinks = [
+  { path: '/', label: 'Home' },
+  { path: '/explore', label: 'Explore' },
+  { path: '/browse', label: 'Browse' },
+  { path: '/lists', label: 'Lists' },
+  { path: '/watchlist', label: 'Watchlist' },
+];
 
 export function Navbar() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/explore', label: 'Explore' },
-    { path: '/browse', label: 'Browse' },
-    { path: '/lists', label: 'Lists' },
-    { path: '/watchlist', label: 'Watchlist' },
-  ];
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -46,6 +47,8 @@ export function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
+                onMouseEnter={() => preloadAppRoute(link.path)}
+                onFocus={() => preloadAppRoute(link.path)}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
                   isActive(link.path) ? 'text-white' : 'text-muted-foreground hover:text-white'
                 }`}
@@ -108,6 +111,8 @@ export function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
+                onMouseEnter={() => preloadAppRoute(link.path)}
+                onFocus={() => preloadAppRoute(link.path)}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block rounded-xl px-4 py-3 font-medium transition-all ${
                   isActive(link.path) ? 'text-white' : 'text-muted-foreground'
