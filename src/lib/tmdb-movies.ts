@@ -1,4 +1,4 @@
-import { browseStreamingPlatforms } from '@/lib/movie-constants';
+import { browseCountryCodeByLabel, normalizeBrowseCountry, browseStreamingPlatforms } from '@/lib/movie-constants';
 import { movies as localMovies } from '@/data/movies';
 import type { Movie, Review, SortOption, Verdict } from '@/types';
 import { getTmdbImageUrl, tmdbFetch } from '@/lib/tmdb';
@@ -152,20 +152,6 @@ const browseMovieCache = new Map<number, Promise<Movie>>();
 const personSearchCache = new Map<string, Promise<number[]>>();
 
 const supportedStreamingLabels = new Set(browseStreamingPlatforms.map((platform) => platform.label));
-const countryCodeByBrowseLabel: Record<string, string> = {
-  USA: 'US',
-  UK: 'GB',
-  France: 'FR',
-  Germany: 'DE',
-  Japan: 'JP',
-  'South Korea': 'KR',
-  Spain: 'ES',
-  Italy: 'IT',
-  Canada: 'CA',
-  Australia: 'AU',
-  Brazil: 'BR',
-  'New Zealand': 'NZ',
-};
 
 function toTmdbMovieId(id: number) {
   return `tmdb-${id}`;
@@ -221,13 +207,6 @@ function mapLanguage(details?: TmdbMovieDetails, movie?: TmdbMovieSummary) {
   return countryByLanguageCode[code] ?? code.toUpperCase();
 }
 
-function normalizeCountry(value: string) {
-  const normalized = value.trim().toLowerCase();
-  if (normalized === 'united states of america' || normalized === 'united states') return 'usa';
-  if (normalized === 'great britain' || normalized === 'united kingdom') return 'uk';
-  return normalized;
-}
-
 function mapSummaryMovie(movie: TmdbMovieSummary, genreMap: Map<number, string>): Movie {
   const year = getReleaseYear(movie.release_date);
   const score = Number(movie.vote_average.toFixed(1));
@@ -250,7 +229,7 @@ function mapSummaryMovie(movie: TmdbMovieSummary, genreMap: Map<number, string>)
     popularity: movie.popularity,
     poster: movie.poster_path ? getTmdbImageUrl(movie.poster_path, 'w780') : '',
     backdrop: movie.backdrop_path ? getTmdbImageUrl(movie.backdrop_path, 'w1280') : '',
-    director: 'TMDB',
+    director: 'Not available',
     cast: [],
     runtime: 0,
     synopsis: movie.overview || 'No synopsis available yet.',
@@ -520,7 +499,7 @@ async function buildBrowseDiscoverQuery(query: BrowseMovieQuery) {
     with_cast: castIds.length ? castIds.join('|') : undefined,
     with_crew: directorIds.length ? directorIds.join('|') : undefined,
     with_genres: genreIds.length ? genreIds.join(',') : undefined,
-    with_origin_country: query.country ? countryCodeByBrowseLabel[query.country] : undefined,
+    with_origin_country: query.country ? browseCountryCodeByLabel[query.country] : undefined,
     'with_runtime.gte': query.minRuntime && query.minRuntime > 0 ? query.minRuntime : undefined,
     'with_runtime.lte': query.maxRuntime && query.maxRuntime < 240 ? query.maxRuntime : undefined,
     with_watch_providers: providerIds.length ? providerIds.join('|') : undefined,
@@ -532,7 +511,7 @@ function matchesBrowseMovie(movie: Movie, query: BrowseMovieQuery) {
   const normalizedSearch = query.query?.trim().toLowerCase() ?? '';
   const normalizedDirectorQuery = query.directorQuery?.trim().toLowerCase() ?? '';
   const normalizedCastQuery = query.castQuery?.trim().toLowerCase() ?? '';
-  const normalizedCountry = query.country ? normalizeCountry(query.country) : '';
+  const normalizedCountry = query.country ? normalizeBrowseCountry(query.country) : '';
 
   return (
     (!(query.genres?.length) || movie.genres.some((genre) => query.genres?.includes(genre))) &&
@@ -546,24 +525,11 @@ function matchesBrowseMovie(movie: Movie, query: BrowseMovieQuery) {
     (query.exactYear === undefined || movie.year === query.exactYear) &&
     (query.minRuntime === undefined || (movie.runtime > 0 && movie.runtime >= query.minRuntime)) &&
     (query.maxRuntime === undefined || (movie.runtime > 0 && movie.runtime <= query.maxRuntime)) &&
-    (!normalizedCountry || normalizeCountry(movie.country) === normalizedCountry) &&
+    (!normalizedCountry || normalizeBrowseCountry(movie.country) === normalizedCountry) &&
     (!normalizedDirectorQuery || movie.director.toLowerCase().includes(normalizedDirectorQuery)) &&
     (!normalizedCastQuery ||
       movie.cast.some((member) => member.toLowerCase().includes(normalizedCastQuery))) &&
-    (!normalizedSearch ||
-      [
-        movie.title,
-        movie.synopsis,
-        movie.director,
-        movie.country,
-        movie.language,
-        movie.genres.join(' '),
-        movie.cast.join(' '),
-        (movie.streaming ?? []).join(' '),
-      ]
-        .join(' ')
-        .toLowerCase()
-        .includes(normalizedSearch))
+    (!normalizedSearch || movie.title.toLowerCase().includes(normalizedSearch))
   );
 }
 

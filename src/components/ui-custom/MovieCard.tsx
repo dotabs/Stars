@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bookmark, Eye, Heart, MessageSquareText, PenSquare, Play, Star, Users } from 'lucide-react';
 import type { Movie } from '@/types';
 import { getPosterFallback, resolvePosterUrl } from '@/lib/posters';
+import { fetchTmdbMovieByRouteId } from '@/lib/tmdb-movies';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { PosterImage } from './PosterImage';
 import { VerdictBadge } from './VerdictBadge';
@@ -26,6 +27,28 @@ function getReviewCount(movie: Movie) {
   return Math.max(48, Math.round(movie.score * 420 + Math.max(0, new Date().getFullYear() - movie.year) * 12));
 }
 
+function normalizePreviewDirector(movie: Movie) {
+  const director = movie.director?.trim();
+  if (!director || director.toLowerCase() === 'tmdb' || director.toLowerCase() === 'unknown director') {
+    return 'Not available';
+  }
+
+  return director;
+}
+
+function normalizePreviewCast(movie: Movie) {
+  const cast = movie.cast
+    .map((member) => member.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+
+  return cast.length > 0 ? cast.join(', ') : 'Not available';
+}
+
+function needsPreviewCredits(movie: Movie) {
+  return movie.source === 'tmdb' && (normalizePreviewDirector(movie) === 'Not available' || normalizePreviewCast(movie) === 'Not available');
+}
+
 export function MovieCard({
   movie,
   variant = 'default',
@@ -41,11 +64,42 @@ export function MovieCard({
   isLiked = false,
 }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewMovie, setPreviewMovie] = useState(movie);
+
+  useEffect(() => {
+    setPreviewMovie(movie);
+  }, [movie]);
+
+  useEffect(() => {
+    if (variant !== 'compact' || !isPreviewOpen || !needsPreviewCredits(movie)) {
+      return;
+    }
+
+    let cancelled = false;
+
+    void fetchTmdbMovieByRouteId(movie.id)
+      .then((result) => {
+        if (!cancelled && result?.movie) {
+          setPreviewMovie(result.movie);
+        }
+      })
+      .catch(() => {
+        // Leave previewMovie unchanged and fall back to a clean placeholder label.
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isPreviewOpen, movie, variant]);
 
   const posterUrl = resolvePosterUrl(movie.poster, movie.title) || getPosterFallback(movie.title);
-  const primaryGenres = movie.genres.slice(0, 2).join(' / ');
-  const reviewCount = getReviewCount(movie);
+  const displayMovie = variant === 'compact' ? previewMovie : movie;
+  const reviewCount = getReviewCount(displayMovie);
   const reviewCountLabel = `${reviewCount.toLocaleString()} reviews`;
+  const runtimeLabel = displayMovie.runtime ? `${displayMovie.runtime} min` : 'Runtime pending';
+  const previewDirector = normalizePreviewDirector(displayMovie);
+  const topCast = normalizePreviewCast(displayMovie);
 
   if (variant === 'horizontal') {
     return (
@@ -72,7 +126,7 @@ export function MovieCard({
           <h3 className="truncate font-bold text-foreground transition-colors group-hover:text-[#f4b684]">
             {movie.title}
           </h3>
-          <p className="mt-0.5 text-sm text-muted-foreground">{movie.year} / {primaryGenres || movie.director}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">{movie.year} / {movie.director}</p>
           <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <Star className="h-3.5 w-3.5 text-[#f4b684]" />
@@ -93,7 +147,7 @@ export function MovieCard({
 
   if (variant === 'compact') {
     return (
-      <HoverCard openDelay={120} closeDelay={80}>
+      <HoverCard openDelay={120} closeDelay={80} onOpenChange={setIsPreviewOpen}>
         <HoverCardTrigger asChild>
           <div
             onClick={onClick}
@@ -117,7 +171,7 @@ export function MovieCard({
                 className={`absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
               >
                 <div className="absolute inset-x-0 bottom-0 p-4">
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2.5">
                     {[
                       {
                         label: isInWatchlist ? 'Saved' : 'Watchlist',
@@ -162,9 +216,6 @@ export function MovieCard({
                       </button>
                     ))}
                   </div>
-                  <div className="mt-3">
-                    <VerdictBadge verdict={movie.verdict} score={movie.score} size="sm" />
-                  </div>
                 </div>
               </div>
 
@@ -187,7 +238,7 @@ export function MovieCard({
                 {movie.title}
               </h3>
               <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
-                {movie.year} / {primaryGenres || movie.country}
+                {movie.year}{movie.runtime ? ` / ${runtimeLabel}` : ''}
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/25 bg-[#d26d47]/10 px-2.5 py-1 font-bold text-[#f4b684]">
@@ -220,29 +271,22 @@ export function MovieCard({
         <HoverCardContent
           side="right"
           align="start"
-          className="w-80 rounded-[1.35rem] border border-white/10 bg-[#110e14]/96 p-4 text-white shadow-2xl backdrop-blur-xl"
+          className="w-80 rounded-[1.35rem] border border-white/10 bg-[#110e14]/96 p-5 text-white shadow-2xl backdrop-blur-xl"
         >
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-[#f4b684]">Quick Preview</p>
-              <h4 className="mt-2 text-lg font-semibold">{movie.title}</h4>
-              <p className="mt-1 text-sm text-white/65">
-                {movie.year} / {movie.runtime ? `${movie.runtime} min` : 'Runtime pending'}
-              </p>
+              <h4 className="text-lg font-semibold">{movie.title}</h4>
+              <p className="mt-1 text-sm text-white/65">{movie.year} / {runtimeLabel}</p>
             </div>
-            <p className="line-clamp-4 text-sm leading-6 text-white/75">{movie.synopsis}</p>
-            <div className="grid gap-2 rounded-2xl border border-white/8 bg-white/[0.04] p-3 text-sm">
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-white/50">Director</span>
-                <span className="text-right font-medium">{movie.director}</span>
+            <p className="line-clamp-4 text-sm leading-6 text-white/75">{displayMovie.synopsis}</p>
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">Director</p>
+                <p className="mt-1 text-white/88">{previewDirector}</p>
               </div>
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-white/50">Cast</span>
-                <span className="text-right font-medium">{movie.cast.slice(0, 3).join(', ') || 'Unknown'}</span>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-white/50">Reviews</span>
-                <span className="text-right font-medium">{reviewCountLabel}</span>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">Top Cast</p>
+                <p className="mt-1 text-white/88">{topCast}</p>
               </div>
             </div>
           </div>

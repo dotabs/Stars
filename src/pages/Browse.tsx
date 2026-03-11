@@ -411,11 +411,11 @@ export function Browse() {
         </div>
         <div className="grid gap-2">
           {[
-            { value: 'newest', label: 'Newest First' },
             { value: 'highestRated', label: 'Highest Rated' },
             { value: 'mostPopular', label: 'Most Popular' },
-            { value: 'releaseDate', label: 'Release Date' },
             { value: 'mostReviewed', label: 'Most Reviewed' },
+            { value: 'newest', label: 'Release Date: Newest First' },
+            { value: 'releaseDate', label: 'Release Date: Oldest First' },
           ].map((option) => {
             const isSelected = sortBy === option.value;
 
@@ -567,9 +567,6 @@ export function Browse() {
                   <SlidersHorizontal className="mr-2 h-4 w-4" />
                   {showFilters ? 'Hide' : 'Show'} Filters
                 </Button>
-                <Button variant="outline" size="sm" onClick={resetBrowseState} disabled={isDefaultBrowseState} className="border-white/10 hover:bg-white/5">
-                  Clear All Filters
-                </Button>
                 <div className="flex overflow-hidden rounded-lg border border-white/10">
                   <button
                     type="button"
@@ -603,7 +600,7 @@ export function Browse() {
                 <Input
                   ref={searchInputRef}
                   type="search"
-                  placeholder="Search title, cast, director, synopsis, genre..."
+                  placeholder="Search by movie title..."
                   value={searchQuery}
                   onChange={(event) => updateSearchQuery(event.target.value)}
                   className="input-cinematic search-input-field search-input-field-with-action h-12"
@@ -614,9 +611,6 @@ export function Browse() {
                       <X className="h-4 w-4 text-muted-foreground" />
                     </button>
                   )}
-                  <span className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">
-                    /
-                  </span>
                 </div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-muted-foreground">
