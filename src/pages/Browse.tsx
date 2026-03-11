@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Calendar, Film, Grid3X3, List, Search, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,7 @@ const verdicts: Verdict[] = ['Masterpiece', 'Essential', 'Recommended', 'Mixed',
 
 export function Browse() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [viewMode, setViewMode] = useState<'grid' | 'compact'>('grid');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [showFilters, setShowFilters] = useState(true);
@@ -21,21 +22,29 @@ export function Browse() {
   const [selectedDecades, setSelectedDecades] = useState<number[]>([]);
   const [scoreRange, setScoreRange] = useState([0, 10]);
   const [runtimeRange, setRuntimeRange] = useState([0, 240]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('q') ?? '');
   const [activeFilterTab, setActiveFilterTab] = useState<'basic' | 'advanced'>('basic');
   const [remoteMovies, setRemoteMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
+    const queryFromUrl = searchParams.get('q') ?? '';
+    if (queryFromUrl !== searchQuery) {
+      setSearchQuery(queryFromUrl);
+    }
+  }, [searchParams, searchQuery]);
+
+  useEffect(() => {
     let cancelled = false;
+    const normalizedQuery = searchQuery.trim();
     const timeoutId = window.setTimeout(async () => {
       setIsLoading(true);
       setLoadError('');
 
       try {
         const fetchedMovies = await fetchBrowseMovies({
-          query: searchQuery,
+          query: normalizedQuery,
           genres: selectedGenres,
           decades: selectedDecades,
           minScore: scoreRange[0],
@@ -57,13 +66,29 @@ export function Browse() {
       } finally {
         if (!cancelled) setIsLoading(false);
       }
-    }, searchQuery ? 250 : 0);
+    }, normalizedQuery ? 250 : 0);
 
     return () => {
       cancelled = true;
       window.clearTimeout(timeoutId);
     };
   }, [runtimeRange, scoreRange, searchQuery, selectedDecades, selectedGenres, sortBy]);
+
+  useEffect(() => {
+    const normalizedQuery = searchQuery.trim();
+    const currentQuery = searchParams.get('q') ?? '';
+
+    if (normalizedQuery === currentQuery) return;
+
+    const nextParams = new URLSearchParams(searchParams);
+    if (normalizedQuery) {
+      nextParams.set('q', normalizedQuery);
+    } else {
+      nextParams.delete('q');
+    }
+
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, searchQuery, setSearchParams]);
 
   const filteredMovies = useMemo(() => {
     let result = [...remoteMovies];
@@ -134,11 +159,17 @@ export function Browse() {
       </div>
 
       <div className="mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search TMDB movies..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} className="input-cinematic pl-10" />
+        <div className="search-input-shell">
+          <Search className="search-input-icon" />
+          <Input
+            type="search"
+            placeholder="Search title, then refine with filters..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            className="input-cinematic search-input-field search-input-field-with-clear"
+          />
           {searchQuery && (
-            <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+            <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label="Clear search">
               <X className="h-4 w-4 text-muted-foreground" />
             </button>
           )}
@@ -224,7 +255,13 @@ export function Browse() {
           <div className="mb-6 flex flex-col justify-between gap-4 xl:flex-row xl:items-center">
             <div>
               <h1 className="heading-display text-3xl">Browse TMDB</h1>
-              <p className="mt-1 text-sm text-muted-foreground">{isLoading ? 'Refreshing live results...' : `${filteredMovies.length} results`}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {isLoading
+                  ? 'Refreshing live results...'
+                  : searchQuery.trim()
+                    ? `${filteredMovies.length} results for "${searchQuery.trim()}"`
+                    : `${filteredMovies.length} results`}
+              </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">

@@ -166,13 +166,13 @@ export function Explore() {
                   <label className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/42">
                     Country Search
                   </label>
-                  <div className="relative mt-3">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
+                  <div className="search-input-shell mt-3">
+                    <Search className="search-input-icon text-white/35" />
                     <Input
                       value={searchQuery}
                       onChange={(event) => setSearchQuery(event.target.value)}
                       placeholder="Search a film country..."
-                      className="input-cinematic h-11 border-white/10 bg-white/[0.03] pl-10 text-sm"
+                      className="input-cinematic search-input-field h-11 border-white/10 bg-white/[0.03] text-sm"
                     />
                   </div>
 
