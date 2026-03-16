@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useLayoutEffect } from 'react';
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppErrorBoundary, Footer, Navbar } from '@/components/ui-custom';
 import { useAuth } from '@/components/auth/useAuth';
@@ -52,6 +52,12 @@ function AuthGate({ children }) {
 function Layout({ children }) {
     const location = useLocation();
     const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
+    useLayoutEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }, [location.pathname, location.search, location.hash]);
     useEffect(() => {
         const schedulePreload = () => preloadCoreRoutes();
         if (typeof window === 'undefined')

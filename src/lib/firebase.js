@@ -10,14 +10,15 @@ import {
   getAuth,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { appEnv } from '@/lib/env';
 
 const firebaseConfig = {
-  apiKey: 'REDACTED_FIREBASE_API_KEY',
-  authDomain: 'REDACTED_FIREBASE_AUTH_DOMAIN',
-  projectId: 'REDACTED_FIREBASE_PROJECT_ID',
-  storageBucket: 'REDACTED_FIREBASE_PROJECT_ID.firebasestorage.app',
-  messagingSenderId: 'REDACTED_FIREBASE_MESSAGING_SENDER_ID',
-  appId: '1:REDACTED_FIREBASE_MESSAGING_SENDER_ID:web:6c920549a14ad14cf8904c',
+  apiKey: appEnv.firebaseApiKey,
+  authDomain: appEnv.firebaseAuthDomain,
+  projectId: appEnv.firebaseProjectId,
+  storageBucket: appEnv.firebaseStorageBucket,
+  messagingSenderId: appEnv.firebaseMessagingSenderId,
+  appId: appEnv.firebaseAppId,
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);

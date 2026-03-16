@@ -33,5 +33,12 @@ export const appEnv = {
     tmdbReadAccessToken: tmdbCredentials.tmdbReadAccessToken,
     tmdbBaseUrl: import.meta.env.VITE_TMDB_BASE_URL?.trim() || DEFAULT_TMDB_BASE_URL,
     tmdbImageBaseUrl: import.meta.env.VITE_TMDB_IMAGE_BASE_URL?.trim() || DEFAULT_TMDB_IMAGE_BASE_URL,
+    firebaseApiKey: import.meta.env.VITE_FIREBASE_API_KEY?.trim() || '',
+    firebaseAuthDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN?.trim() || '',
+    firebaseProjectId: import.meta.env.VITE_FIREBASE_PROJECT_ID?.trim() || '',
+    firebaseStorageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET?.trim() || '',
+    firebaseMessagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID?.trim() || '',
+    firebaseAppId: import.meta.env.VITE_FIREBASE_APP_ID?.trim() || '',
 };
 export const hasTmdbCredentials = Boolean(appEnv.tmdbApiKey || appEnv.tmdbReadAccessToken);
+export const hasFirebaseConfig = Boolean(appEnv.firebaseApiKey && appEnv.firebaseAuthDomain && appEnv.firebaseProjectId && appEnv.firebaseAppId);
