@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Bookmark, Calendar, Clock3, Play, Sparkles, Star, Ticket, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MovieCard, PosterImage, VerdictBadge } from '@/components/ui-custom';
+import { useToast } from '@/hooks/use-toast';
+import { useUserLibrary } from '@/hooks/use-user-library';
 import { buildYouTubeSearchUrl, openExternalUrl } from '@/lib/browser';
 import { fetchHomeFeed } from '@/lib/tmdb-movies';
-import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
+import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 export function Home() {
     const navigate = useNavigate();
+    const { toast } = useToast();
+    const { currentUser, library } = useUserLibrary();
     const [feed, setFeed] = useState(null);
-    const [savedMovieIds, setSavedMovieIds] = useState(() => getUserLibrary().watchlist);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState('');
     useEffect(() => {
@@ -64,10 +67,31 @@ export function Home() {
         </div>
       </div>);
     }
-    const isSaved = savedMovieIds.includes(spotlightMovie.id);
-    const handleSaveSpotlight = () => {
-        const nextState = toggleLibraryItem('watchlist', spotlightMovie.id);
-        setSavedMovieIds(nextState.watchlist);
+    const isSaved = library.watchlist.includes(spotlightMovie.id);
+    const handleSaveSpotlight = async () => {
+        try {
+            await toggleLibraryItem({
+                userId: currentUser?.uid,
+                listName: 'watchlist',
+                movieId: spotlightMovie.id,
+            });
+        }
+        catch (error) {
+            if (isLibraryAuthError(error)) {
+                toast({
+                    title: 'Sign in required',
+                    description: 'Create an account or sign in to save movies to your watchlist.',
+                    variant: 'destructive',
+                });
+                return;
+            }
+            console.error('Failed to update watchlist', error);
+            toast({
+                title: 'Watchlist update failed',
+                description: 'Please try again in a moment.',
+                variant: 'destructive',
+            });
+        }
     };
     const spotlightStats = [
         { icon: Calendar, label: 'Release Year', value: String(spotlightMovie.year) },
@@ -120,7 +144,7 @@ export function Home() {
                     <Play className="mr-2 h-4 w-4"/>
                     Watch Trailer
                   </Button>
-                  <Button variant="outline" className="btn-outline text-white" onClick={handleSaveSpotlight}>
+                  <Button variant="outline" className="btn-outline text-white" onClick={() => void handleSaveSpotlight()}>
                     <Bookmark className="mr-2 h-4 w-4"/>
                     {isSaved ? 'Saved' : 'Save'}
                   </Button>

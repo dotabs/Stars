@@ -4,15 +4,18 @@ import { AlertTriangle, Bookmark, Play, Share2, ThumbsDown, ThumbsUp } from 'luc
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { PosterImage, ScoreRing, VerdictBadge } from '@/components/ui-custom';
+import { useToast } from '@/hooks/use-toast';
+import { useUserLibrary } from '@/hooks/use-user-library';
 import { getMovieById, getReviewByMovieId, movies as localMovies } from '@/data/movies';
 import { buildYouTubeSearchUrl, openExternalUrl, shareUrl } from '@/lib/browser';
 import { fetchTmdbMovieByRouteId, isTmdbMovieId } from '@/lib/tmdb-movies';
-import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
+import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 export function Review() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { toast } = useToast();
+    const { currentUser, library } = useUserLibrary();
     const [showSpoilers, setShowSpoilers] = useState(false);
-    const [watchlistIds, setWatchlistIds] = useState(() => getUserLibrary().watchlist);
     const [movie, setMovie] = useState(null);
     const [review, setReview] = useState(null);
     const [similarMovies, setSimilarMovies] = useState([]);
@@ -92,10 +95,31 @@ export function Review() {
         visuals: movie.score * 0.96,
         sound: movie.score * 0.94,
     };
-    const isSaved = watchlistIds.includes(movie.id);
-    const handleToggleSave = () => {
-        const nextState = toggleLibraryItem('watchlist', movie.id);
-        setWatchlistIds(nextState.watchlist);
+    const isSaved = library.watchlist.includes(movie.id);
+    const handleToggleSave = async () => {
+        try {
+            await toggleLibraryItem({
+                userId: currentUser?.uid,
+                listName: 'watchlist',
+                movieId: movie.id,
+            });
+        }
+        catch (error) {
+            if (isLibraryAuthError(error)) {
+                toast({
+                    title: 'Sign in required',
+                    description: 'Sign in to save titles to your watchlist.',
+                    variant: 'destructive',
+                });
+                return;
+            }
+            console.error('Failed to update watchlist', error);
+            toast({
+                title: 'Watchlist update failed',
+                description: 'Please try again in a moment.',
+                variant: 'destructive',
+            });
+        }
     };
     const handleShare = async () => {
         const reviewUrl = typeof window === 'undefined' ? '' : window.location.href;
@@ -134,7 +158,7 @@ export function Review() {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button className="btn-outline" onClick={handleToggleSave}>
+                <Button className="btn-outline" onClick={() => void handleToggleSave()}>
                   <Bookmark className="mr-2 h-4 w-4"/>
                   {isSaved ? 'Saved' : 'Save'}
                 </Button>

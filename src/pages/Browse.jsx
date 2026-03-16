@@ -8,9 +8,11 @@ import { SearchResultCard } from '@/components/ui-custom/GlobalSearchResults';
 import { FilterChips, MovieCard, PosterImage, VerdictBadge } from '@/components/ui-custom';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useGlobalSearch } from '@/hooks/use-global-search';
+import { useToast } from '@/hooks/use-toast';
+import { useUserLibrary } from '@/hooks/use-user-library';
 import { browseCountries, browseDecades, browseGenres, browseStreamingPlatforms } from '@/lib/movie-constants';
 import { fetchBrowseMovies, fetchTrendingMovies, serializeBrowseMovieQuery } from '@/lib/tmdb-movies';
-import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
+import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 const yearBounds = [1940, new Date().getFullYear()];
 const initialCatalogPages = 1;
 const searchDebounceMs = 250;
@@ -146,6 +148,8 @@ const BrowseListMovieRow = memo(function BrowseListMovieRow({ movie, isInWatchli
 });
 export function Browse() {
     const navigate = useNavigate();
+    const { toast } = useToast();
+    const { currentUser, library } = useUserLibrary();
     const [searchParams, setSearchParams] = useSearchParams();
     const [viewMode, setViewMode] = useState('grid');
     const [sortBy, setSortBy] = useState(null);
@@ -178,7 +182,6 @@ export function Browse() {
         loadError: '',
     });
     const [renderLimit, setRenderLimit] = useState(initialRenderCount.grid);
-    const [library, setLibrary] = useState(() => getUserLibrary());
     const renderMoreRef = useRef(null);
     const urlCountryFilter = searchParams.get('country') ?? '';
     const { trimmedQuery: trimmedGlobalQuery, results: globalSearchResults, isLoading: isGlobalSearchLoading, errorMessage: globalSearchError, hasQuery: hasGlobalSearchQuery, } = useGlobalSearch(debouncedSearchQuery, { limit: 60, maxPages: 3 });
@@ -231,15 +234,6 @@ export function Browse() {
         void loadTrending();
         return () => {
             cancelled = true;
-        };
-    }, []);
-    useEffect(() => {
-        const syncLibrary = () => setLibrary(getUserLibrary());
-        window.addEventListener('stars:library-updated', syncLibrary);
-        window.addEventListener('storage', syncLibrary);
-        return () => {
-            window.removeEventListener('stars:library-updated', syncLibrary);
-            window.removeEventListener('storage', syncLibrary);
         };
     }, []);
     const activeFiltersCount = useMemo(() => selectedGenres.length +
@@ -441,14 +435,37 @@ export function Browse() {
         setSelectedGenres((current) => (current.includes(genre) ? current : [...current, genre]));
         setShowFilters(true);
     }, []);
+    const handleToggleLibraryItem = useCallback(async (listName, movieId) => {
+        try {
+            await toggleLibraryItem({
+                userId: currentUser?.uid,
+                listName,
+                movieId,
+            });
+        }
+        catch (error) {
+            if (isLibraryAuthError(error)) {
+                toast({
+                    title: 'Sign in required',
+                    description: 'Sign in to save movies to your library.',
+                    variant: 'destructive',
+                });
+                return;
+            }
+            console.error(`Failed to update ${listName}`, error);
+            toast({
+                title: 'Library update failed',
+                description: 'Please try again in a moment.',
+                variant: 'destructive',
+            });
+        }
+    }, [currentUser?.uid, toast]);
     const handleToggleWatchlist = useCallback((movieId) => {
-        const nextState = toggleLibraryItem('watchlist', movieId);
-        setLibrary(nextState);
-    }, []);
+        void handleToggleLibraryItem('watchlist', movieId);
+    }, [handleToggleLibraryItem]);
     const handleToggleLike = useCallback((movieId) => {
-        const nextState = toggleLibraryItem('favorites', movieId);
-        setLibrary(nextState);
-    }, []);
+        void handleToggleLibraryItem('favorites', movieId);
+    }, [handleToggleLibraryItem]);
     const openMovie = useCallback((movieId) => {
         navigate(`/review/${movieId}`);
     }, [navigate]);

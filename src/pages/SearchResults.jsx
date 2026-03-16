@@ -2,9 +2,11 @@ import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { SearchResultCard, SearchResultCardSkeleton } from '@/components/ui-custom/GlobalSearchResults';
+import { useToast } from '@/hooks/use-toast';
+import { useUserLibrary } from '@/hooks/use-user-library';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useGlobalSearch } from '@/hooks/use-global-search';
-import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
+import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 import { cn } from '@/lib/utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 const searchDebounceMs = 250;
@@ -38,8 +40,9 @@ function filterResults(results, selectedType) {
 }
 export function SearchResults() {
     const navigate = useNavigate();
+    const { toast } = useToast();
+    const { currentUser, library } = useUserLibrary();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [library, setLibrary] = useState(() => getUserLibrary());
     const initialQuery = searchParams.get('q') ?? '';
     const selectedType = normalizeSearchView(searchParams.get('type'));
     const [searchInputValue, setSearchInputValue] = useState(initialQuery);
@@ -66,19 +69,35 @@ export function SearchResults() {
         }
         setSearchParams(nextParams, { replace: true });
     }, [debouncedQuery, searchParams, setSearchParams]);
-    useEffect(() => {
-        const syncLibrary = () => setLibrary(getUserLibrary());
-        window.addEventListener('stars:library-updated', syncLibrary);
-        window.addEventListener('storage', syncLibrary);
-        return () => {
-            window.removeEventListener('stars:library-updated', syncLibrary);
-            window.removeEventListener('storage', syncLibrary);
-        };
-    }, []);
     const counts = useMemo(() => getResultCounts(results), [results]);
     const visibleResults = useMemo(() => filterResults(results, selectedType), [results, selectedType]);
     const watchlistSet = useMemo(() => new Set(library.watchlist), [library.watchlist]);
     const favoritesSet = useMemo(() => new Set(library.favorites), [library.favorites]);
+    const handleToggleLibraryItem = async (listName, movieId) => {
+        try {
+            await toggleLibraryItem({
+                userId: currentUser?.uid,
+                listName,
+                movieId,
+            });
+        }
+        catch (error) {
+            if (isLibraryAuthError(error)) {
+                toast({
+                    title: 'Sign in required',
+                    description: 'Sign in to save titles to your library.',
+                    variant: 'destructive',
+                });
+                return;
+            }
+            console.error(`Failed to update ${listName}`, error);
+            toast({
+                title: 'Library update failed',
+                description: 'Please try again in a moment.',
+                variant: 'destructive',
+            });
+        }
+    };
     return (<div className="min-h-screen pt-16">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="section-panel overflow-hidden">
@@ -169,11 +188,9 @@ export function SearchResults() {
 
                   <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {visibleResults.map((result) => (<SearchResultCard key={`${result.mediaType}-${result.id}`} result={result} onOpen={(href) => navigate(href)} isInWatchlist={watchlistSet.has(`tmdb-${result.id}`)} isLiked={favoritesSet.has(`tmdb-${result.id}`)} onToggleWatchlist={() => {
-                    const nextState = toggleLibraryItem('watchlist', `tmdb-${result.id}`);
-                    setLibrary(nextState);
+                    void handleToggleLibraryItem('watchlist', `tmdb-${result.id}`);
                 }} onToggleLike={() => {
-                    const nextState = toggleLibraryItem('favorites', `tmdb-${result.id}`);
-                    setLibrary(nextState);
+                    void handleToggleLibraryItem('favorites', `tmdb-${result.id}`);
                 }}/>))}
                   </div>
                 </div>)}

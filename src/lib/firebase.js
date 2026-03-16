@@ -9,6 +9,7 @@ import {
   updateProfile,
   getAuth,
 } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: 'REDACTED_FIREBASE_API_KEY',
@@ -21,6 +22,7 @@ const firebaseConfig = {
 
 export const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
+export const db = getFirestore(firebaseApp);
 
 const persistenceReady = setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.error('Failed to enable Firebase auth persistence.', error);

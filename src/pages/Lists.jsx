@@ -3,14 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { Bookmark, ChevronRight, Heart, Share2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PosterImage, VerdictBadge } from '@/components/ui-custom';
+import { useToast } from '@/hooks/use-toast';
+import { useUserLibrary } from '@/hooks/use-user-library';
 import { shareUrl } from '@/lib/browser';
 import { fetchTmdbCollections } from '@/lib/tmdb-movies';
-import { getUserLibrary, toggleLibraryItem } from '@/lib/user-library';
+import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 export function Lists() {
     const navigate = useNavigate();
+    const { toast } = useToast();
+    const { currentUser, library } = useUserLibrary();
     const [followedLists, setFollowedLists] = useState(['trending-week']);
     const [selectedList, setSelectedList] = useState(null);
-    const [watchlistIds, setWatchlistIds] = useState(() => getUserLibrary().watchlist);
     const [collections, setCollections] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
@@ -47,9 +50,30 @@ export function Lists() {
         const currentUrl = typeof window === 'undefined' ? '' : window.location.href;
         await shareUrl(currentUrl, listTitle, `Explore the ${listTitle} collection on STARS`);
     };
-    const handleToggleSaveMovie = (movieId) => {
-        const nextState = toggleLibraryItem('watchlist', movieId);
-        setWatchlistIds(nextState.watchlist);
+    const handleToggleSaveMovie = async (movieId) => {
+        try {
+            await toggleLibraryItem({
+                userId: currentUser?.uid,
+                listName: 'watchlist',
+                movieId,
+            });
+        }
+        catch (error) {
+            if (isLibraryAuthError(error)) {
+                toast({
+                    title: 'Sign in required',
+                    description: 'Sign in to save collection picks to your watchlist.',
+                    variant: 'destructive',
+                });
+                return;
+            }
+            console.error('Failed to update watchlist', error);
+            toast({
+                title: 'Watchlist update failed',
+                description: 'Please try again in a moment.',
+                variant: 'destructive',
+            });
+        }
     };
     if (isLoading && !collections.length) {
         return (<div className="flex min-h-screen items-center justify-center bg-background pt-16">
@@ -121,9 +145,9 @@ export function Lists() {
                   <p className="mt-3 line-clamp-2 text-muted-foreground">{movie.synopsis}</p>
                 </div>
 
-                <button type="button" aria-pressed={watchlistIds.includes(movie.id)} onClick={(event) => {
+                <button type="button" aria-pressed={library.watchlist.includes(movie.id)} onClick={(event) => {
                     event.stopPropagation();
-                    handleToggleSaveMovie(movie.id);
+                    void handleToggleSaveMovie(movie.id);
                 }} className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-white/10 hover:bg-white/5">
                   <Bookmark className="h-4 w-4"/>
                 </button>
