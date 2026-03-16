@@ -2,6 +2,9 @@ import { initializeApp } from 'firebase/app';
 import {
   browserLocalPersistence,
   createUserWithEmailAndPassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
   onAuthStateChanged,
   setPersistence,
   signInWithEmailAndPassword,
@@ -10,6 +13,7 @@ import {
   getAuth,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { appEnv } from '@/lib/env';
 
 const firebaseConfig = {
@@ -24,6 +28,7 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
+export const storage = getStorage(firebaseApp);
 
 const persistenceReady = setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.error('Failed to enable Firebase auth persistence.', error);
@@ -52,6 +57,27 @@ export function logOut() {
 
 export function subscribeToAuthState(callback) {
   return onAuthStateChanged(auth, callback);
+}
+
+export async function updateAuthProfileFields({ displayName, photoURL }) {
+  if (!auth.currentUser) {
+    throw new Error('No authenticated user is available.');
+  }
+
+  await updateProfile(auth.currentUser, {
+    displayName: displayName ?? auth.currentUser.displayName ?? '',
+    photoURL: photoURL ?? auth.currentUser.photoURL ?? '',
+  });
+}
+
+export async function updateAuthPassword({ currentPassword, nextPassword }) {
+  if (!auth.currentUser?.email) {
+    throw new Error('No authenticated user is available.');
+  }
+
+  const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+  await reauthenticateWithCredential(auth.currentUser, credential);
+  await updatePassword(auth.currentUser, nextPassword);
 }
 
 const AUTH_ERROR_MESSAGES = {

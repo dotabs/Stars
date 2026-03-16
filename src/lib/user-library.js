@@ -7,6 +7,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { syncUserProfileStats } from '@/lib/social';
 
 const COLLECTION_NAME = 'userLibraries';
 const LIBRARY_UPDATED_EVENT = 'stars:library-updated';
@@ -144,6 +145,15 @@ async function writeLibraryItem(userId, movieId, nextItem) {
   );
 }
 
+async function syncLibraryCountsToProfile(userId) {
+  const nextLibrary = await readLibraryState(userId);
+  await syncUserProfileStats(userId, {
+    watchlistCount: nextLibrary.watchlist.length,
+    watchedCount: nextLibrary.watched.length,
+    favoritesCount: nextLibrary.favorites.length,
+  });
+}
+
 export function getEmptyUserLibrary() {
   return emptyLibraryState;
 }
@@ -204,10 +214,12 @@ export async function setLibraryItemState({ userId, listName, movieId, enabled }
       }
     }
 
+    await syncLibraryCountsToProfile(userId);
     return;
   }
 
   await writeLibraryItem(userId, movieId, nextItem);
+  await syncLibraryCountsToProfile(userId);
 }
 
 export async function toggleLibraryItem({ userId, listName, movieId }) {

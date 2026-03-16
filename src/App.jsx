@@ -13,6 +13,10 @@ const TvShow = lazy(() => import('@/pages/TvShow').then((module) => ({ default: 
 const Person = lazy(() => import('@/pages/Person').then((module) => ({ default: module.Person })));
 const Watchlist = lazy(() => import('@/pages/Watchlist').then((module) => ({ default: module.Watchlist })));
 const Lists = lazy(() => import('@/pages/Lists').then((module) => ({ default: module.Lists })));
+const Profile = lazy(() => import('@/pages/Profile').then((module) => ({ default: module.Profile })));
+const ProfileConnections = lazy(() => import('@/pages/ProfileConnections').then((module) => ({ default: module.ProfileConnections })));
+const Notifications = lazy(() => import('@/pages/Notifications').then((module) => ({ default: module.Notifications })));
+const Messages = lazy(() => import('@/pages/Messages').then((module) => ({ default: module.Messages })));
 const ControlRoom = lazy(() => import('@/pages/ControlRoom').then((module) => ({ default: module.ControlRoom })));
 const Login = lazy(() => import('@/pages/Login').then((module) => ({ default: module.Login })));
 const Signup = lazy(() => import('@/pages/Signup').then((module) => ({ default: module.Signup })));
@@ -98,6 +102,11 @@ function App() {
             <Route path="/person/:id" element={<Person />}/>
             <Route path="/watchlist" element={<Watchlist />}/>
             <Route path="/lists" element={<Lists />}/>
+            <Route path="/profile" element={<Profile />}/>
+            <Route path="/profile/:userId" element={<Profile />}/>
+            <Route path="/profile/:userId/:kind" element={<ProfileConnections />}/>
+            <Route path="/notifications" element={<Notifications />}/>
+            <Route path="/messages" element={<Messages />}/>
             <Route path="/control-room" element={<ControlRoom />}/>
             <Route path="/login" element={<AuthGate>
                   <Login />

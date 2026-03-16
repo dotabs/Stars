@@ -4,6 +4,7 @@ import { Star, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getAuthErrorMessage, signUpWithEmail } from '@/lib/firebase';
+import { ensureUserProfile } from '@/lib/social';
 export function Signup() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -21,11 +22,12 @@ export function Signup() {
         }
         setIsSubmitting(true);
         try {
-            await signUpWithEmail({
+            const user = await signUpWithEmail({
                 name,
                 email: email.trim(),
                 password,
             });
+            await ensureUserProfile(user);
             navigate('/', { replace: true });
         }
         catch (error) {

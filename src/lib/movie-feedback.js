@@ -8,6 +8,7 @@ import {
   orderBy,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { ensureUserProfile, syncUserReviewStat } from '@/lib/social';
 import { getUserDisplayName } from '@/lib/user-display';
 
 const COLLECTION_NAME = 'movieFeedback';
@@ -52,6 +53,9 @@ function normalizeEntry(snapshot) {
     userId: data.userId || snapshot.id,
     movieId: data.movieId || '',
     userDisplayName: data.userDisplayName?.trim() || 'Signed in',
+    userUsername: data.userUsername?.trim() || '',
+    userAvatarUrl: data.userAvatarUrl?.trim() || '',
+    userPublicProfileId: data.userPublicProfileId?.trim() || '',
     rating: Number.isFinite(rating) && rating > 0 ? Math.max(1, Math.min(10, rating)) : null,
     reviewText: data.reviewText?.trim() || '',
     spoilerText: data.spoilerText?.trim() || '',
@@ -131,17 +135,22 @@ export async function saveMovieFeedback({ movieId, user, rating, reviewText, spo
         throw error;
       }
     });
+    await syncUserReviewStat(user.uid, movieId, false);
     return;
   }
 
   const now = new Date().toISOString();
+  const userProfile = await ensureUserProfile(user);
 
   await setDoc(
     getMovieFeedbackDocRef(movieId, user.uid),
     {
       movieId,
       userId: user.uid,
-      userDisplayName: getUserDisplayName(user),
+      userDisplayName: userProfile?.username || getUserDisplayName(user),
+      userUsername: userProfile?.username || '',
+      userAvatarUrl: userProfile?.avatarUrl || '',
+      userPublicProfileId: userProfile?.publicProfileId || '',
       rating: hasRating ? Math.round(normalizedRating) : null,
       reviewText: normalizedReviewText,
       spoilerText: normalizedSpoilerText,
@@ -150,6 +159,7 @@ export async function saveMovieFeedback({ movieId, user, rating, reviewText, spo
     },
     { merge: true }
   );
+  await syncUserReviewStat(user.uid, movieId, true);
 }
 
 export function isMovieFeedbackAuthError(error) {

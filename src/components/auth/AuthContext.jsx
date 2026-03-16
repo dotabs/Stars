@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AuthContext } from '@/components/auth/auth-context';
 import { logOut, subscribeToAuthState } from '@/lib/firebase';
+import { ensureUserProfile } from '@/lib/social';
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -8,6 +9,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = subscribeToAuthState((user) => {
+      if (user) {
+        void ensureUserProfile(user).catch((error) => {
+          console.error('Failed to ensure user profile', error);
+        });
+      }
       setCurrentUser(user);
       setAuthReady(true);
     });

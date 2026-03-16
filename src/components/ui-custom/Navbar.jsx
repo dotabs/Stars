@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowUpRight, Menu, Star, X } from 'lucide-react';
+import { ArrowUpRight, Bell, Mail, Menu, Star, User, X } from 'lucide-react';
 import { useAuth } from '@/components/auth/useAuth';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { preloadAppRoute } from '@/lib/route-preload';
 import { getUserDisplayName, getUserInitials } from '@/lib/user-display';
+import { useUnreadNotificationsCount } from '@/hooks/use-unread-notifications-count';
 
 const navLinks = [
   { path: '/', label: 'Home' },
@@ -35,6 +36,7 @@ export function Navbar() {
   const { currentUser, isAuthenticated, logOut } = useAuth();
   const displayName = getUserDisplayName(currentUser);
   const initials = getUserInitials(currentUser);
+  const unreadNotificationsCount = useUnreadNotificationsCount(currentUser?.uid);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -100,6 +102,13 @@ export function Navbar() {
           <div className="flex items-center gap-2 sm:gap-3">
             {isAuthenticated ? (
               <>
+                <Link to="/notifications" className="relative hidden h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white transition-all hover:border-[#d26d47]/35 hover:bg-white/[0.06] sm:flex">
+                  <Bell className="h-4 w-4" />
+                  {unreadNotificationsCount > 0 ? <span className="absolute -right-1 -top-1 rounded-full bg-[#d26d47] px-1.5 py-0.5 text-[10px] font-semibold text-white">{Math.min(unreadNotificationsCount, 99)}</span> : null}
+                </Link>
+                <Link to="/messages" className="hidden h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white transition-all hover:border-[#d26d47]/35 hover:bg-white/[0.06] sm:flex">
+                  <Mail className="h-4 w-4" />
+                </Link>
                 <HoverCard openDelay={120}>
                   <HoverCardTrigger asChild>
                     <button className="hidden items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] py-1.5 pl-1.5 pr-4 text-left transition-all duration-300 hover:border-[#d26d47]/35 hover:bg-white/[0.06] sm:flex">
@@ -121,6 +130,18 @@ export function Navbar() {
                         <p className="text-xs text-muted-foreground">Signed in</p>
                       </div>
                     </div>
+                    <Link to="/profile" className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-white/82 transition-all hover:bg-white/[0.05] hover:text-white">
+                      <User className="h-4 w-4" />
+                      Profile
+                    </Link>
+                    <Link to="/notifications" className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-white/82 transition-all hover:bg-white/[0.05] hover:text-white">
+                      <Bell className="h-4 w-4" />
+                      Notifications
+                    </Link>
+                    <Link to="/messages" className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-white/82 transition-all hover:bg-white/[0.05] hover:text-white">
+                      <Mail className="h-4 w-4" />
+                      Messages
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="mt-1 w-full rounded-xl border border-[#d26d47]/25 bg-[#d26d47]/10 px-3 py-2 text-left text-sm font-semibold text-white transition-all hover:border-[#d26d47]/45 hover:bg-[#d26d47]/15"
@@ -204,9 +225,14 @@ export function Navbar() {
             ))}
 
             {isAuthenticated ? (
-              <button onClick={handleLogout} className="mt-3 block w-full rounded-xl border border-[#d26d47]/30 bg-[#d26d47]/10 px-4 py-3 text-left text-sm font-semibold text-white">
-                Logout
-              </button>
+              <>
+                <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="mt-3 block rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white">Profile</Link>
+                <Link to="/notifications" onClick={() => setMobileMenuOpen(false)} className="mt-2 block rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white">Notifications</Link>
+                <Link to="/messages" onClick={() => setMobileMenuOpen(false)} className="mt-2 block rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white">Messages</Link>
+                <button onClick={handleLogout} className="mt-3 block w-full rounded-xl border border-[#d26d47]/30 bg-[#d26d47]/10 px-4 py-3 text-left text-sm font-semibold text-white">
+                  Logout
+                </button>
+              </>
             ) : (
               <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="mt-3 block rounded-xl border border-[#d26d47]/30 bg-[#d26d47]/10 px-4 py-3 text-sm font-semibold text-white">
                 Sign in

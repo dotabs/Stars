@@ -8,6 +8,9 @@ const routeLoaders = {
     '/person': () => import('@/pages/Person'),
     '/watchlist': () => import('@/pages/Watchlist'),
     '/lists': () => import('@/pages/Lists'),
+    '/profile': () => import('@/pages/Profile'),
+    '/notifications': () => import('@/pages/Notifications'),
+    '/messages': () => import('@/pages/Messages'),
     '/control-room': () => import('@/pages/ControlRoom'),
     '/login': () => import('@/pages/Login'),
     '/signup': () => import('@/pages/Signup'),
@@ -20,6 +23,8 @@ function getRouteKey(pathname) {
         return '/tv';
     if (pathname.startsWith('/person/'))
         return '/person';
+    if (pathname.startsWith('/profile/'))
+        return '/profile';
     return pathname;
 }
 export function preloadAppRoute(pathname) {

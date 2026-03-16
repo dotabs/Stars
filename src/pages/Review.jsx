@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle,
   ArrowLeft,
@@ -175,6 +175,10 @@ function getReviewAvatar(name) {
     .join('');
 
   return normalized || 'U';
+}
+
+function getReviewProfilePath(entry) {
+  return entry?.userId ? `/profile/${entry.userId}` : entry?.userPublicProfileId ? `/profile/${entry.userPublicProfileId}` : '';
 }
 
 function PersonCard({ person, subtitle, onOpen }) {
@@ -817,18 +821,26 @@ export function Review() {
                 </div>
               ) : (
                 <div className="mt-6 space-y-4">
-                  {reviewEntries.map((entry) => (
+                  {reviewEntries.map((entry) => {
+                    const profilePath = getReviewProfilePath(entry);
+                    return (
                     <article
                       key={entry.id}
                       className="rounded-2xl border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(0,0,0,0.2))] p-5 shadow-[0_12px_30px_rgba(0,0,0,0.1)] transition-all duration-200 hover:-translate-y-0.5 hover:border-white/15 hover:shadow-[0_18px_40px_rgba(210,109,71,0.1)]"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="flex h-11 w-11 flex-none items-center justify-center rounded-full border border-white/10 bg-[radial-gradient(circle_at_top,#3a241a,#1a1410)] text-sm font-semibold text-white/80">
-                          {getReviewAvatar(entry.userDisplayName)}
-                        </div>
+                        {profilePath ? (
+                          <Link to={profilePath} className="flex h-11 w-11 flex-none items-center justify-center overflow-hidden rounded-full border border-white/10 bg-[radial-gradient(circle_at_top,#3a241a,#1a1410)] text-sm font-semibold text-white/80 transition-all hover:border-[#d26d47]/35 hover:text-white">
+                            {entry.userAvatarUrl ? <img src={entry.userAvatarUrl} alt={entry.userDisplayName} className="h-full w-full object-cover" /> : getReviewAvatar(entry.userDisplayName)}
+                          </Link>
+                        ) : (
+                          <div className="flex h-11 w-11 flex-none items-center justify-center overflow-hidden rounded-full border border-white/10 bg-[radial-gradient(circle_at_top,#3a241a,#1a1410)] text-sm font-semibold text-white/80">
+                            {entry.userAvatarUrl ? <img src={entry.userAvatarUrl} alt={entry.userDisplayName} className="h-full w-full object-cover" /> : getReviewAvatar(entry.userDisplayName)}
+                          </div>
+                        )}
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2.5">
-                            <p className="font-medium text-white">{entry.userDisplayName}</p>
+                            {profilePath ? <Link to={profilePath} className="font-medium text-white transition-colors hover:text-[#f4b684]">{entry.userDisplayName}</Link> : <span className="font-medium text-white">{entry.userDisplayName}</span>}
                             {entry.rating ? (
                               <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/12 px-2.5 py-1 text-xs font-semibold text-[#ffd5bf]">
                                 <Star className="h-3.5 w-3.5 fill-current" />
@@ -855,7 +867,8 @@ export function Review() {
                         </div>
                       </div>
                     </article>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </section>
@@ -888,7 +901,9 @@ export function Review() {
                     {spoilerEntries.map((entry) => (
                       <article key={`${entry.id}-spoiler`} className="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
                         <div className="flex flex-wrap items-center gap-3">
-                          <p className="font-medium text-white">{entry.userDisplayName}</p>
+                          {getReviewProfilePath(entry)
+                            ? <Link to={getReviewProfilePath(entry)} className="font-medium text-white transition-colors hover:text-[#f4b684]">{entry.userDisplayName}</Link>
+                            : <span className="font-medium text-white">{entry.userDisplayName}</span>}
                           <span className="text-xs uppercase tracking-[0.22em] text-white/38">{formatDate(entry.updatedAt)}</span>
                         </div>
                         <p className="mt-4 text-sm leading-7 text-white/78">{entry.spoilerText}</p>
