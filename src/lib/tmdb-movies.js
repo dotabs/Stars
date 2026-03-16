@@ -47,17 +47,41 @@ const trendingCache = new Map();
 const listCache = new Map();
 const supportedStreamingLabels = new Set(browseStreamingPlatforms.map((platform) => platform.label));
 const streamingLabelByProviderId = new Map(browseStreamingPlatforms.map((platform) => [Number(platform.value), platform.label]));
+const providerUrlByProviderId = new Map([
+    [2, 'https://tv.apple.com/'],
+    [3, 'https://play.google.com/store/movies'],
+    [8, 'https://www.netflix.com/'],
+    [9, 'https://www.amazon.com/gp/video/storefront/'],
+    [10, 'https://www.amazon.com/gp/video/storefront/'],
+    [11, 'https://mubi.com/'],
+    [15, 'https://www.hulu.com/'],
+    [68, 'https://www.microsoft.com/en-us/store/movies-and-tv'],
+    [78, 'https://www.amazon.com/gp/video/storefront/'],
+    [97, 'https://www.crunchyroll.com/'],
+    [188, 'https://www.youtube.com/feed/storefront'],
+    [337, 'https://www.disneyplus.com/'],
+    [350, 'https://tv.apple.com/'],
+    [386, 'https://www.peacocktv.com/'],
+    [389, 'https://www.vudu.com/'],
+    [531, 'https://www.paramountplus.com/'],
+    [614, 'https://www.max.com/'],
+    [1920, 'https://www.hbomax.com/'],
+]);
 const streamingLabelAliases = {
     'amazon prime': 'Amazon Prime',
     'amazon prime video': 'Amazon Prime',
     'amazon video': 'Amazon Prime',
+    'apple tv': 'Apple TV',
     'apple tv+': 'Apple TV+',
     'apple tv plus': 'Apple TV+',
     'disney+': 'Disney+',
     'disney plus': 'Disney+',
+    'fandango at home': 'Fandango At Home',
+    'google play movies': 'Google Play Movies',
     'hbo max': 'Max',
     hulu: 'Hulu',
     max: 'Max',
+    'microsoft store': 'Microsoft Store',
     mubi: 'MUBI',
     netflix: 'Netflix',
     peacock: 'Peacock',
@@ -65,6 +89,34 @@ const streamingLabelAliases = {
     'peacock premium plus': 'Peacock',
     'paramount+': 'Paramount+',
     'paramount plus': 'Paramount+',
+    'vudu': 'Fandango At Home',
+    'youtube': 'YouTube',
+    'youtube movies': 'YouTube',
+};
+const providerUrlByLabel = {
+    'Amazon Prime': 'https://www.amazon.com/gp/video/storefront/',
+    'Apple TV': 'https://tv.apple.com/',
+    'Apple TV+': 'https://tv.apple.com/',
+    'Crunchyroll': 'https://www.crunchyroll.com/',
+    'Disney+': 'https://www.disneyplus.com/',
+    'Fandango At Home': 'https://www.vudu.com/',
+    'Google Play Movies': 'https://play.google.com/store/movies',
+    'Hulu': 'https://www.hulu.com/',
+    'MUBI': 'https://mubi.com/',
+    'Max': 'https://www.max.com/',
+    'Microsoft Store': 'https://www.microsoft.com/en-us/store/movies-and-tv',
+    'Netflix': 'https://www.netflix.com/',
+    'Paramount+': 'https://www.paramountplus.com/',
+    'Peacock': 'https://www.peacocktv.com/',
+    'YouTube': 'https://www.youtube.com/feed/storefront',
+};
+const providerTitleUrlBuilderByLabel = {
+    'Amazon Prime': (movie) => `https://www.amazon.com/s?k=${encodeURIComponent(buildProviderQuery(movie))}&i=instant-video`,
+    'Apple TV': (movie) => `https://tv.apple.com/search?term=${encodeURIComponent(buildProviderQuery(movie))}`,
+    'Apple TV+': (movie) => `https://tv.apple.com/search?term=${encodeURIComponent(buildProviderQuery(movie))}`,
+    'Fandango At Home': (movie) => `https://www.vudu.com/content/movies/search?searchString=${encodeURIComponent(buildProviderQuery(movie))}`,
+    'Microsoft Store': (movie) => `https://www.microsoft.com/en-us/search/shop/movies?q=${encodeURIComponent(buildProviderQuery(movie))}`,
+    'YouTube': (movie) => `https://www.youtube.com/results?search_query=${encodeURIComponent(`${buildProviderQuery(movie)} movie`)}`,
 };
 function toTmdbMovieId(id) {
     return `tmdb-${id}`;
@@ -123,6 +175,63 @@ function scoreToVerdict(score) {
 function normalizeStreamingLabel(label) {
     const normalized = label.trim().toLowerCase();
     return streamingLabelAliases[normalized] ?? label.trim();
+}
+function getProviderDisplayName(provider) {
+    return provider.provider_id !== undefined
+        ? streamingLabelByProviderId.get(provider.provider_id) ?? normalizeStreamingLabel(provider.provider_name)
+        : normalizeStreamingLabel(provider.provider_name);
+}
+function buildProviderQuery(movie) {
+    const title = normalizeString(movie?.title, 'movie');
+    const year = normalizeNumber(movie?.year, 0);
+    return year > 0 ? `${title} ${year}` : title;
+}
+function getProviderHomepage(provider) {
+    if (provider?.provider_id !== undefined) {
+        const directById = providerUrlByProviderId.get(Number(provider.provider_id));
+        if (directById) {
+            return directById;
+        }
+    }
+    const normalizedName = getProviderDisplayName(provider);
+    return providerUrlByLabel[normalizedName] ?? '';
+}
+function getProviderDestination(provider, movie, providerLink) {
+    const normalizedName = getProviderDisplayName(provider);
+    const titleUrlBuilder = providerTitleUrlBuilderByLabel[normalizedName];
+    if (titleUrlBuilder && hasProviderQueryData(movie)) {
+        return {
+            url: titleUrlBuilder(movie),
+            urlType: 'title',
+        };
+    }
+    const homepageUrl = getProviderHomepage(provider);
+    if (homepageUrl) {
+        return {
+            url: homepageUrl,
+            urlType: 'homepage',
+        };
+    }
+    if (providerLink) {
+        return {
+            url: providerLink,
+            urlType: 'tmdb',
+        };
+    }
+    return {
+        url: '',
+        urlType: 'none',
+    };
+}
+function hasProviderQueryData(movie) {
+    return Boolean(normalizeString(movie?.title));
+}
+function mapProviderUrlMetadata(provider, movie, providerLink) {
+    const destination = getProviderDestination(provider, movie, providerLink);
+    return {
+        url: destination.url,
+        urlType: destination.urlType,
+    };
 }
 async function getGenreMap() {
     if (!genreMapPromise) {
@@ -249,7 +358,7 @@ function mapFeaturedCrew(details) {
     });
     return selectedCrew;
 }
-function mapWatchProviders(providers) {
+function mapWatchProviders(providers, movie) {
     const usProviders = providers.results?.['US'];
     const providerLink = normalizeString(usProviders?.link);
     return [
@@ -257,15 +366,17 @@ function mapWatchProviders(providers) {
         ...(usProviders?.rent ?? []).map((provider) => ({ ...provider, type: 'Rent' })),
         ...(usProviders?.buy ?? []).map((provider) => ({ ...provider, type: 'Buy' })),
     ]
-        .map((provider) => ({
+        .map((provider) => {
+        const urlMetadata = mapProviderUrlMetadata(provider, movie, providerLink);
+        return {
         id: provider.provider_id,
-        name: provider.provider_id !== undefined
-            ? streamingLabelByProviderId.get(provider.provider_id) ?? normalizeStreamingLabel(provider.provider_name)
-            : normalizeStreamingLabel(provider.provider_name),
+        name: getProviderDisplayName(provider),
         type: provider.type,
         logo: provider.logo_path ? getTmdbImageUrl(provider.logo_path, 'w185') : '',
-        url: providerLink,
-    }))
+        url: urlMetadata.url,
+        urlType: urlMetadata.urlType,
+    };
+    })
         .filter((provider, index, current) => current.findIndex((entry) => entry.id === provider.id && entry.type === provider.type) === index);
 }
 function mapDetailedMovie(details, genreMap) {
@@ -645,7 +756,7 @@ export async function fetchTmdbMovieByRouteId(routeId) {
             tmdbFetch(`/movie/${tmdbId}/similar`).catch(() => ({ results: [] })),
         ]);
         const movie = mapDetailedMovie(details, genreMap);
-        const watchProviders = mapWatchProviders(providers);
+        const watchProviders = mapWatchProviders(providers, details);
         const similarMovies = (similarResponse.results ?? [])
             .slice(0, 6)
             .map((entry) => mapSummaryMovie(entry, genreMap));

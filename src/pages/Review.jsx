@@ -95,10 +95,30 @@ function buildLocalRecommendations(localMovie) {
   };
 }
 
-function getRatingTone(score) {
+function getRatingTone(type, hasData, score) {
+  if (type === 'personal') {
+    return {
+      cardClassName: `border-[#d26d47]/38 bg-[linear-gradient(180deg,rgba(210,109,71,0.26),rgba(120,44,28,0.18),rgba(30,14,12,0.92))] shadow-[0_20px_56px_rgba(210,109,71,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_62px_rgba(210,109,71,0.24)] ${!hasData ? 'opacity-92' : ''}`,
+      labelClassName: 'text-[#ffd7c8]/78',
+      valueClassName: 'text-[#fff1e9]',
+      hintClassName: 'text-[#ffd7c8]/72',
+      badgeClassName: 'border-[#ef9d7f]/26 bg-[#d26d47]/14 text-[#ffe1d3]',
+    };
+  }
+
+  if (type === 'community') {
+    return {
+      cardClassName: `border-violet-400/22 bg-[linear-gradient(180deg,rgba(96,103,220,0.16),rgba(114,67,185,0.12),rgba(15,14,30,0.9))] shadow-[0_12px_34px_rgba(88,80,190,0.12)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(88,80,190,0.16)] ${!hasData ? 'opacity-88' : ''}`,
+      labelClassName: 'text-violet-100/66',
+      valueClassName: hasData ? 'text-violet-100' : 'text-white',
+      hintClassName: 'text-violet-100/62',
+      badgeClassName: 'border-violet-300/18 bg-violet-300/8 text-violet-100/74',
+    };
+  }
+
   if (!Number.isFinite(score)) {
     return {
-      cardClassName: 'border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] shadow-[0_12px_40px_rgba(0,0,0,0.18)]',
+      cardClassName: 'border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] shadow-[0_12px_36px_rgba(0,0,0,0.16)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_42px_rgba(255,214,102,0.08)]',
       labelClassName: 'text-white/50',
       valueClassName: 'text-white',
       hintClassName: 'text-white/60',
@@ -108,63 +128,57 @@ function getRatingTone(score) {
 
   if (score >= 8) {
     return {
-      cardClassName: 'border-emerald-400/35 bg-[linear-gradient(180deg,rgba(16,185,129,0.22),rgba(8,36,28,0.88))] shadow-[0_16px_48px_rgba(16,185,129,0.2)]',
-      labelClassName: 'text-emerald-100/72',
-      valueClassName: 'text-emerald-200',
-      hintClassName: 'text-emerald-100/72',
-      badgeClassName: 'border-emerald-300/30 bg-emerald-200/12 text-emerald-100',
+      cardClassName: 'border-yellow-300/34 bg-[linear-gradient(180deg,rgba(250,204,21,0.24),rgba(132,93,12,0.14),rgba(27,21,10,0.9))] shadow-[0_16px_46px_rgba(250,204,21,0.16)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_52px_rgba(250,204,21,0.2)]',
+      labelClassName: 'text-yellow-100/74',
+      valueClassName: 'text-yellow-200',
+      hintClassName: 'text-yellow-100/72',
+      badgeClassName: 'border-yellow-300/24 bg-yellow-200/10 text-yellow-100',
     };
   }
 
   if (score >= 7) {
     return {
-      cardClassName: 'border-yellow-400/35 bg-[linear-gradient(180deg,rgba(250,204,21,0.2),rgba(43,31,8,0.88))] shadow-[0_16px_48px_rgba(250,204,21,0.16)]',
-      labelClassName: 'text-yellow-100/72',
-      valueClassName: 'text-yellow-200',
-      hintClassName: 'text-yellow-100/72',
-      badgeClassName: 'border-yellow-300/30 bg-yellow-200/10 text-yellow-100',
+      cardClassName: 'border-amber-300/32 bg-[linear-gradient(180deg,rgba(245,158,11,0.22),rgba(112,72,10,0.14),rgba(29,21,9,0.9))] shadow-[0_16px_44px_rgba(245,158,11,0.16)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(245,158,11,0.18)]',
+      labelClassName: 'text-amber-100/74',
+      valueClassName: 'text-amber-200',
+      hintClassName: 'text-amber-100/72',
+      badgeClassName: 'border-amber-300/24 bg-amber-200/10 text-amber-100',
     };
   }
 
   if (score >= 6) {
     return {
-      cardClassName: 'border-orange-400/35 bg-[linear-gradient(180deg,rgba(251,146,60,0.22),rgba(51,24,8,0.88))] shadow-[0_16px_48px_rgba(251,146,60,0.18)]',
-      labelClassName: 'text-orange-100/72',
+      cardClassName: 'border-orange-300/32 bg-[linear-gradient(180deg,rgba(251,146,60,0.22),rgba(108,54,14,0.14),rgba(30,18,10,0.9))] shadow-[0_16px_44px_rgba(251,146,60,0.16)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(251,146,60,0.18)]',
+      labelClassName: 'text-orange-100/74',
       valueClassName: 'text-orange-200',
       hintClassName: 'text-orange-100/72',
-      badgeClassName: 'border-orange-300/30 bg-orange-200/10 text-orange-100',
+      badgeClassName: 'border-orange-300/24 bg-orange-200/10 text-orange-100',
     };
   }
 
   return {
-    cardClassName: 'border-red-400/35 bg-[linear-gradient(180deg,rgba(248,113,113,0.22),rgba(50,14,14,0.88))] shadow-[0_16px_48px_rgba(248,113,113,0.18)]',
-    labelClassName: 'text-red-100/72',
+    cardClassName: 'border-red-400/30 bg-[linear-gradient(180deg,rgba(248,113,113,0.22),rgba(108,30,36,0.14),rgba(32,12,15,0.9))] shadow-[0_16px_44px_rgba(248,113,113,0.14)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(248,113,113,0.18)]',
+    labelClassName: 'text-red-100/74',
     valueClassName: 'text-red-200',
     hintClassName: 'text-red-100/72',
-    badgeClassName: 'border-red-300/30 bg-red-200/10 text-red-100',
+    badgeClassName: 'border-red-300/24 bg-red-200/10 text-red-100',
   };
 }
 
-function RatingPill({ label, value, hint, tone = 'default', score }) {
-  const toneClassName =
-    tone === 'accent'
-      ? 'border-[#d26d47]/35 bg-[linear-gradient(180deg,rgba(210,109,71,0.22),rgba(35,18,14,0.88))] shadow-[0_14px_42px_rgba(210,109,71,0.16)] text-white'
-      : tone === 'muted'
-        ? 'border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] text-white shadow-[0_10px_32px_rgba(0,0,0,0.12)]'
-        : '';
-  const scoreTone = tone === 'score' ? getRatingTone(score) : null;
+function RatingPill({ label, value, hint, tone = 'tmdb', score, hasData = true }) {
+  const styles = getRatingTone(tone, hasData, score);
 
   return (
-    <div className={`rounded-2xl border px-4 py-4 backdrop-blur-sm ${scoreTone?.cardClassName || toneClassName}`}>
+    <div className={`rounded-2xl border px-4 py-4 backdrop-blur-sm ${styles.cardClassName}`}>
       <div className="flex items-start justify-between gap-3">
-        <p className={`text-[11px] uppercase tracking-[0.28em] ${scoreTone?.labelClassName || 'text-white/50'}`}>{label}</p>
-        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${scoreTone?.badgeClassName || 'border-white/10 bg-white/[0.05] text-white/55'}`}>
+        <p className={`text-[11px] uppercase tracking-[0.28em] ${styles.labelClassName}`}>{label}</p>
+        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] ${styles.badgeClassName}`}>
           {label}
         </span>
       </div>
       <div className="mt-2 flex items-end gap-2">
-        <span className={`text-2xl font-semibold leading-none ${scoreTone?.valueClassName || 'text-white'}`}>{value}</span>
-        {hint ? <span className={`pb-0.5 text-sm ${scoreTone?.hintClassName || 'text-white/60'}`}>{hint}</span> : null}
+        <span className={`text-2xl font-semibold leading-none ${styles.valueClassName}`}>{value}</span>
+        {hint ? <span className={`pb-0.5 text-sm ${styles.hintClassName}`}>{hint}</span> : null}
       </div>
     </div>
   );
@@ -187,11 +201,11 @@ function PersonCard({ person, subtitle, onOpen }) {
     <button
       type="button"
       onClick={() => onOpen(person.id)}
-      className="group flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-black/20 p-3 text-left transition-all hover:-translate-y-0.5 hover:border-[#d26d47]/35 hover:bg-white/[0.05]"
+      className="group flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.2))] p-3.5 text-left shadow-[0_12px_30px_rgba(0,0,0,0.12)] transition-all duration-200 hover:-translate-y-1 hover:border-[#d26d47]/35 hover:bg-white/[0.05] hover:shadow-[0_20px_46px_rgba(210,109,71,0.14)]"
     >
-      <div className="flex h-[4.5rem] w-[4.5rem] flex-none items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
+      <div className="flex h-20 w-20 flex-none items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition-all duration-200 group-hover:scale-[1.03] group-hover:border-[#d26d47]/35 group-hover:shadow-[0_16px_34px_rgba(210,109,71,0.16)]">
         {person.profile ? (
-          <img src={person.profile} alt={person.name} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" decoding="async" />
+          <img src={person.profile} alt={person.name} className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" loading="lazy" decoding="async" />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_top,#3a241a,#1a1410)] text-lg font-semibold text-white/70">
             {person.name.slice(0, 1).toUpperCase()}
@@ -223,7 +237,7 @@ function MovieRail({ title, movies, onOpen }) {
             key={entry.id}
             type="button"
             onClick={() => onOpen(entry.id)}
-            className="group flex gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3 text-left transition-all hover:-translate-y-0.5 hover:border-[#d26d47]/35 hover:bg-white/[0.05]"
+            className="group flex gap-3 rounded-2xl border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.18))] p-3 text-left shadow-[0_12px_28px_rgba(0,0,0,0.1)] transition-all duration-200 hover:-translate-y-1 hover:border-[#d26d47]/35 hover:bg-white/[0.05] hover:shadow-[0_20px_44px_rgba(210,109,71,0.12)]"
           >
             <div className="h-24 w-16 flex-shrink-0 overflow-hidden rounded-xl">
               <PosterImage src={entry.poster} title={entry.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
@@ -363,7 +377,7 @@ export function Review() {
   const averageRating = feedback.averageRating;
   const tmdbRating = Number.isFinite(movie.tmdbRating) && movie.tmdbRating > 0 ? movie.tmdbRating : null;
   const watchProviders = dedupeBy(movie.watchProviders ?? [], (provider) => `${provider?.id}-${provider?.type}-${provider?.name}`).filter(
-    (provider) => hasText(provider?.name) && hasText(provider?.type)
+    (provider) => hasText(provider?.name) && hasText(provider?.type) && hasText(provider?.url)
   );
   const castMembers = dedupeBy(movie.castMembers ?? buildFallbackPeople(movie).castMembers, (member) => member?.name).filter((member) =>
     hasText(member?.name)
@@ -381,9 +395,8 @@ export function Review() {
   );
   const similarMovieIds = new Set(visibleSimilarMovies.map((entry) => entry.id));
   const visibleRecommendations = visibleRecommendationsRaw.filter((entry) => !similarMovieIds.has(entry.id));
-  const totalDistinctDiscoveryCount = new Set([...visibleSimilarMovies, ...visibleRecommendations].map((entry) => entry.id)).size;
-  const shouldShowRecommendations = visibleRecommendations.length >= 3 && totalDistinctDiscoveryCount >= 6;
-  const shouldShowSimilarMovies = visibleSimilarMovies.length >= 3;
+  const suggestedMovies = dedupeBy([...visibleSimilarMovies, ...visibleRecommendations], (entry) => entry.id).slice(0, 6);
+  const shouldShowSuggestions = suggestedMovies.length >= 3;
   const groupedProviders = ['Stream', 'Rent', 'Buy']
     .map((type) => ({
       type,
@@ -533,14 +546,16 @@ export function Review() {
                     label="TMDB rating"
                     value={tmdbRating !== null ? `${tmdbRating}/10` : 'Not available'}
                     hint={tmdbRating !== null ? 'TMDB score' : 'TMDB missing'}
-                    tone="score"
+                    tone="tmdb"
                     score={tmdbRating}
+                    hasData={tmdbRating !== null}
                   />
                   <RatingPill
                     label="Community Rating"
                     value={averageRating !== null ? `${averageRating} (${totalRatings.toLocaleString()} ${totalRatings === 1 ? 'rating' : 'ratings'})` : 'No app ratings'}
                     hint={averageRating !== null ? 'community' : 'community'}
-                    tone={averageRating !== null ? 'accent' : 'muted'}
+                    tone="community"
+                    hasData={averageRating !== null}
                   />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-stretch">
@@ -548,7 +563,8 @@ export function Review() {
                     label="My rating"
                     value={userEntry?.rating ? `${userEntry.rating}/10` : isAuthenticated ? 'Not rated' : 'Sign in'}
                     hint={userEntry?.rating ? 'your score' : isAuthenticated ? 'add yours' : 'to rate'}
-                    tone={userEntry?.rating ? 'accent' : 'muted'}
+                    tone="personal"
+                    hasData={Boolean(userEntry?.rating)}
                   />
                   <Button
                     className={`rounded-full border px-5 transition-all duration-200 ${
@@ -711,10 +727,6 @@ export function Review() {
                       : 'No reviews yet'}
                   </p>
                 </div>
-                <Button className="btn-outline" onClick={() => setIsEditorOpen(true)}>
-                  <Star className="mr-2 h-4 w-4" />
-                  Rate
-                </Button>
               </div>
 
               {isFeedbackLoading ? (
@@ -727,13 +739,16 @@ export function Review() {
               ) : (
                 <div className="mt-6 space-y-4">
                   {reviewEntries.map((entry) => (
-                    <article key={entry.id} className="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                    <article
+                      key={entry.id}
+                      className="rounded-2xl border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(0,0,0,0.2))] p-5 shadow-[0_12px_30px_rgba(0,0,0,0.1)] transition-all duration-200 hover:-translate-y-0.5 hover:border-white/15 hover:shadow-[0_18px_40px_rgba(210,109,71,0.1)]"
+                    >
                       <div className="flex items-start gap-3">
                         <div className="flex h-11 w-11 flex-none items-center justify-center rounded-full border border-white/10 bg-[radial-gradient(circle_at_top,#3a241a,#1a1410)] text-sm font-semibold text-white/80">
                           {getReviewAvatar(entry.userDisplayName)}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-3">
+                          <div className="flex flex-wrap items-center gap-2.5">
                             <p className="font-medium text-white">{entry.userDisplayName}</p>
                             {entry.rating ? (
                               <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/12 px-2.5 py-1 text-xs font-semibold text-[#ffd5bf]">
@@ -751,11 +766,11 @@ export function Review() {
                               className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-all ${
                                 helpfulByReviewId[entry.id]
                                   ? 'border-[#d26d47]/35 bg-[#d26d47]/14 text-[#ffd5bf]'
-                                  : 'border-white/10 bg-white/[0.03] text-white/62 hover:border-white/20 hover:text-white'
+                                  : 'border-white/10 bg-white/[0.03] text-white/62 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
                               }`}
                             >
                               <MessageCircleHeart className={`h-3.5 w-3.5 ${helpfulByReviewId[entry.id] ? 'fill-current' : ''}`} />
-                              {helpfulByReviewId[entry.id] ? 'Helpful' : 'Like'}
+                              Helpful
                             </button>
                           </div>
                         </div>
@@ -766,7 +781,7 @@ export function Review() {
               )}
             </section>
 
-            <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
+            <section className="mt-2 rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
               <h2 className="text-2xl font-semibold text-white">Story</h2>
               <p className="mt-4 text-sm leading-7 text-white/78">{storyText}</p>
             </section>
@@ -805,7 +820,7 @@ export function Review() {
               </section>
             ) : null}
 
-            <section className="grid gap-6 lg:grid-cols-2 xl:grid-cols-[1.25fr_1fr]">
+            <section className="mt-3 grid gap-6 lg:grid-cols-2 xl:grid-cols-[1.25fr_1fr]">
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
                 <div className="flex items-center justify-between gap-4">
                   <h2 className="text-xl font-semibold text-white">Cast</h2>
@@ -844,38 +859,68 @@ export function Review() {
               </div>
             </section>
 
-            {shouldShowSimilarMovies ? (
-              <MovieRail title="Similar movies" movies={visibleSimilarMovies} onOpen={(movieId) => navigate(`/review/${movieId}`)} />
-            ) : null}
-            {shouldShowRecommendations ? (
-              <MovieRail title="Recommendations" movies={visibleRecommendations} onOpen={(movieId) => navigate(`/review/${movieId}`)} />
+            {shouldShowSuggestions ? (
+              <MovieRail title="You might also like" movies={suggestedMovies} onOpen={(movieId) => navigate(`/review/${movieId}`)} />
             ) : null}
           </div>
 
           <aside className="space-y-6 xl:sticky xl:top-24 xl:self-start">
-            <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-white">Rating breakdown</h2>
-                <span className="text-sm text-white/50">{totalRatings.toLocaleString()} app ratings</span>
+            {groupedProviders.length > 0 ? (
+              <section className="rounded-[2rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(0,0,0,0.2))] p-6 shadow-[0_18px_48px_rgba(0,0,0,0.14)]">
+                <h2 className="text-xl font-semibold text-white">Where to watch</h2>
+                <p className="mt-2 text-sm leading-6 text-white/58">Choose a provider to open availability details in a new tab.</p>
+                <div className="mt-5 space-y-4">
+                  {groupedProviders.map((group) => (
+                    <div key={group.type}>
+                      <p className="text-xs uppercase tracking-[0.2em] text-white/45">{group.type}</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {group.providers.map((provider) => (
+                          <button
+                            key={`${provider.id}-${provider.type}`}
+                            type="button"
+                            onClick={() => provider.url && openExternalUrl(provider.url)}
+                            title={
+                              provider.urlType === 'title'
+                                ? `Open ${movie.title} on ${provider.name}`
+                                : provider.urlType === 'homepage'
+                                  ? `Open ${provider.name}`
+                                  : 'Open availability details on TMDB'
+                            }
+                            className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-sm text-white/78 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#d26d47]/35 hover:bg-white/[0.05] hover:text-white"
+                          >
+                            {provider.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
+            <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-5">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-lg font-semibold text-white">Rating breakdown</h2>
+                <span className="text-xs uppercase tracking-[0.2em] text-white/42">{totalRatings.toLocaleString()} app ratings</span>
               </div>
 
               {totalRatings === 0 ? (
-                <div className="mt-6 rounded-2xl border border-dashed border-white/12 bg-black/20 p-5">
-                  <p className="text-white">No app user ratings yet.</p>
-                  <p className="mt-2 text-sm leading-6 text-white/60">
+                <div className="mt-4 rounded-2xl border border-dashed border-white/12 bg-black/20 p-4">
+                  <p className="text-sm text-white">No app user ratings yet.</p>
+                  <p className="mt-2 text-sm leading-6 text-white/58">
                     {tmdbRating !== null ? `TMDB still reports ${tmdbRating}/10 for this movie.` : 'Rate this movie to start the breakdown.'}
                   </p>
                 </div>
               ) : (
-                <div className="mt-6 space-y-3">
+                <div className="mt-4 space-y-3">
                   {feedback.ratingBreakdown.filter((entry) => entry.count > 0).map((entry) => {
                     const width = totalRatings > 0 ? (entry.count / totalRatings) * 100 : 0;
 
                     return (
                       <div key={entry.rating}>
                         <div className="mb-1 flex items-center justify-between text-sm">
-                          <span className="text-white/65">{entry.rating}/10</span>
-                          <span className="text-white">{entry.count}</span>
+                          <span className="text-white/62">{entry.rating}/10</span>
+                          <span className="text-white/88">{entry.count}</span>
                         </div>
                         <div className="h-2 overflow-hidden rounded-full bg-white/8">
                           <div
@@ -889,42 +934,6 @@ export function Review() {
                 </div>
               )}
             </section>
-
-            {groupedProviders.length > 0 ? (
-              <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <h2 className="text-xl font-semibold text-white">Where to watch</h2>
-                <div className="mt-5 space-y-4">
-                  {groupedProviders.map((group) => (
-                    <div key={group.type}>
-                      <p className="text-xs uppercase tracking-[0.2em] text-white/45">{group.type}</p>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {group.providers.map((provider) => (
-                          <button
-                            key={`${provider.id}-${provider.type}`}
-                            type="button"
-                            onClick={() => provider.url && openExternalUrl(provider.url)}
-                            className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-sm text-white/78 transition-all hover:border-[#d26d47]/35 hover:text-white"
-                          >
-                            {provider.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {movie.trailerUrl ? (
-              <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <h2 className="text-xl font-semibold text-white">Trailer</h2>
-                <p className="mt-2 text-sm leading-6 text-white/60">Open the official trailer in a new tab.</p>
-                <Button className="btn-primary mt-5 w-full" onClick={() => openExternalUrl(movie.trailerUrl)}>
-                  <Play className="mr-2 h-4 w-4" />
-                  Watch Trailer on YouTube
-                </Button>
-              </section>
-            ) : null}
           </aside>
         </div>
       </div>
