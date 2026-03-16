@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react';
-import { BrowserRouter, HashRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AppErrorBoundary, Footer, Navbar } from '@/components/ui-custom';
+import { useAuth } from '@/components/auth/useAuth';
 import { appEnv } from '@/lib/env';
 import { preloadCoreRoutes } from '@/lib/route-preload';
 const Home = lazy(() => import('@/pages/Home').then((module) => ({ default: module.Home })));
@@ -36,6 +37,16 @@ function NotFound() {
         </p>
       </div>
     </div>);
+}
+function AuthGate({ children }) {
+    const { authReady, isAuthenticated } = useAuth();
+    if (!authReady) {
+        return <RouteFallback />;
+    }
+    if (isAuthenticated) {
+        return <Navigate to="/" replace />;
+    }
+    return children;
 }
 // Layout component that conditionally shows navbar/footer
 function Layout({ children }) {
@@ -82,8 +93,12 @@ function App() {
             <Route path="/watchlist" element={<Watchlist />}/>
             <Route path="/lists" element={<Lists />}/>
             <Route path="/control-room" element={<ControlRoom />}/>
-            <Route path="/login" element={<Login />}/>
-            <Route path="/signup" element={<Signup />}/>
+            <Route path="/login" element={<AuthGate>
+                  <Login />
+                </AuthGate>}/>
+            <Route path="/signup" element={<AuthGate>
+                  <Signup />
+                </AuthGate>}/>
             <Route path="*" element={<NotFound />}/>
           </Routes>
         </Layout>
