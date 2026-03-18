@@ -148,6 +148,8 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
       </div>);
     }
     if (variant === 'compact') {
+        const posterLoading = showRank && showRank <= 2 ? 'eager' : 'lazy';
+        const posterFetchPriority = showRank && showRank <= 2 ? 'high' : 'auto';
         return (<HoverCard openDelay={180} closeDelay={80} onOpenChange={(open) => {
                 if (open) {
                     preloadReviewRoute();
@@ -155,18 +157,18 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
                 setIsPreviewOpen(open);
             }}>
         <HoverCardTrigger asChild>
-          <div onClick={onClick} className="group relative cursor-pointer" onPointerEnter={preloadReviewRoute}>
-            <div className="relative aspect-[2/3] overflow-hidden rounded-[1.45rem] border border-white/10 transition-transform duration-200 will-change-transform group-hover:-translate-y-1" style={{
+          <div onClick={onClick} className="group relative cursor-pointer [content-visibility:auto] [contain-intrinsic-size:360px_660px]" onPointerEnter={preloadReviewRoute}>
+            <div className="relative aspect-[2/3] overflow-hidden rounded-[1.45rem] border border-white/10 transition-[transform,border-color,box-shadow] duration-200 ease-out will-change-transform group-hover:-translate-y-1 group-hover:border-white/18 motion-reduce:transform-none" style={{
                 background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
                 boxShadow: '0 18px 36px -22px rgba(0, 0, 0, 0.58)',
             }}>
-              <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" width={342} height={513} sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 44vw"/>
+              <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] motion-reduce:transform-none" loading={posterLoading} fetchPriority={posterFetchPriority} width={342} height={513} sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 44vw"/>
               {shouldUseIconFallback && FallbackIcon && (<div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(145deg,rgba(28,21,18,0.96),rgba(17,13,11,0.99))]">
                   <FallbackIcon className="h-10 w-10 text-white/38"/>
                 </div>)}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                {compactActions.length > 0 && (<div className="absolute inset-x-0 bottom-0 p-4">
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 via-black/10 to-transparent"/>
+              {compactActions.length > 0 && (<div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-2 transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 motion-reduce:transform-none">
                     <div className={`grid gap-3 ${compactActions.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
                       {compactActions.map((action) => (<button key={action.label} type="button" onClick={(event) => {
                         event.stopPropagation();
@@ -179,7 +181,6 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
                       </button>))}
                     </div>
                   </div>)}
-              </div>
 
               <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/45 to-transparent"/>
 
@@ -190,12 +191,12 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
                   {showRank}
                 </div>)}
             </div>
-            <div className="mt-3 px-1">
-              <h3 className="line-clamp-1 text-[1.02rem] font-semibold text-foreground transition-colors group-hover:text-[#f4b684]">
+            <div className="mt-3 space-y-1.5 px-1">
+              <h3 className="line-clamp-2 min-h-[3.1rem] text-[1.02rem] font-semibold leading-6 text-foreground transition-colors duration-200 group-hover:text-[#f4b684]">
                 {titleText}
               </h3>
-              <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{subtitleText}</p>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
+              <p className="line-clamp-2 min-h-[2rem] text-xs leading-4 text-muted-foreground">{subtitleText}</p>
+              <div className="flex flex-wrap items-center gap-2">
                 {badges.map((badge) => (<span key={`${badge.label}-${badge.tone ?? 'primary'}`} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${badge.tone === 'secondary'
                     ? 'border border-[#f4b684]/20 bg-[#f4b684]/10 text-[#f9d0b0]'
                     : 'border border-[#d26d47]/25 bg-[#d26d47]/10 font-bold text-[#f4b684]'}`}>
@@ -203,7 +204,7 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
                     {badge.label}
                   </span>))}
               </div>
-              <div className="mt-3 flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 pt-1">
                 {tags.map((genre) => onGenreClick ? (<button key={genre} type="button" onClick={(event) => {
                     event.stopPropagation();
                     onGenreClick(genre);
@@ -239,7 +240,7 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
                 background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
                 boxShadow: '0 30px 60px -15px rgba(0, 0, 0, 0.6)',
             }}>
-          <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" width={420} height={630} sizes="(min-width: 1024px) 30vw, 70vw"/>
+          <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.02] motion-reduce:transform-none" loading="eager" fetchPriority="high" width={420} height={630} sizes="(min-width: 1024px) 30vw, 70vw"/>
 
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"/>
 
@@ -275,7 +276,7 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
             background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
             boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.4)',
         }}>
-        <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" width={342} height={513} sizes="(min-width: 1024px) 22vw, 45vw"/>
+        <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.02] motion-reduce:transform-none" width={342} height={513} sizes="(min-width: 1024px) 22vw, 45vw"/>
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100">
           <div className="absolute bottom-0 left-0 right-0 p-4">

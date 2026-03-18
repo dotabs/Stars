@@ -71,29 +71,48 @@ function BrowseCardSkeleton({ viewMode }) {
         <div className="flex-1 space-y-3">
           <Skeleton className="h-5 w-40 bg-white/10"/>
           <Skeleton className="h-4 w-56 bg-white/10"/>
-          <Skeleton className="h-4 w-28 bg-white/10"/>
+          <div className="flex gap-2">
+            <Skeleton className="h-6 w-24 rounded-full bg-white/10"/>
+            <Skeleton className="h-6 w-28 rounded-full bg-white/10"/>
+            <Skeleton className="h-6 w-16 rounded-full bg-white/10"/>
+          </div>
           <Skeleton className="h-16 w-full bg-white/10"/>
         </div>
       </div>);
     }
     return (<div className="space-y-3">
       <Skeleton className="aspect-[2/3] rounded-[1.45rem] bg-white/10"/>
-      <Skeleton className="h-5 w-3/4 bg-white/10"/>
-      <Skeleton className="h-4 w-1/2 bg-white/10"/>
+      <Skeleton className="h-5 w-[84%] bg-white/10"/>
+      <Skeleton className="h-4 w-[62%] bg-white/10"/>
       <div className="flex gap-2">
         <Skeleton className="h-7 w-16 rounded-full bg-white/10"/>
         <Skeleton className="h-7 w-24 rounded-full bg-white/10"/>
       </div>
+      <div className="flex gap-2">
+        <Skeleton className="h-6 w-16 rounded-full bg-white/10"/>
+        <Skeleton className="h-6 w-20 rounded-full bg-white/10"/>
+        <Skeleton className="h-6 w-14 rounded-full bg-white/10"/>
+      </div>
     </div>);
 }
 const BrowseGridMovieCard = memo(function BrowseGridMovieCard({ movie, isInWatchlist, isLiked, showRank, openMovie, toggleWatchlist, toggleLike, onGenreClick, }) {
-    return (<MovieCard movie={movie} variant="compact" showRank={showRank} onClick={() => openMovie(movie.id)} onToggleWatchlist={() => toggleWatchlist(movie.id)} onToggleLike={() => toggleLike(movie.id)} isInWatchlist={isInWatchlist} isLiked={isLiked} onGenreClick={onGenreClick}/>);
+    const handleOpen = useCallback(() => {
+        openMovie(movie.id);
+    }, [movie.id, openMovie]);
+    const handleToggleWatchlist = useCallback(() => {
+        toggleWatchlist(movie.id);
+    }, [movie.id, toggleWatchlist]);
+    const handleToggleLike = useCallback(() => {
+        toggleLike(movie.id);
+    }, [movie.id, toggleLike]);
+    return (<MovieCard movie={movie} variant="compact" showRank={showRank} onClick={handleOpen} onToggleWatchlist={handleToggleWatchlist} onToggleLike={handleToggleLike} isInWatchlist={isInWatchlist} isLiked={isLiked} onGenreClick={onGenreClick}/>);
 });
 const BrowseListMovieRow = memo(function BrowseListMovieRow({ movie, isInWatchlist, isLiked, openMovie, toggleWatchlist, toggleLike, onGenreClick, }) {
-    return (<div onClick={() => openMovie(movie.id)} className="flex cursor-pointer gap-4 rounded-[1.35rem] border border-white/[0.06] bg-[rgba(20,20,28,0.8)] p-4 transition-colors hover:bg-[rgba(24,24,34,0.88)]">
+    return (<div onClick={() => openMovie(movie.id)} className="flex cursor-pointer gap-4 rounded-[1.35rem] border border-white/[0.06] bg-[rgba(20,20,28,0.8)] p-4 transition-[background-color,border-color,transform] duration-200 ease-out hover:bg-[rgba(24,24,34,0.88)] motion-reduce:transform-none [content-visibility:auto] [contain-intrinsic-size:240px_720px]">
       <div className="group relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-xl sm:h-36">
-        <PosterImage src={movie.poster} title={movie.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" width={160} height={240} sizes="160px"/>
-        <div className="absolute inset-x-2 bottom-2 flex justify-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <PosterImage src={movie.poster} title={movie.title} className="h-full w-full object-cover transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] motion-reduce:transform-none" width={160} height={240} sizes="160px"/>
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/55 to-transparent"/>
+        <div className="absolute inset-x-2 bottom-2 flex translate-y-1 justify-center gap-1 opacity-0 transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
           <button type="button" onClick={(event) => {
             event.stopPropagation();
             toggleWatchlist(movie.id);
@@ -406,30 +425,15 @@ export function Browse() {
         nextParams.delete('q');
         setSearchParams(nextParams, { replace: true });
     }, [searchParams, setSearchParams]);
-    const availableLanguageOptions = useMemo(() => {
-        const languageLabelByCode = new Map(languageOptions.map((language) => [language.value, language.label]));
-        const seen = new Set();
-        return catalogState.movies
-            .map((movie) => {
-            const code = typeof movie.originalLanguage === 'string' ? movie.originalLanguage.toLowerCase() : '';
-            const label = languageLabelByCode.get(code);
-            if (!label || seen.has(code)) {
-                return null;
-            }
-            seen.add(code);
-            return { label, value: code };
-        })
-            .filter(Boolean)
-            .sort((left, right) => left.label.localeCompare(right.label));
-    }, [catalogState.movies, languageOptions]);
+    const availableLanguageOptions = useMemo(() => languageOptions, [languageOptions]);
     useEffect(() => {
-        setSelectedLanguages((current) => current.filter((label) => availableLanguageOptions.some((language) => language.label === label)));
+        setSelectedLanguages((current) => current.filter((code) => availableLanguageOptions.some((language) => language.value === code)));
     }, [availableLanguageOptions]);
     useEffect(() => {
         setShowAllLanguages(false);
     }, [browseQueryKey]);
-    const visibleLanguageOptions = useMemo(() => showAllLanguages ? availableLanguageOptions : availableLanguageOptions.slice(0, 12), [availableLanguageOptions, showAllLanguages]);
-    const hasMoreLanguages = availableLanguageOptions.length > 12;
+    const visibleLanguageOptions = useMemo(() => showAllLanguages ? availableLanguageOptions : availableLanguageOptions.slice(0, 18), [availableLanguageOptions, showAllLanguages]);
+    const hasMoreLanguages = availableLanguageOptions.length > 18;
     const handleLoadMore = useCallback(async () => {
         const nextPage = catalogState.loadedPage + 1;
         if (nextPage > catalogState.totalPages || catalogState.isLoadingMore || catalogState.isRefreshing)
@@ -512,6 +516,8 @@ export function Browse() {
     const openMovie = useCallback((movieId) => {
         navigate(`/review/${movieId}`);
     }, [navigate]);
+    const browseGridClassName = viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1';
+    const loadingSkeletonCount = viewMode === 'grid' ? 10 : 6;
     const filtersPanel = useMemo(() => (<>
         <div className="mb-6 flex items-center justify-between gap-3">
           <div>
@@ -588,11 +594,11 @@ export function Browse() {
                 <div className="max-h-52 overflow-y-auto pr-1 [scrollbar-gutter:stable]">
                   <div className="flex flex-wrap gap-2">
                     {visibleLanguageOptions.map((language) => {
-                        const isSelected = selectedLanguages.includes(language.label);
+                        const isSelected = selectedLanguages.includes(language.value);
                         return (<button key={language.value} type="button" onClick={() => {
-                                setSelectedLanguages((current) => current.includes(language.label)
-                                    ? current.filter((entry) => entry !== language.label)
-                                    : [...current, language.label]);
+                                setSelectedLanguages((current) => current.includes(language.value)
+                                    ? current.filter((entry) => entry !== language.value)
+                                    : [...current, language.value]);
                             }} className={`filter-chip max-w-full whitespace-normal break-words text-left leading-tight ${isSelected ? 'active' : ''}`} aria-pressed={isSelected}>
                             <span className="min-w-0">{language.label}</span>
                             {isSelected ? <X className="ml-1 h-3 w-3 flex-none" /> : null}
@@ -605,7 +611,7 @@ export function Browse() {
                     }} className="mt-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55 transition-colors hover:text-white">
                     {showAllLanguages ? 'Show less' : `Show more (${availableLanguageOptions.length - visibleLanguageOptions.length})`}
                   </button>) : null}
-              </>) : (<p className="text-sm text-muted-foreground">No languages with matching titles are available right now.</p>)}
+              </>) : (<p className="text-sm text-muted-foreground">No TMDB languages are available right now.</p>)}
           </div>
         </div>
 
@@ -775,10 +781,10 @@ export function Browse() {
                 <Button onClick={() => setSearchInputValue('')} className="btn-primary">
                   Clear search
                 </Button>
-              </div>)) : showSkeletons ? (<div className={`grid gap-5 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'}`}>
-              {Array.from({ length: viewMode === 'grid' ? 10 : 6 }).map((_, index) => (<BrowseCardSkeleton key={index} viewMode={viewMode}/>))}
+              </div>)) : showSkeletons ? (<div className={`grid gap-5 ${browseGridClassName}`}>
+              {Array.from({ length: loadingSkeletonCount }).map((_, index) => (<BrowseCardSkeleton key={index} viewMode={viewMode}/>))}
             </div>) : visibleMovies.length > 0 ? (<>
-              <div className={`grid gap-5 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1'}`}>
+              <div className={`grid gap-5 ${browseGridClassName}`}>
                 {renderedMovies.map((movie) => viewMode === 'grid' ? (<BrowseGridMovieCard key={movie.id} movie={movie} openMovie={openMovie} toggleWatchlist={handleToggleWatchlist} toggleLike={handleToggleLike} isInWatchlist={watchlistSet.has(movie.id)} isLiked={favoritesSet.has(movie.id)} onGenreClick={handleGenreClick}/>) : (<BrowseListMovieRow key={movie.id} movie={movie} openMovie={openMovie} toggleWatchlist={handleToggleWatchlist} toggleLike={handleToggleLike} isInWatchlist={watchlistSet.has(movie.id)} isLiked={favoritesSet.has(movie.id)} onGenreClick={handleGenreClick}/>))}
               </div>
 

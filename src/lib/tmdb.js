@@ -14,7 +14,7 @@ function buildTmdbUrl(path, query = {}) {
     }
     return url.toString();
 }
-export function getTmdbImageUrl(path, size = 'w780') {
+export function getTmdbImageUrl(path, size = 'w342') {
     if (!path)
         return '';
     if (path.startsWith('http'))

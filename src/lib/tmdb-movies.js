@@ -2,8 +2,29 @@ import { browseStreamingPlatforms } from '@/lib/movie-constants';
 import { movies as localMovies } from '@/data/movies';
 import { getTmdbImageUrl, tmdbFetch } from '@/lib/tmdb';
 const browseSamplePageSize = 5;
-const preferredBrowseLanguageCodes = ['en', 'es', 'fr', 'hi', 'ko', 'ja', 'zh', 'de', 'it', 'ar', 'pt', 'ru'];
+const preferredBrowseLanguageCodes = ['en', 'hi', 'ta', 'te', 'ml', 'bn', 'es', 'pt', 'fr', 'de', 'it', 'ja', 'ko', 'zh', 'ar', 'tr', 'th', 'id', 'ru'];
 const browseLanguagesCache = { promise: null };
+const tmdbLocaleByLanguageCode = {
+    ar: 'ar-SA',
+    bn: 'bn-BD',
+    de: 'de-DE',
+    en: 'en-US',
+    es: 'es-ES',
+    fr: 'fr-FR',
+    hi: 'hi-IN',
+    id: 'id-ID',
+    it: 'it-IT',
+    ja: 'ja-JP',
+    ko: 'ko-KR',
+    ml: 'ml-IN',
+    pt: 'pt-BR',
+    ru: 'ru-RU',
+    ta: 'ta-IN',
+    te: 'te-IN',
+    th: 'th-TH',
+    tr: 'tr-TR',
+    zh: 'zh-CN',
+};
 const countryByLanguageCode = {
     en: 'USA',
     fr: 'France',
@@ -14,30 +35,235 @@ const countryByLanguageCode = {
     it: 'Italy',
     pt: 'Brazil',
 };
+function formatDateOffset({ years = 0, months = 0, days = 0 } = {}) {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() + years);
+    date.setMonth(date.getMonth() + months);
+    date.setDate(date.getDate() + days);
+    return date.toISOString().slice(0, 10);
+}
 const collectionDefinitions = [
     {
         id: 'trending-week',
         title: 'Trending This Week',
         description: 'The titles pulling the strongest attention on TMDB right now.',
         endpoint: '/trending/movie/week',
+        category: 'Trending',
+        accent: 'Weekly pulse',
+        filterSummary: 'TMDB weekly trending feed',
+    },
+    {
+        id: 'trending-day',
+        title: 'Trending Today',
+        description: 'The fastest-moving movie conversation on TMDB over the last 24 hours.',
+        endpoint: '/trending/movie/day',
+        category: 'Trending',
+        accent: 'Daily spike',
+        filterSummary: 'TMDB daily trending feed',
     },
     {
         id: 'now-playing',
         title: 'Now Playing',
         description: 'Live theatrical releases currently moving through the market.',
         endpoint: '/movie/now_playing',
+        category: 'Release Radar',
+        accent: 'In theaters',
+        filterSummary: 'Current theatrical releases',
+    },
+    {
+        id: 'upcoming',
+        title: 'Upcoming Releases',
+        description: 'Major near-future releases with fresh audience momentum.',
+        endpoint: '/movie/upcoming',
+        category: 'Release Radar',
+        accent: 'Coming soon',
+        filterSummary: 'Upcoming release calendar',
     },
     {
         id: 'top-rated',
         title: 'Top Rated',
         description: "TMDB's highest-rated long-run film list.",
         endpoint: '/movie/top_rated',
+        category: 'Canonical',
+        accent: 'All-time favorites',
+        filterSummary: 'TMDB top rated chart',
     },
     {
         id: 'popular',
         title: 'Popular Worldwide',
         description: 'Broad audience favorites ranked by TMDB popularity.',
         endpoint: '/movie/popular',
+        category: 'Popular',
+        accent: 'Global reach',
+        filterSummary: 'TMDB popularity chart',
+    },
+    {
+        id: 'crowd-pleasers',
+        title: 'Crowd Pleasers',
+        description: 'Highly rated mainstream hits with serious vote volume behind them.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'vote_average.desc',
+            'vote_count.gte': 1800,
+            'vote_average.gte': 7.2,
+            'primary_release_date.gte': formatDateOffset({ years: -15 }),
+        },
+        category: 'Smart Filter',
+        accent: 'High score + high volume',
+        filterSummary: '7.2+ rating, 1.8k+ votes, last 15 years',
+    },
+    {
+        id: 'recent-breakouts',
+        title: 'Recent Breakouts',
+        description: 'Recent films with strong popularity and above-average reception.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'popularity.desc',
+            'primary_release_date.gte': formatDateOffset({ years: -2 }),
+            'vote_average.gte': 6.7,
+            'vote_count.gte': 250,
+        },
+        category: 'Smart Filter',
+        accent: 'New and hot',
+        filterSummary: 'Last 2 years, 6.7+ rating, 250+ votes',
+    },
+    {
+        id: 'action-pulse',
+        title: 'Action Pulse',
+        description: 'High-velocity action titles sorted for momentum and recent audience pull.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'popularity.desc',
+            with_genres: '28',
+            'primary_release_date.gte': formatDateOffset({ years: -12 }),
+            'vote_count.gte': 120,
+        },
+        category: 'Genre',
+        accent: 'Action',
+        filterSummary: 'Action, popular, last 12 years',
+    },
+    {
+        id: 'sci-fi-prestige',
+        title: 'Sci-Fi Prestige',
+        description: 'Science fiction with strong ratings, solid vote counts, and modern relevance.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'vote_average.desc',
+            with_genres: '878',
+            'vote_count.gte': 350,
+            'vote_average.gte': 6.8,
+            'primary_release_date.gte': formatDateOffset({ years: -25 }),
+        },
+        category: 'Genre',
+        accent: 'Science fiction',
+        filterSummary: 'Sci-fi, 6.8+ rating, 350+ votes',
+    },
+    {
+        id: 'animation-all-ages',
+        title: 'Animation All Ages',
+        description: 'Animated films with broad appeal, healthy scores, and strong popularity.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'popularity.desc',
+            with_genres: '16',
+            'vote_average.gte': 6.5,
+            'vote_count.gte': 150,
+            'primary_release_date.gte': formatDateOffset({ years: -20 }),
+        },
+        category: 'Genre',
+        accent: 'Animation',
+        filterSummary: 'Animation, 6.5+ rating, 150+ votes',
+    },
+    {
+        id: 'horror-after-dark',
+        title: 'Horror After Dark',
+        description: 'Recent horror titles filtered for discovery, popularity, and audience response.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'popularity.desc',
+            with_genres: '27',
+            'vote_average.gte': 5.8,
+            'vote_count.gte': 80,
+            'primary_release_date.gte': formatDateOffset({ years: -10 }),
+        },
+        category: 'Genre',
+        accent: 'Horror',
+        filterSummary: 'Horror, last 10 years, 80+ votes',
+    },
+    {
+        id: 'spanish-language',
+        title: 'Spanish-Language Spotlight',
+        description: 'Spanish-language films surfaced by popularity and modern audience interest.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'popularity.desc',
+            with_original_language: 'es',
+            'vote_average.gte': 6.4,
+            'vote_count.gte': 40,
+            'primary_release_date.gte': formatDateOffset({ years: -20 }),
+        },
+        category: 'Language',
+        accent: 'Spanish',
+        filterSummary: 'Original language: Spanish',
+    },
+    {
+        id: 'japanese-language',
+        title: 'Japanese Cinema Now',
+        description: 'Japanese-language films balancing strong ratings with current viewer pull.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'popularity.desc',
+            with_original_language: 'ja',
+            'vote_average.gte': 6.6,
+            'vote_count.gte': 50,
+            'primary_release_date.gte': formatDateOffset({ years: -20 }),
+        },
+        category: 'Language',
+        accent: 'Japanese',
+        filterSummary: 'Original language: Japanese',
+    },
+    {
+        id: 'korean-language',
+        title: 'Korean Standouts',
+        description: 'Korean-language movies with strong audience traction and reliable scores.',
+        endpoint: '/discover/movie',
+        query: {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: 'popularity.desc',
+            with_original_language: 'ko',
+            'vote_average.gte': 6.5,
+            'vote_count.gte': 60,
+            'primary_release_date.gte': formatDateOffset({ years: -20 }),
+        },
+        category: 'Language',
+        accent: 'Korean',
+        filterSummary: 'Original language: Korean',
     },
 ];
 let genreMapPromise = null;
@@ -130,7 +356,8 @@ function sortNumbers(values) {
     return values ? [...values].sort((left, right) => left - right) : undefined;
 }
 export function serializeBrowseMovieQuery(query = {}) {
-    const { languageOptions, ...rest } = query;
+    const rest = { ...query };
+    delete rest.languageOptions;
     return JSON.stringify({
         ...rest,
         genres: sortStrings(query.genres),
@@ -208,6 +435,24 @@ export async function fetchBrowseLanguages() {
 }
 function createLanguageCodeByLabel(languages = []) {
     return new Map(languages.map((language) => [language.label, language.value]));
+}
+function resolveSelectedLanguageCodes(query = {}) {
+    const languageCodeByLabel = createLanguageCodeByLabel(query.languageOptions);
+    return dedupeStrings((query.languages ?? [])
+        .map((entry) => {
+        const normalizedEntry = normalizeString(entry).toLowerCase();
+        if (/^[a-z]{2}$/.test(normalizedEntry)) {
+            return normalizedEntry;
+        }
+        return languageCodeByLabel.get(entry);
+    })
+        .filter((code) => Boolean(code)));
+}
+function getTmdbBrowseLocale(languageCodes = []) {
+    if (languageCodes.length !== 1) {
+        return 'en-US';
+    }
+    return tmdbLocaleByLanguageCode[languageCodes[0]] ?? 'en-US';
 }
 function dedupeStrings(values) {
     return values.filter((value, index, current) => Boolean(value) && current.indexOf(value) === index);
@@ -311,17 +556,30 @@ function mapLanguage(details, movie) {
     const code = movie?.original_language ?? 'en';
     return countryByLanguageCode[code] ?? normalizeString(code.toUpperCase(), 'Unknown');
 }
-function mapSummaryMovie(movie, genreMap) {
+function pickPreferredMovieTitle({ englishTitle, localizedTitle, originalTitle }) {
+    return normalizeString(englishTitle) || normalizeString(localizedTitle) || normalizeString(originalTitle) || 'Untitled movie';
+}
+function mapSummaryMovie(movie, genreMap, options = {}) {
     const year = getReleaseYear(movie.release_date);
     const tmdbRating = Number(normalizeNumber(movie.vote_average).toFixed(1));
     const genres = movie.genre_ids
         ?.map((genreId) => genreMap.get(genreId))
         .filter((genre) => Boolean(genre)) ?? [];
+    const localizedTitle = normalizeString(movie.title);
+    const originalTitle = normalizeString(movie.original_title, localizedTitle);
+    const englishTitle = normalizeString(options.englishTitle);
     return {
         id: toTmdbMovieId(movie.id),
         source: 'tmdb',
         tmdbId: movie.id,
-        title: normalizeString(movie.title, 'Untitled movie'),
+        title: pickPreferredMovieTitle({
+            englishTitle,
+            localizedTitle,
+            originalTitle,
+        }),
+        englishTitle,
+        localizedTitle,
+        originalTitle,
         year,
         releaseDate: normalizeString(movie.release_date),
         genres: genres.length ? genres : ['Drama'],
@@ -330,7 +588,7 @@ function mapSummaryMovie(movie, genreMap) {
         tmdbRating,
         reviewCount: Math.max(0, Math.round(normalizeNumber(movie.vote_count))),
         popularity: normalizeNumber(movie.popularity),
-        poster: movie.poster_path ? getTmdbImageUrl(movie.poster_path, 'w780') : '',
+        poster: movie.poster_path ? getTmdbImageUrl(movie.poster_path, 'w342') : '',
         backdrop: movie.backdrop_path ? getTmdbImageUrl(movie.backdrop_path, 'w1280') : '',
         director: 'Not available',
         cast: [],
@@ -434,8 +692,8 @@ function mapWatchProviders(providers, movie) {
     })
         .filter((provider, index, current) => current.findIndex((entry) => entry.id === provider.id && entry.type === provider.type) === index);
 }
-function mapDetailedMovie(details, genreMap) {
-    const base = mapSummaryMovie(details, genreMap);
+function mapDetailedMovie(details, genreMap, options = {}) {
+    const base = mapSummaryMovie(details, genreMap, options);
     const director = normalizeString(details.credits?.crew.find((person) => person.job === 'Director')?.name, 'Unknown Director');
     const featuredCast = mapFeaturedCast(details);
     const cast = dedupeStrings(featuredCast.slice(0, 5).map((person) => person.name));
@@ -456,11 +714,15 @@ function mapDetailedMovie(details, genreMap) {
         trailerUrl: pickBestTrailer(details),
     };
 }
-async function fetchBrowseMovieDetails(tmdbId, genreMap) {
-    if (!browseMovieCache.has(tmdbId)) {
-        browseMovieCache.set(tmdbId, Promise.all([
+async function fetchBrowseMovieDetails(tmdbId, genreMap, language, englishTitle) {
+    const cacheKey = `${tmdbId}:${language ?? 'default'}:${normalizeString(englishTitle)}`;
+    if (!browseMovieCache.has(cacheKey)) {
+        browseMovieCache.set(cacheKey, Promise.all([
             tmdbFetch(`/movie/${tmdbId}`, {
-                query: { append_to_response: 'credits' },
+                query: {
+                    append_to_response: 'credits',
+                    language,
+                },
             }),
             tmdbFetch(`/movie/${tmdbId}/watch/providers`).catch(() => ({ results: {} })),
         ]).then(([details, providers]) => {
@@ -479,12 +741,12 @@ async function fetchBrowseMovieDetails(tmdbId, genreMap) {
                 .filter((providerName, index, current) => current.indexOf(providerName) === index)
                 .filter((providerName) => supportedStreamingLabels.has(providerName));
             return {
-                ...mapDetailedMovie(details, genreMap),
+                ...mapDetailedMovie(details, genreMap, { englishTitle }),
                 streaming: providerNames,
             };
         }));
     }
-    return browseMovieCache.get(tmdbId);
+    return browseMovieCache.get(cacheKey);
 }
 async function searchPeopleIds(query, department) {
     const normalizedQuery = query.trim().toLowerCase();
@@ -511,6 +773,63 @@ async function fetchList(endpoint, limit = 12) {
     const cacheKey = `${endpoint}:${limit}`;
     if (!listCache.has(cacheKey)) {
         listCache.set(cacheKey, Promise.all([getGenreMap(), tmdbFetch(endpoint)]).then(([genreMap, response]) => response.results.slice(0, limit).map((movie) => mapSummaryMovie(movie, genreMap))));
+    }
+    return listCache.get(cacheKey);
+}
+function getCollectionDefinition(collectionId) {
+    return collectionDefinitions.find((collection) => collection.id === collectionId) ?? null;
+}
+function serializeExcludeIds(excludeIds = []) {
+    return [...new Set(excludeIds)].sort().join(',');
+}
+function buildCollectionRequest(definition, page) {
+    return tmdbFetch(definition.endpoint, {
+        query: {
+            ...(definition.query ?? {}),
+            page,
+        },
+    });
+}
+async function fetchCollectionResults(definition, { page = 1, limit = 12, excludeIds = [] } = {}) {
+    const cacheKey = `${definition.id}:${page}:${limit}:${serializeExcludeIds(excludeIds)}`;
+    if (!listCache.has(cacheKey)) {
+        listCache.set(cacheKey, (async () => {
+            const [genreMap] = await Promise.all([getGenreMap()]);
+            const excludedMovieIds = new Set(excludeIds);
+            const seenMovieIds = new Set(excludeIds);
+            const movies = [];
+            let currentPage = Math.max(1, page);
+            let pagesVisited = 0;
+            let totalPages = currentPage;
+            let tmdbTotalResults = 0;
+            while (movies.length < limit && currentPage <= totalPages && pagesVisited < 4) {
+                const response = await buildCollectionRequest(definition, currentPage);
+                totalPages = Math.max(1, Math.min(500, Number(response.total_pages) || 1));
+                tmdbTotalResults = Math.max(tmdbTotalResults, Number(response.total_results) || 0);
+                const pageMovies = (response.results ?? [])
+                    .filter((movie) => Boolean(movie?.title))
+                    .map((movie) => mapSummaryMovie(movie, genreMap))
+                    .filter((movie) => {
+                    if (seenMovieIds.has(movie.id)) {
+                        return false;
+                    }
+                    seenMovieIds.add(movie.id);
+                    return true;
+                });
+                movies.push(...pageMovies);
+                currentPage += 1;
+                pagesVisited += 1;
+            }
+            return {
+                movies: movies.slice(0, limit),
+                page: Math.max(page, currentPage - 1),
+                totalPages,
+                totalResults: Math.max(tmdbTotalResults, movies.length),
+                tmdbTotalResults: Math.max(tmdbTotalResults, movies.length),
+                excludedCount: excludedMovieIds.size,
+                hasMore: currentPage <= totalPages,
+            };
+        })());
     }
     return listCache.get(cacheKey);
 }
@@ -617,7 +936,6 @@ function getDateRange(query) {
 }
 async function buildBrowseDiscoverQuery(query) {
     const genreIdMap = await getGenreIdMap();
-    const languageCodeByLabel = createLanguageCodeByLabel(query.languageOptions);
     const [directorIds, castIds] = await Promise.all([
         query.directorQuery ? searchPeopleIds(query.directorQuery, 'Directing') : Promise.resolve([]),
         query.castQuery ? searchPeopleIds(query.castQuery, 'Acting') : Promise.resolve([]),
@@ -629,13 +947,11 @@ async function buildBrowseDiscoverQuery(query) {
     const providerIds = (query.streamingPlatforms ?? [])
         .map((label) => browseStreamingPlatforms.find((platform) => platform.label === label)?.value)
         .filter((providerId) => Boolean(providerId));
-    const languageCodes = (query.languages ?? [])
-        .map((label) => languageCodeByLabel.get(label))
-        .filter((code) => Boolean(code));
+    const languageCodes = resolveSelectedLanguageCodes(query);
     return {
         include_adult: false,
         include_video: false,
-        language: 'en-US',
+        language: getTmdbBrowseLocale(languageCodes),
         page: query.page ?? 1,
         sort_by: mapBrowseSort(query.sortBy),
         'primary_release_date.gte': minDate,
@@ -656,10 +972,7 @@ function matchesBrowseMovie(movie, query, options) {
     const normalizedSearch = query.query?.trim().toLowerCase() ?? '';
     const normalizedDirectorQuery = query.directorQuery?.trim().toLowerCase() ?? '';
     const normalizedCastQuery = query.castQuery?.trim().toLowerCase() ?? '';
-    const languageCodeByLabel = createLanguageCodeByLabel(query.languageOptions);
-    const selectedLanguageCodes = (query.languages ?? [])
-        .map((label) => languageCodeByLabel.get(label))
-        .filter((code) => Boolean(code));
+    const selectedLanguageCodes = resolveSelectedLanguageCodes(query);
     return ((!(query.genres?.length) || movie.genres.some((genre) => query.genres?.includes(genre))) &&
         (!(query.verdicts?.length) || query.verdicts.includes(movie.verdict)) &&
         (!(query.decades?.length) || query.decades.includes(movie.decade)) &&
@@ -684,12 +997,47 @@ function clampReleaseDateUpperBound(existingMaxDate, today) {
     }
     return existingMaxDate < today ? existingMaxDate : today;
 }
+async function fetchBrowsePageResponse(endpoint, requestQuery, page, releaseDateUpperBound) {
+    return tmdbFetch(endpoint, {
+        query: {
+            ...requestQuery,
+            page,
+            'primary_release_date.lte': releaseDateUpperBound,
+        },
+    });
+}
+async function fetchBrowsePageResponses(endpoint, requestQuery, requestedPage, totalPages, primaryResponse, options = {}) {
+    const { shouldExpandSearchPages = false, useSampledBrowsePages = false, releaseDateUpperBound } = options;
+    const pages = shouldExpandSearchPages
+        ? getBrowseSequentialPages(totalPages, requestedPage)
+        : useSampledBrowsePages
+            ? getBrowseSamplePages(totalPages, requestedPage)
+            : [primaryResponse.page];
+    return Promise.all(pages.map((page) => page === primaryResponse.page
+        ? Promise.resolve(primaryResponse)
+        : fetchBrowsePageResponse(endpoint, requestQuery, page, releaseDateUpperBound)));
+}
+function buildEnglishTitleLookup(pageResponses = []) {
+    const englishTitleByTmdbId = new Map();
+    pageResponses
+        .flatMap((pageResponse) => pageResponse.results ?? [])
+        .forEach((movie) => {
+        englishTitleByTmdbId.set(movie.id, pickPreferredMovieTitle({
+            englishTitle: movie?.title,
+            localizedTitle: movie?.title,
+            originalTitle: movie?.original_title,
+        }));
+    });
+    return englishTitleByTmdbId;
+}
 async function fetchBrowseCatalogPage(query) {
     const genreMap = await getGenreMap();
     const today = new Date().toISOString().slice(0, 10);
     const normalizedQuery = query.query?.trim();
     const endpoint = normalizedQuery ? '/search/movie' : '/discover/movie';
     const requestedPage = query.page ?? 1;
+    const selectedLanguageCodes = resolveSelectedLanguageCodes(query);
+    const browseLocale = getTmdbBrowseLocale(selectedLanguageCodes);
     const shouldExpandSearchPages = Boolean(normalizedQuery &&
         (query.genres?.length ||
             query.verdicts?.length ||
@@ -710,7 +1058,7 @@ async function fetchBrowseCatalogPage(query) {
     const requestQuery = normalizedQuery
         ? {
             include_adult: false,
-            language: 'en-US',
+            language: browseLocale,
             page: actualRequestedPage,
             query: normalizedQuery,
             primary_release_year: query.exactYear,
@@ -725,34 +1073,37 @@ async function fetchBrowseCatalogPage(query) {
         },
     });
     const useSampledBrowsePages = !normalizedQuery && !query.sortBy && !needsBrowseDetails(query);
-    const pageResponses = shouldExpandSearchPages
-        ? await Promise.all(getBrowseSequentialPages(response.total_pages, requestedPage).map((page) => page === response.page
-            ? Promise.resolve(response)
-            : tmdbFetch(endpoint, {
-                query: {
-                    ...requestQuery,
-                    page,
-                    'primary_release_date.lte': releaseDateUpperBound,
-                },
-            })))
-        : useSampledBrowsePages
-            ? await Promise.all(getBrowseSamplePages(response.total_pages, requestedPage).map((page) => page === response.page
-                ? Promise.resolve(response)
-                : tmdbFetch(endpoint, {
-                    query: {
-                        ...requestQuery,
-                        page,
-                        'primary_release_date.lte': releaseDateUpperBound,
-                    },
-                })))
-            : [response];
-    const summaryMovies = dedupeBrowseMovies(pageResponses.flatMap((pageResponse) => pageResponse.results).map((movie) => mapSummaryMovie(movie, genreMap)));
+    const pageResponses = await fetchBrowsePageResponses(endpoint, requestQuery, requestedPage, response.total_pages, response, {
+        shouldExpandSearchPages,
+        useSampledBrowsePages,
+        releaseDateUpperBound,
+    });
+    const englishTitleByTmdbId = browseLocale === 'en-US'
+        ? new Map()
+        : buildEnglishTitleLookup(await fetchBrowsePageResponses(endpoint, {
+            ...requestQuery,
+            language: 'en-US',
+        }, requestedPage, response.total_pages, await fetchBrowsePageResponse(endpoint, {
+            ...requestQuery,
+            language: 'en-US',
+        }, response.page, releaseDateUpperBound), {
+            shouldExpandSearchPages,
+            useSampledBrowsePages,
+            releaseDateUpperBound,
+        }));
+    const summaryMovies = dedupeBrowseMovies(pageResponses
+        .flatMap((pageResponse) => pageResponse.results)
+        .map((movie) => mapSummaryMovie(movie, genreMap, {
+        englishTitle: englishTitleByTmdbId.get(movie.id),
+    })));
     const canTrustTmdbStreamingQuery = endpoint === '/discover/movie' && Boolean(query.streamingPlatforms?.length);
     let movies = summaryMovies.filter((movie) => matchesBrowseMovie(movie, query, { skipStreamingPlatforms: canTrustTmdbStreamingQuery }));
     if (needsBrowseDetails(query)) {
         const detailedMovies = await Promise.all(pageResponses
             .flatMap((pageResponse) => pageResponse.results)
-            .map((movie) => fetchBrowseMovieDetails(movie.id, genreMap).catch(() => mapSummaryMovie(movie, genreMap))));
+            .map((movie) => fetchBrowseMovieDetails(movie.id, genreMap, browseLocale, englishTitleByTmdbId.get(movie.id)).catch(() => mapSummaryMovie(movie, genreMap, {
+            englishTitle: englishTitleByTmdbId.get(movie.id),
+        }))));
         const filteredDetailedMovies = dedupeBrowseMovies(detailedMovies.filter((movie) => matchesBrowseMovie(movie, query)));
         if (filteredDetailedMovies.length > 0) {
             movies = filteredDetailedMovies;
@@ -847,12 +1198,38 @@ export async function fetchMoviesByRouteIds(routeIds) {
     const movies = await Promise.all(tmdbIds.map((id) => fetchTmdbMovieByRouteId(toTmdbMovieId(id))));
     return movies.map((entry) => entry?.movie).filter((movie) => Boolean(movie));
 }
-export async function fetchTmdbCollections() {
-    const collections = await Promise.all(collectionDefinitions.map(async (collection) => {
-        const movies = await fetchList(collection.endpoint, 12);
-        return { ...collection, movies };
-    }));
+export async function fetchTmdbCollections(previewLimit = 8) {
+    const claimedMovieIds = new Set();
+    const collections = [];
+    for (const collection of collectionDefinitions) {
+        const page = await fetchCollectionResults(collection, {
+            page: 1,
+            limit: previewLimit,
+            excludeIds: Array.from(claimedMovieIds),
+        });
+        page.movies.forEach((movie) => claimedMovieIds.add(movie.id));
+        collections.push({
+            ...collection,
+            movies: page.movies,
+            currentPage: page.page,
+            totalPages: page.totalPages,
+            totalResults: page.totalResults,
+            tmdbTotalResults: page.tmdbTotalResults,
+            uniqueLoadedCount: page.movies.length,
+            hasMore: page.hasMore,
+        });
+    }
     return collections;
+}
+export async function fetchTmdbCollectionPage(collectionId, options = {}) {
+    const definition = getCollectionDefinition(collectionId);
+    if (!definition) {
+        throw new Error(`Unknown collection: ${collectionId}`);
+    }
+    return {
+        collectionId,
+        ...(await fetchCollectionResults(definition, options)),
+    };
 }
 export function isTmdbMovieId(id) {
     return fromTmdbMovieId(id) !== null;

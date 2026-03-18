@@ -115,7 +115,7 @@ function mapTmdbMovie(movie, genreMap, countryKey) {
         score,
         reviewCount: movie.vote_count,
         popularity: movie.popularity,
-        poster: movie.poster_path ? getTmdbImageUrl(movie.poster_path, 'w780') : '',
+        poster: movie.poster_path ? getTmdbImageUrl(movie.poster_path, 'w342') : '',
         backdrop: movie.backdrop_path ? getTmdbImageUrl(movie.backdrop_path, 'w1280') : '',
         director: 'TMDB discovery',
         cast: [],

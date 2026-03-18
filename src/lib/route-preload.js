@@ -40,5 +40,5 @@ export function preloadAppRoute(pathname) {
     });
 }
 export function preloadCoreRoutes() {
-    ['/browse', '/explore', '/search'].forEach(preloadAppRoute);
+    ['/browse', '/explore', '/search', '/lists', '/watchlist', '/profile', '/notifications', '/messages', '/login', '/signup'].forEach(preloadAppRoute);
 }
