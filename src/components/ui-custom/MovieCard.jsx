@@ -1,8 +1,6 @@
-import { memo, useEffect, useState } from 'react';
-import { Bookmark, Heart, MessageSquareText, Play, Star, Users } from 'lucide-react';
+import { memo } from 'react';
+import { Bookmark, MessageSquareText, Play, Star } from 'lucide-react';
 import { getPosterFallback, resolvePosterUrl } from '@/lib/posters';
-import { fetchTmdbMovieByRouteId } from '@/lib/tmdb-movies';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { PosterImage } from './PosterImage';
 import { VerdictBadge } from './VerdictBadge';
 function getReviewCount(movie) {
@@ -10,116 +8,17 @@ function getReviewCount(movie) {
         return movie.reviewCount;
     return Math.max(48, Math.round(movie.score * 420 + Math.max(0, new Date().getFullYear() - movie.year) * 12));
 }
-function normalizePreviewDirector(movie) {
-    const director = movie.director?.trim();
-    if (!director || director.toLowerCase() === 'tmdb' || director.toLowerCase() === 'unknown director') {
-        return 'Not available';
-    }
-    return director;
-}
-function normalizePreviewCast(movie) {
-    const cast = movie.cast
-        .map((member) => member.trim())
-        .filter(Boolean)
-        .slice(0, 3);
-    return cast.length > 0 ? cast.join(', ') : 'Not available';
-}
-function needsPreviewCredits(movie) {
-    return movie.source === 'tmdb' && (normalizePreviewDirector(movie) === 'Not available' || normalizePreviewCast(movie) === 'Not available');
-}
-let reviewRoutePreloaded = false;
-const previewMovieCache = new Map();
-const previewMoviePromiseCache = new Map();
-function preloadReviewRoute() {
-    if (reviewRoutePreloaded)
-        return;
-    reviewRoutePreloaded = true;
-    void import('@/pages/Review');
-}
-export const MovieCard = memo(function MovieCard({ movie, variant = 'default', onClick, onSave, onToggleWatchlist, onToggleLike, onGenreClick, showRank, isInWatchlist = false, isLiked = false, display, }) {
-    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-    const [previewMovie, setPreviewMovie] = useState(movie);
-    useEffect(() => {
-        setPreviewMovie(movie);
-    }, [movie]);
-    useEffect(() => {
-        if (variant !== 'compact' || !isPreviewOpen || !needsPreviewCredits(movie)) {
-            return;
-        }
-        const cachedMovie = previewMovieCache.get(movie.id);
-        if (cachedMovie) {
-            setPreviewMovie(cachedMovie);
-            return;
-        }
-        let cancelled = false;
-        const existingPromise = previewMoviePromiseCache.get(movie.id);
-        const previewPromise = existingPromise ??
-            fetchTmdbMovieByRouteId(movie.id)
-                .then((result) => result?.movie ?? null)
-                .catch(() => null);
-        if (!existingPromise) {
-            previewMoviePromiseCache.set(movie.id, previewPromise);
-        }
-        void previewPromise.then((nextMovie) => {
-            previewMoviePromiseCache.delete(movie.id);
-            if (!nextMovie)
-                return;
-            previewMovieCache.set(movie.id, nextMovie);
-            if (!cancelled) {
-                setPreviewMovie(nextMovie);
-            }
-        });
-        return () => {
-            cancelled = true;
-        };
-    }, [isPreviewOpen, movie, variant]);
+export const MovieCard = memo(function MovieCard({ movie, variant = 'default', onClick, onPlay, onSave, onToggleWatchlist, showRank, isInWatchlist = false, display, }) {
     const titleText = display?.title ?? movie.title;
     const rawPosterSource = display?.posterUrl ?? movie.poster;
     const resolvedPosterUrl = resolvePosterUrl(rawPosterSource, titleText);
     const shouldUseIconFallback = Boolean(display?.fallbackIcon) && !rawPosterSource && !resolvedPosterUrl;
     const posterUrl = shouldUseIconFallback ? '' : resolvedPosterUrl || getPosterFallback(titleText);
-    const displayMovie = variant === 'compact' ? previewMovie : movie;
+    const displayMovie = movie;
     const reviewCount = getReviewCount(displayMovie);
     const reviewCountLabel = `${reviewCount.toLocaleString()} reviews`;
-    const runtimeLabel = displayMovie.runtime ? `${displayMovie.runtime} min` : 'Runtime pending';
-    const previewDirector = normalizePreviewDirector(displayMovie);
-    const topCast = normalizePreviewCast(displayMovie);
-    const subtitleText = display?.subtitle ?? `${movie.year}${movie.runtime ? ` / ${runtimeLabel}` : ''}`;
-    const badges = display?.badges ?? [
-        {
-            label: movie.score.toFixed(1),
-            icon: Star,
-            tone: 'primary',
-        },
-        {
-            label: reviewCountLabel,
-            icon: Users,
-            tone: 'secondary',
-        },
-    ];
-    const tags = display?.tags ?? movie.genres.slice(0, 3);
-    const previewSections = display?.previewSections ?? [
-        { label: 'Director', value: previewDirector },
-        { label: 'Top Cast', value: topCast },
-    ];
-    const previewTitle = display?.previewTitle ?? titleText;
-    const previewSubtitle = display?.previewSubtitle ?? `${movie.year} / ${runtimeLabel}`;
-    const previewSynopsis = display?.previewSynopsis ?? display?.synopsis ?? displayMovie.synopsis;
     const FallbackIcon = display?.fallbackIcon;
-    const compactActions = [
-        {
-            label: isInWatchlist ? 'Saved' : 'Watchlist',
-            icon: Bookmark,
-            onPress: onToggleWatchlist ?? onSave,
-            active: isInWatchlist,
-        },
-        {
-            label: isLiked ? 'Liked' : 'Like',
-            icon: Heart,
-            onPress: onToggleLike,
-            active: isLiked,
-        },
-    ].filter((action) => action.onPress);
+    const saveAction = onToggleWatchlist ?? onSave;
     if (variant === 'horizontal') {
         return (<div onClick={onClick} className="group flex cursor-pointer gap-4 rounded-xl p-4 transition-all duration-300" style={{
                 background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
@@ -150,89 +49,54 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
     if (variant === 'compact') {
         const posterLoading = showRank && showRank <= 2 ? 'eager' : 'lazy';
         const posterFetchPriority = showRank && showRank <= 2 ? 'high' : 'auto';
-        return (<HoverCard openDelay={180} closeDelay={80} onOpenChange={(open) => {
-                if (open) {
-                    preloadReviewRoute();
-                }
-                setIsPreviewOpen(open);
+        return (<div onClick={onClick} className="group relative cursor-pointer [content-visibility:auto] [contain-intrinsic-size:360px_660px]">
+            <div className="relative aspect-[2/3] overflow-hidden rounded-[1.35rem] border border-white/10 transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none" style={{
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.3))',
             }}>
-        <HoverCardTrigger asChild>
-          <div onClick={onClick} className="group relative cursor-pointer [content-visibility:auto] [contain-intrinsic-size:360px_660px]" onPointerEnter={preloadReviewRoute}>
-            <div className="relative aspect-[2/3] overflow-hidden rounded-[1.45rem] border border-white/10 transition-[transform,border-color,box-shadow] duration-200 ease-out will-change-transform group-hover:-translate-y-1 group-hover:border-white/18 motion-reduce:transform-none" style={{
-                background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
-                boxShadow: '0 18px 36px -22px rgba(0, 0, 0, 0.58)',
-            }}>
-              <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] motion-reduce:transform-none" loading={posterLoading} fetchPriority={posterFetchPriority} width={342} height={513} sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 44vw"/>
+              <PosterImage src={posterUrl} title={titleText} className="h-full w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-[1.03] motion-reduce:transform-none" loading={posterLoading} fetchPriority={posterFetchPriority} width={342} height={513} sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 768px) 28vw, 44vw"/>
               {shouldUseIconFallback && FallbackIcon && (<div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(145deg,rgba(28,21,18,0.96),rgba(17,13,11,0.99))]">
                   <FallbackIcon className="h-10 w-10 text-white/38"/>
                 </div>)}
-
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 via-black/10 to-transparent"/>
-              {compactActions.length > 0 && (<div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-2 transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 motion-reduce:transform-none">
-                    <div className={`grid gap-3 ${compactActions.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
-                      {compactActions.map((action) => (<button key={action.label} type="button" onClick={(event) => {
-                        event.stopPropagation();
-                        action.onPress?.();
-                    }} className={`flex min-h-11 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-[11px] font-semibold transition-all ${action.active
-                        ? 'border-[#d26d47]/50 bg-[#d26d47]/20 text-[#f7c59e]'
-                        : 'border-white/15 bg-black/35 text-white hover:border-white/30 hover:bg-black/50'}`}>
-                        <action.icon className={`h-3.5 w-3.5 ${action.active ? 'fill-current' : ''}`}/>
-                        {action.label}
-                      </button>))}
-                    </div>
-                  </div>)}
-
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/45 to-transparent"/>
-
-              {showRank && (<div className="absolute left-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold" style={{
-                    background: 'linear-gradient(135deg, #d26d47 0%, #9f472a 100%)',
-                    boxShadow: '0 0 20px rgba(210, 109, 71, 0.34)',
-                }}>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/28 to-transparent opacity-90"/>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"/>
+              {showRank && (<div className="absolute left-3 top-3 flex h-6 min-w-6 items-center justify-center rounded-full border border-white/12 bg-black/55 px-1.5 text-[10px] font-semibold text-white/85">
                   {showRank}
                 </div>)}
-            </div>
-            <div className="mt-3 space-y-1.5 px-1">
-              <h3 className="line-clamp-2 min-h-[3.1rem] text-[1.02rem] font-semibold leading-6 text-foreground transition-colors duration-200 group-hover:text-[#f4b684]">
-                {titleText}
-              </h3>
-              <p className="line-clamp-2 min-h-[2rem] text-xs leading-4 text-muted-foreground">{subtitleText}</p>
-              <div className="flex flex-wrap items-center gap-2">
-                {badges.map((badge) => (<span key={`${badge.label}-${badge.tone ?? 'primary'}`} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold ${badge.tone === 'secondary'
-                    ? 'border border-[#f4b684]/20 bg-[#f4b684]/10 text-[#f9d0b0]'
-                    : 'border border-[#d26d47]/25 bg-[#d26d47]/10 font-bold text-[#f4b684]'}`}>
-                    <badge.icon className="h-3.5 w-3.5"/>
-                    {badge.label}
-                  </span>))}
+              <div className="absolute inset-x-0 bottom-0 p-4">
+                <div className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]">
+                    <Star className="h-3.5 w-3.5 fill-current"/>
+                    {movie.score.toFixed(1)}
+                  </span>
+                  <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1">{movie.year}</span>
+                </div>
+                <h3 className="line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684]">
+                  {titleText}
+                </h3>
+                <p className="mt-1 line-clamp-1 text-xs text-white/58">{movie.genres.slice(0, 2).join(' / ')}</p>
+                <div className="mt-3 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                  <div className="grid grid-cols-2 gap-2">
+                    <button type="button" onClick={(event) => {
+                        event.stopPropagation();
+                        onPlay?.();
+                    }} className="flex min-h-10 items-center justify-center gap-2 rounded-xl bg-white px-3 py-2 text-[11px] font-semibold text-black transition-colors hover:bg-white/92">
+                      <Play className="h-3.5 w-3.5 fill-current"/>
+                      Watch Trailer
+                    </button>
+                    {saveAction && (<button type="button" onClick={(event) => {
+                            event.stopPropagation();
+                            saveAction();
+                        }} className={`flex min-h-10 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-[11px] font-semibold transition-colors ${isInWatchlist
+                            ? 'border-[#d26d47]/50 bg-[#d26d47]/18 text-[#f4c3a4]'
+                            : 'border-white/15 bg-black/40 text-white hover:bg-black/55'}`}>
+                        <Bookmark className="h-3.5 w-3.5"/>
+                        {isInWatchlist ? 'Saved' : 'My List'}
+                      </button>)}
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {tags.map((genre) => onGenreClick ? (<button key={genre} type="button" onClick={(event) => {
-                    event.stopPropagation();
-                    onGenreClick(genre);
-                }} className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:border-[#d26d47]/40 hover:text-[#f4b684]">
-                      {genre}
-                    </button>) : (<span key={genre} className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-muted-foreground">
-                      {genre}
-                    </span>))}
-              </div>
             </div>
-          </div>
-        </HoverCardTrigger>
-        <HoverCardContent side="right" align="start" className="w-80 rounded-[1.35rem] border border-white/10 bg-[#110e14]/96 p-5 text-white shadow-2xl backdrop-blur-xl">
-          <div className="space-y-4">
-            <div>
-              <h4 className="text-lg font-semibold">{previewTitle}</h4>
-              <p className="mt-1 text-sm text-white/65">{previewSubtitle}</p>
-            </div>
-            <p className="line-clamp-4 text-sm leading-6 text-white/75">{previewSynopsis}</p>
-            <div className="space-y-3 text-sm">
-              {previewSections.map((section) => (<div key={section.label}>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/45">{section.label}</p>
-                  <p className="mt-1 text-white/88">{section.value}</p>
-                </div>))}
-            </div>
-          </div>
-        </HoverCardContent>
-      </HoverCard>);
+          </div>);
     }
     if (variant === 'hero') {
         return (<div onClick={onClick} className="relative group cursor-pointer">

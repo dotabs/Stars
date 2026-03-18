@@ -769,12 +769,25 @@ async function searchPeopleIds(query, department) {
     }
     return personSearchCache.get(cacheKey);
 }
-async function fetchList(endpoint, limit = 12) {
-    const cacheKey = `${endpoint}:${limit}`;
-    if (!listCache.has(cacheKey)) {
-        listCache.set(cacheKey, Promise.all([getGenreMap(), tmdbFetch(endpoint)]).then(([genreMap, response]) => response.results.slice(0, limit).map((movie) => mapSummaryMovie(movie, genreMap))));
+function mapResponseMovies(response, genreMap, limit = 20) {
+    return (response?.results ?? [])
+        .filter((movie) => Boolean(movie?.title))
+        .slice(0, limit)
+        .map((movie) => mapSummaryMovie(movie, genreMap));
+}
+function pickUniqueMovies(movies, claimedIds, limit) {
+    const selected = [];
+    for (const movie of movies) {
+        if (!movie?.id || claimedIds.has(movie.id)) {
+            continue;
+        }
+        claimedIds.add(movie.id);
+        selected.push(movie);
+        if (selected.length >= limit) {
+            break;
+        }
     }
-    return listCache.get(cacheKey);
+    return selected;
 }
 function getCollectionDefinition(collectionId) {
     return collectionDefinitions.find((collection) => collection.id === collectionId) ?? null;
@@ -834,19 +847,64 @@ async function fetchCollectionResults(definition, { page = 1, limit = 12, exclud
     return listCache.get(cacheKey);
 }
 export async function fetchHomeFeed() {
-    const [latestMovies, trendingMovies, topRatedMovies, popularMovies] = await Promise.all([
-        fetchList('/movie/now_playing', 8),
-        fetchList('/trending/movie/week', 8),
-        fetchList('/movie/top_rated', 8),
-        fetchList('/movie/popular', 8),
-    ]);
-    return {
-        spotlightMovie: latestMovies[0] ?? trendingMovies[0] ?? topRatedMovies[0] ?? popularMovies[0] ?? null,
-        latestMovies,
-        trendingMovies,
-        topRatedMovies,
-        popularMovies,
-    };
+    const cacheKey = 'home-feed:v4';
+    if (!listCache.has(cacheKey)) {
+        listCache.set(cacheKey, (async () => {
+            const [genreMap, nowPlayingResponse, trendingWeekResponse, trendingDayResponse, topRatedResponse, upcomingResponse, popularResponse] = await Promise.all([
+                getGenreMap(),
+                tmdbFetch('/movie/now_playing'),
+                tmdbFetch('/trending/movie/week'),
+                tmdbFetch('/trending/movie/day'),
+                tmdbFetch('/movie/top_rated'),
+                tmdbFetch('/movie/upcoming'),
+                tmdbFetch('/movie/popular'),
+            ]);
+            const nowPlayingPool = mapResponseMovies(nowPlayingResponse, genreMap, 24);
+            const trendingPool = mapResponseMovies(trendingWeekResponse, genreMap, 24);
+            const trendingTodayPool = mapResponseMovies(trendingDayResponse, genreMap, 24);
+            const topRatedPool = mapResponseMovies(topRatedResponse, genreMap, 24);
+            const upcomingPool = mapResponseMovies(upcomingResponse, genreMap, 24);
+            const popularPool = mapResponseMovies(popularResponse, genreMap, 24);
+            const claimedIds = new Set();
+            const spotlightCandidate = pickUniqueMovies([
+                ...trendingTodayPool,
+                ...nowPlayingPool,
+                ...trendingPool,
+                ...upcomingPool,
+                ...topRatedPool,
+                ...popularPool,
+            ], claimedIds, 1)[0] ?? null;
+            const spotlightMovie = spotlightCandidate
+                ? (await fetchTmdbMovieByRouteId(spotlightCandidate.id).catch(() => null))?.movie ?? spotlightCandidate
+                : null;
+            const inTheatersMovies = pickUniqueMovies(nowPlayingPool, claimedIds, 6);
+            const trendingMovies = pickUniqueMovies(trendingPool, claimedIds, 6);
+            const trendingTodayMovies = pickUniqueMovies(trendingTodayPool, claimedIds, 6);
+            const popularMovies = pickUniqueMovies(popularPool, claimedIds, 6);
+            const topRatedMovies = pickUniqueMovies(topRatedPool, claimedIds, 6);
+            const upcomingMovies = pickUniqueMovies(upcomingPool, claimedIds, 6);
+            const heroCandidates = (await Promise.all(pickUniqueMovies([
+                ...trendingTodayPool,
+                ...nowPlayingPool,
+                ...popularPool,
+                ...topRatedPool,
+                ...upcomingPool,
+            ], new Set(), 4).map((movie) => fetchTmdbMovieByRouteId(movie.id).catch(() => null))))
+                .map((entry) => entry?.movie ?? null)
+                .filter((movie) => Boolean(movie));
+            return {
+                spotlightMovie,
+                heroCandidates: heroCandidates.length ? heroCandidates : spotlightMovie ? [spotlightMovie] : [],
+                inTheatersMovies,
+                trendingMovies,
+                trendingTodayMovies,
+                popularMovies,
+                topRatedMovies,
+                upcomingMovies,
+            };
+        })());
+    }
+    return listCache.get(cacheKey);
 }
 function mapBrowseSort(sortBy) {
     if (sortBy === 'highestRated')

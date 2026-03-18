@@ -1,29 +1,24 @@
 import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Calendar, Film, Grid3X3, List, MessageSquareText, Search, SlidersHorizontal, Star, TrendingUp, X, } from 'lucide-react';
+import { Calendar, Film, Grid3X3, Search, SlidersHorizontal, TrendingUp, X, } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SearchResultCard } from '@/components/ui-custom/GlobalSearchResults';
-import { FilterChips, MovieCard, PosterImage, VerdictBadge } from '@/components/ui-custom';
+import { FilterChips, MovieCard } from '@/components/ui-custom';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useGlobalSearch } from '@/hooks/use-global-search';
 import { useToast } from '@/hooks/use-toast';
 import { useUserLibrary } from '@/hooks/use-user-library';
+import { buildYouTubeSearchUrl, openExternalUrl } from '@/lib/browser';
 import { browseDecades, browseGenres, browseStreamingPlatforms } from '@/lib/movie-constants';
 import { fetchBrowseLanguages, fetchBrowseMovies, fetchTrendingMovies, serializeBrowseMovieQuery } from '@/lib/tmdb-movies';
 import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 const yearBounds = [1940, new Date().getFullYear()];
 const initialCatalogPages = 1;
 const searchDebounceMs = 250;
-const initialRenderCount = {
-    grid: 20,
-    list: 10,
-};
-const renderBatchSize = {
-    grid: 20,
-    list: 8,
-};
+const initialRenderCount = 20;
+const renderBatchSize = 20;
 function dedupeMovies(movies) {
     return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
 }
@@ -64,113 +59,34 @@ function sortMovies(movies, sortBy) {
     });
     return sorted;
 }
-function BrowseCardSkeleton({ viewMode }) {
-    if (viewMode === 'list') {
-        return (<div className="flex gap-4 rounded-[1.35rem] border border-white/[0.06] bg-white/[0.03] p-4">
-        <Skeleton className="h-32 w-24 rounded-xl bg-white/10"/>
-        <div className="flex-1 space-y-3">
-          <Skeleton className="h-5 w-40 bg-white/10"/>
-          <Skeleton className="h-4 w-56 bg-white/10"/>
-          <div className="flex gap-2">
-            <Skeleton className="h-6 w-24 rounded-full bg-white/10"/>
-            <Skeleton className="h-6 w-28 rounded-full bg-white/10"/>
-            <Skeleton className="h-6 w-16 rounded-full bg-white/10"/>
-          </div>
-          <Skeleton className="h-16 w-full bg-white/10"/>
-        </div>
-      </div>);
-    }
+function BrowseCardSkeleton() {
     return (<div className="space-y-3">
-      <Skeleton className="aspect-[2/3] rounded-[1.45rem] bg-white/10"/>
-      <Skeleton className="h-5 w-[84%] bg-white/10"/>
+      <Skeleton className="aspect-[2/3] rounded-[1.2rem] bg-white/10"/>
+      <Skeleton className="h-5 w-[90%] bg-white/10"/>
       <Skeleton className="h-4 w-[62%] bg-white/10"/>
       <div className="flex gap-2">
         <Skeleton className="h-7 w-16 rounded-full bg-white/10"/>
         <Skeleton className="h-7 w-24 rounded-full bg-white/10"/>
       </div>
-      <div className="flex gap-2">
-        <Skeleton className="h-6 w-16 rounded-full bg-white/10"/>
-        <Skeleton className="h-6 w-20 rounded-full bg-white/10"/>
-        <Skeleton className="h-6 w-14 rounded-full bg-white/10"/>
-      </div>
     </div>);
 }
-const BrowseGridMovieCard = memo(function BrowseGridMovieCard({ movie, isInWatchlist, isLiked, showRank, openMovie, toggleWatchlist, toggleLike, onGenreClick, }) {
+const BrowseGridMovieCard = memo(function BrowseGridMovieCard({ movie, isInWatchlist, showRank, openMovie, toggleWatchlist, }) {
     const handleOpen = useCallback(() => {
         openMovie(movie.id);
     }, [movie.id, openMovie]);
+    const handlePlay = useCallback(() => {
+        openExternalUrl(movie.trailerUrl || buildYouTubeSearchUrl(`${movie.title} ${movie.year} trailer`));
+    }, [movie.title, movie.trailerUrl, movie.year]);
     const handleToggleWatchlist = useCallback(() => {
         toggleWatchlist(movie.id);
     }, [movie.id, toggleWatchlist]);
-    const handleToggleLike = useCallback(() => {
-        toggleLike(movie.id);
-    }, [movie.id, toggleLike]);
-    return (<MovieCard movie={movie} variant="compact" showRank={showRank} onClick={handleOpen} onToggleWatchlist={handleToggleWatchlist} onToggleLike={handleToggleLike} isInWatchlist={isInWatchlist} isLiked={isLiked} onGenreClick={onGenreClick}/>);
-});
-const BrowseListMovieRow = memo(function BrowseListMovieRow({ movie, isInWatchlist, isLiked, openMovie, toggleWatchlist, toggleLike, onGenreClick, }) {
-    return (<div onClick={() => openMovie(movie.id)} className="flex cursor-pointer gap-4 rounded-[1.35rem] border border-white/[0.06] bg-[rgba(20,20,28,0.8)] p-4 transition-[background-color,border-color,transform] duration-200 ease-out hover:bg-[rgba(24,24,34,0.88)] motion-reduce:transform-none [content-visibility:auto] [contain-intrinsic-size:240px_720px]">
-      <div className="group relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-xl sm:h-36">
-        <PosterImage src={movie.poster} title={movie.title} className="h-full w-full object-cover transition-transform duration-300 ease-out will-change-transform group-hover:scale-[1.02] motion-reduce:transform-none" width={160} height={240} sizes="160px"/>
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/55 to-transparent"/>
-        <div className="absolute inset-x-2 bottom-2 flex translate-y-1 justify-center gap-1 opacity-0 transition-all duration-200 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
-          <button type="button" onClick={(event) => {
-            event.stopPropagation();
-            toggleWatchlist(movie.id);
-        }} className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${isInWatchlist
-            ? 'border-[#d26d47]/40 bg-[#d26d47]/20 text-[#f4b684]'
-            : 'border-white/15 bg-black/40 text-white'}`}>
-            Save
-          </button>
-          <button type="button" onClick={(event) => {
-            event.stopPropagation();
-            toggleLike(movie.id);
-        }} className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${isLiked
-            ? 'border-[#d26d47]/40 bg-[#d26d47]/20 text-[#f4b684]'
-            : 'border-white/15 bg-black/40 text-white'}`}>
-            Like
-          </button>
-        </div>
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h3 className="text-lg font-semibold">{movie.title}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {movie.year} / {movie.genres.slice(0, 3).join(' / ')}
-            </p>
-          </div>
-          <VerdictBadge verdict={movie.verdict} score={movie.score} size="sm"/>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/25 bg-[#d26d47]/10 px-3 py-1 font-semibold text-[#f4b684]">
-            <Star className="h-3.5 w-3.5"/>
-            Community {movie.score.toFixed(1)}
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-[#f4b684]/20 bg-[#f4b684]/10 px-3 py-1 font-semibold text-[#f7c59e]">
-            <MessageSquareText className="h-3.5 w-3.5"/>
-            {(movie.reviewCount ?? 0).toLocaleString()} reviews
-          </span>
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">{movie.country}</span>
-          {movie.runtime > 0 && (<span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">{movie.runtime} min</span>)}
-        </div>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {movie.genres.slice(0, 4).map((genre) => (<button key={genre} type="button" onClick={(event) => {
-                event.stopPropagation();
-                onGenreClick(genre);
-            }} className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-[#d26d47]/40 hover:text-[#f4b684]">
-              {genre}
-            </button>))}
-        </div>
-        <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">{movie.synopsis}</p>
-      </div>
-    </div>);
+    return (<MovieCard movie={movie} variant="compact" showRank={showRank} onClick={handleOpen} onPlay={handlePlay} onToggleWatchlist={handleToggleWatchlist} isInWatchlist={isInWatchlist}/>);
 });
 export function Browse() {
     const navigate = useNavigate();
     const { toast } = useToast();
     const { currentUser, library } = useUserLibrary();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [viewMode, setViewMode] = useState('grid');
     const [sortBy, setSortBy] = useState(null);
     const [showFilters, setShowFilters] = useState(true);
     const [selectedGenres, setSelectedGenres] = useState([]);
@@ -203,7 +119,7 @@ export function Browse() {
         isLoadingMore: false,
         loadError: '',
     });
-    const [renderLimit, setRenderLimit] = useState(initialRenderCount.grid);
+    const [renderLimit, setRenderLimit] = useState(initialRenderCount);
     const renderMoreRef = useRef(null);
     const { trimmedQuery: trimmedGlobalQuery, results: globalSearchResults, isLoading: isGlobalSearchLoading, errorMessage: globalSearchError, hasQuery: hasGlobalSearchQuery, } = useGlobalSearch(debouncedSearchQuery, { limit: 60, maxPages: 3 });
     useEffect(() => {
@@ -384,8 +300,8 @@ export function Browse() {
     }, [browseQueryKey, deferredBrowseQuery, sortBy]);
     const visibleMovies = useMemo(() => (sortBy ? sortMovies(catalogState.movies, sortBy) : catalogState.movies), [catalogState.movies, sortBy]);
     useEffect(() => {
-        setRenderLimit(Math.min(visibleMovies.length, initialRenderCount[viewMode]));
-    }, [browseQueryKey, viewMode, visibleMovies.length]);
+        setRenderLimit(Math.min(visibleMovies.length, initialRenderCount));
+    }, [browseQueryKey, visibleMovies.length]);
     const hasMoreToRender = renderLimit < visibleMovies.length;
     const renderedMovies = useMemo(() => visibleMovies.slice(0, renderLimit), [renderLimit, visibleMovies]);
     useEffect(() => {
@@ -395,11 +311,11 @@ export function Browse() {
         const observer = new IntersectionObserver((entries) => {
             if (!entries[0]?.isIntersecting)
                 return;
-            setRenderLimit((current) => Math.min(visibleMovies.length, current + renderBatchSize[viewMode]));
+            setRenderLimit((current) => Math.min(visibleMovies.length, current + renderBatchSize));
         }, { rootMargin: '500px 0px' });
         observer.observe(target);
         return () => observer.disconnect();
-    }, [hasMoreToRender, viewMode, visibleMovies.length]);
+    }, [hasMoreToRender, visibleMovies.length]);
     const watchlistSet = useMemo(() => new Set(library.watchlist), [library.watchlist]);
     const favoritesSet = useMemo(() => new Set(library.favorites), [library.favorites]);
     const canLoadMore = catalogState.loadedPage < catalogState.totalPages &&
@@ -478,10 +394,6 @@ export function Browse() {
         deferredBrowseQuery,
         sortBy,
     ]);
-    const handleGenreClick = useCallback((genre) => {
-        setSelectedGenres((current) => (current.includes(genre) ? current : [...current, genre]));
-        setShowFilters(true);
-    }, []);
     const handleToggleLibraryItem = useCallback(async (listName, movieId) => {
         try {
             await toggleLibraryItem({
@@ -516,8 +428,8 @@ export function Browse() {
     const openMovie = useCallback((movieId) => {
         navigate(`/review/${movieId}`);
     }, [navigate]);
-    const browseGridClassName = viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1';
-    const loadingSkeletonCount = viewMode === 'grid' ? 10 : 6;
+    const browseGridClassName = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+    const loadingSkeletonCount = 10;
     const filtersPanel = useMemo(() => (<>
         <div className="mb-6 flex items-center justify-between gap-3">
           <div>
@@ -693,18 +605,10 @@ export function Browse() {
                   {showFilters ? 'Hide' : 'Show'} Filters
                 </Button>
                 <div className="flex overflow-hidden rounded-lg border border-white/10">
-                  <button type="button" onClick={() => {
-            setViewMode('grid');
-        }} className={`flex items-center gap-2 px-3 py-2.5 text-sm ${viewMode === 'grid' ? '' : 'hover:bg-white/5'}`} style={viewMode === 'grid' ? { background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' } : {}}>
+                  <div className="flex items-center gap-2 px-3 py-2.5 text-sm" style={{ background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' }}>
                     <Grid3X3 className="h-4 w-4"/>
-                    Grid View
-                  </button>
-                  <button type="button" onClick={() => {
-            setViewMode('list');
-        }} className={`flex items-center gap-2 px-3 py-2.5 text-sm ${viewMode === 'list' ? '' : 'hover:bg-white/5'}`} style={viewMode === 'list' ? { background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' } : {}}>
-                    <List className="h-4 w-4"/>
-                    List View
-                  </button>
+                    Poster Grid
+                  </div>
                 </div>
               </div>
             </div>
@@ -759,12 +663,12 @@ export function Browse() {
                 </div>
               </div>
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-                {trendingMovies.map((movie, index) => (<BrowseGridMovieCard key={movie.id} movie={movie} showRank={index + 1} openMovie={openMovie} toggleWatchlist={handleToggleWatchlist} toggleLike={handleToggleLike} isInWatchlist={watchlistSet.has(movie.id)} isLiked={favoritesSet.has(movie.id)} onGenreClick={handleGenreClick}/>))}
+                {trendingMovies.map((movie, index) => (<BrowseGridMovieCard key={movie.id} movie={movie} showRank={index + 1} openMovie={openMovie} toggleWatchlist={handleToggleWatchlist} isInWatchlist={watchlistSet.has(movie.id)}/>))}
               </div>
             </section>)}
 
           {hasGlobalSearchQuery ? (isGlobalSearchLoading ? (<div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {Array.from({ length: 10 }).map((_, index) => (<BrowseCardSkeleton key={index} viewMode="grid"/>))}
+                {Array.from({ length: 10 }).map((_, index) => (<BrowseCardSkeleton key={index}/>))}
               </div>) : globalSearchError ? (<div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-100">
                 {globalSearchError}
               </div>) : globalSearchResults.length > 0 ? (<div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -782,10 +686,10 @@ export function Browse() {
                   Clear search
                 </Button>
               </div>)) : showSkeletons ? (<div className={`grid gap-5 ${browseGridClassName}`}>
-              {Array.from({ length: loadingSkeletonCount }).map((_, index) => (<BrowseCardSkeleton key={index} viewMode={viewMode}/>))}
+              {Array.from({ length: loadingSkeletonCount }).map((_, index) => (<BrowseCardSkeleton key={index}/>))}
             </div>) : visibleMovies.length > 0 ? (<>
               <div className={`grid gap-5 ${browseGridClassName}`}>
-                {renderedMovies.map((movie) => viewMode === 'grid' ? (<BrowseGridMovieCard key={movie.id} movie={movie} openMovie={openMovie} toggleWatchlist={handleToggleWatchlist} toggleLike={handleToggleLike} isInWatchlist={watchlistSet.has(movie.id)} isLiked={favoritesSet.has(movie.id)} onGenreClick={handleGenreClick}/>) : (<BrowseListMovieRow key={movie.id} movie={movie} openMovie={openMovie} toggleWatchlist={handleToggleWatchlist} toggleLike={handleToggleLike} isInWatchlist={watchlistSet.has(movie.id)} isLiked={favoritesSet.has(movie.id)} onGenreClick={handleGenreClick}/>))}
+                {renderedMovies.map((movie) => (<BrowseGridMovieCard key={movie.id} movie={movie} openMovie={openMovie} toggleWatchlist={handleToggleWatchlist} isInWatchlist={watchlistSet.has(movie.id)}/>))}
               </div>
 
               {(hasMoreToRender || canLoadMore || catalogState.isLoadingMore) && (<div className="mt-6">
@@ -803,7 +707,7 @@ export function Browse() {
                 </div>)}
 
               {catalogState.isLoadingMore && (<div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {Array.from({ length: 4 }).map((_, index) => (<BrowseCardSkeleton key={index} viewMode="grid"/>))}
+                  {Array.from({ length: 4 }).map((_, index) => (<BrowseCardSkeleton key={index}/>))}
                 </div>)}
             </>) : (<div className="py-20 text-center">
               <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full" style={{ background: 'rgba(255,255,255,0.05)' }}>
