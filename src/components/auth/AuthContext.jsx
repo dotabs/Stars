@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AuthContext } from '@/components/auth/auth-context';
-import { logOut, subscribeToAuthState } from '@/lib/firebase';
-import { ensureUserProfile } from '@/lib/social';
+import { getAuthUserSnapshot, logOut, refreshCurrentAuthUser, subscribeToAuthState } from '@/lib/firebase';
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -10,11 +9,13 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = subscribeToAuthState((user) => {
       if (user) {
-        void ensureUserProfile(user).catch((error) => {
-          console.error('Failed to ensure user profile', error);
-        });
+        void import('@/lib/social')
+          .then(({ ensureUserProfile }) => ensureUserProfile(user))
+          .catch((error) => {
+            console.error('Failed to ensure user profile', error);
+          });
       }
-      setCurrentUser(user);
+      setCurrentUser(getAuthUserSnapshot(user));
       setAuthReady(true);
     });
 
@@ -28,6 +29,14 @@ export function AuthProvider({ children }) {
         currentUser,
         isAuthenticated: Boolean(currentUser),
         logOut,
+        async refreshCurrentUser() {
+          const nextUser = await refreshCurrentAuthUser();
+          setCurrentUser(nextUser);
+          return nextUser;
+        },
+        updateCurrentUser(nextUser) {
+          setCurrentUser(nextUser ? { ...nextUser } : null);
+        },
       }}
     >
       {children}

@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/components/auth/useAuth';
 import { Button } from '@/components/ui/button';
-import { canMessageProfile, getFollowState, getUserProfile, listConversations, listMessages, markConversationRead, sendDirectMessage } from '@/lib/social';
+import { canMessageProfile, getFollowState, getProfilePath, getUserProfile, listConversations, listMessages, markConversationRead, sendDirectMessage } from '@/lib/social';
 import { useToast } from '@/hooks/use-toast';
 
 function Avatar({ name, avatarUrl }) {
-  if (avatarUrl) {
-    return <img src={avatarUrl} alt={name} className="h-10 w-10 rounded-full object-cover" />;
+  const [hasImageError, setHasImageError] = useState(false);
+
+  if (avatarUrl && !hasImageError) {
+    return <img src={avatarUrl} alt={name} className="h-10 w-10 rounded-full object-cover" onError={() => setHasImageError(true)} />;
   }
 
   return <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[linear-gradient(135deg,#d26d47,#9f472a)] text-sm font-bold text-white">{(name || 'U').slice(0, 2).toUpperCase()}</div>;
@@ -69,7 +71,7 @@ export function Messages() {
         if (!profile || cancelled) {
           return;
         }
-        const followState = await getFollowState({ viewerId: currentUser.uid, profileUserId: requestedUserId });
+        const followState = await getFollowState({ viewerId: currentUser.uid, profileUserId: profile.userId });
         if (!cancelled && canMessageProfile(profile, { isOwner: false, isFollower: followState.isFollowing })) {
           setRecipientProfile(profile);
         }
@@ -180,7 +182,7 @@ export function Messages() {
                   <Avatar name={recipientProfile?.username || activeConversation?.counterpartName || 'User'} avatarUrl={recipientProfile?.avatarUrl || activeConversation?.counterpartAvatarUrl} />
                   <div>
                     <p className="font-medium text-white">{recipientProfile?.username || activeConversation?.counterpartName}</p>
-                    <Link to={`/profile/${recipientProfile?.userId || activeConversation?.counterpartId}`} className="text-sm text-[#f4b684] hover:text-white">Open profile</Link>
+                    <Link to={getProfilePath(recipientProfile ?? activeConversation?.counterpartId)} className="text-sm text-[#f4b684] hover:text-white">Open profile</Link>
                   </div>
                 </div>
                 <div className="mt-6 space-y-3">

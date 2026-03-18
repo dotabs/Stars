@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUnreadNotificationsCount } from '@/lib/social';
+import { getUnreadNotificationsCount } from '@/lib/notifications';
 
 export function useUnreadNotificationsCount(userId) {
   const [count, setCount] = useState(0);
@@ -8,7 +8,11 @@ export function useUnreadNotificationsCount(userId) {
     let cancelled = false;
 
     if (!userId) {
-      setCount(0);
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setCount(0);
+        }
+      });
       return () => {
         cancelled = true;
       };

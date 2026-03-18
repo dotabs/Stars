@@ -1,9 +1,10 @@
-import { Suspense, lazy, useEffect, useLayoutEffect } from 'react';
+import { Suspense, lazy, useLayoutEffect } from 'react';
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { AppErrorBoundary, Footer, Navbar } from '@/components/ui-custom';
+import { AppErrorBoundary } from '@/components/ui-custom/AppErrorBoundary';
+import { Footer } from '@/components/ui-custom/Footer';
+import { Navbar } from '@/components/ui-custom/Navbar';
 import { useAuth } from '@/components/auth/useAuth';
 import { appEnv } from '@/lib/env';
-import { preloadCoreRoutes } from '@/lib/route-preload';
 const Home = lazy(() => import('@/pages/Home').then((module) => ({ default: module.Home })));
 const Explore = lazy(() => import('@/pages/Explore').then((module) => ({ default: module.Explore })));
 const Browse = lazy(() => import('@/pages/Browse').then((module) => ({ default: module.Browse })));
@@ -62,17 +63,6 @@ function Layout({ children }) {
         }
         window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }, [location.pathname, location.search, location.hash]);
-    useEffect(() => {
-        const schedulePreload = () => preloadCoreRoutes();
-        if (typeof window === 'undefined')
-            return;
-        if (typeof window.requestIdleCallback === 'function') {
-            const idleCallbackId = window.requestIdleCallback(schedulePreload, { timeout: 1200 });
-            return () => window.cancelIdleCallback(idleCallbackId);
-        }
-        const timeoutId = window.setTimeout(schedulePreload, 300);
-        return () => window.clearTimeout(timeoutId);
-    }, []);
     return (<div className="min-h-screen relative">
       {/* Animated Background */}
       <div className="animated-bg"/>

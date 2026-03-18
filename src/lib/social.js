@@ -1,8 +1,10 @@
 import {
   addDoc,
+  collectionGroup,
   collection,
   deleteDoc,
   doc,
+  getCountFromServer,
   getDoc,
   getDocs,
   limit,
@@ -11,14 +13,16 @@ import {
   setDoc,
   startAfter,
   updateDoc,
+  where,
+  writeBatch,
 } from 'firebase/firestore';
 import {
   deleteObject,
   getDownloadURL,
+  uploadBytesResumable,
   ref,
-  uploadBytes,
 } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase';
+import { assertFirebaseStorageReady, db, getFirebaseDiagnostics, storage } from '@/lib/firebase';
 import { getUserDisplayName, getUserInitials } from '@/lib/user-display';
 
 const USER_PROFILES = 'userProfiles';
@@ -46,6 +50,8 @@ const defaultStats = Object.freeze({
   followingCount: 0,
 });
 
+const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9._-]{1,28}[a-zA-Z0-9])?$/;
+
 function nowIso() {
   return new Date().toISOString();
 }
@@ -54,12 +60,31 @@ function sanitizeText(value, maxLength = 160) {
   return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
 }
 
+function sanitizeGenreList(value) {
+  return Array.isArray(value)
+    ? [...new Set(value.map((entry) => sanitizeText(entry, 32)).filter(Boolean))].slice(0, 6)
+    : [];
+}
+
 function profileDocRef(userId) {
   return doc(db, USER_PROFILES, userId);
 }
 
 function publicProfileIdDocRef(publicProfileId) {
   return doc(db, USER_PROFILE_HANDLES, publicProfileId);
+}
+
+export function getProfilePath(profileOrIdentifier) {
+  if (!profileOrIdentifier) {
+    return '/profile';
+  }
+
+  if (typeof profileOrIdentifier === 'string') {
+    return `/profile/${profileOrIdentifier}`;
+  }
+
+  const identifier = sanitizeText(profileOrIdentifier.publicProfileId, 80) || sanitizeText(profileOrIdentifier.userId, 128);
+  return identifier ? `/profile/${identifier}` : '/profile';
 }
 
 function subcollectionRef(userId, subcollectionName) {
@@ -116,6 +141,7 @@ function buildFallbackProfile({
   email = '',
   username = '',
   avatarUrl = '',
+  avatarStoragePath = '',
   bio = '',
   favoriteGenres = [],
   publicProfileId = '',
@@ -133,6 +159,7 @@ function buildFallbackProfile({
     username: safeUsername,
     publicProfileId: sanitizeText(publicProfileId, 80) || buildPublicProfileId({ userId, username: safeUsername, email }),
     avatarUrl: sanitizeText(avatarUrl, 1000),
+    avatarStoragePath: sanitizeText(avatarStoragePath, 300),
     bio: sanitizeText(bio, 280),
     favoriteGenres: Array.isArray(favoriteGenres) ? favoriteGenres.filter(Boolean).slice(0, 6) : [],
     joinedAt: normalizeDate(joinedAt),
@@ -164,6 +191,7 @@ function normalizeProfile(snapshot) {
     username: data.username,
     publicProfileId: data.publicProfileId,
     avatarUrl: data.avatarUrl,
+    avatarStoragePath: data.avatarStoragePath,
     bio: data.bio,
     favoriteGenres: data.favoriteGenres,
     joinedAt: data.joinedAt,
@@ -193,6 +221,7 @@ function normalizeNotification(snapshot) {
     actorId: data.actorId || '',
     actorName: data.actorName || '',
     actorAvatarUrl: data.actorAvatarUrl || '',
+    actorPublicProfileId: data.actorPublicProfileId || '',
     targetId: data.targetId || '',
     conversationId: data.conversationId || '',
     message: data.message || '',
@@ -242,8 +271,9 @@ function buildProfilePayload(user, overrides = {}) {
     username,
     publicProfileId,
     avatarUrl: sanitizeText(overrides.avatarUrl ?? user?.photoURL, 1000),
+    avatarStoragePath: sanitizeText(overrides.avatarStoragePath, 300),
     bio: sanitizeText(overrides.bio, 280),
-    favoriteGenres: Array.isArray(overrides.favoriteGenres) ? overrides.favoriteGenres.filter(Boolean).slice(0, 6) : [],
+    favoriteGenres: sanitizeGenreList(overrides.favoriteGenres),
     privacy: {
       ...defaultPrivacy,
       ...(overrides.privacy ?? {}),
@@ -275,8 +305,8 @@ async function syncPublicProfileHandle({ userId, username, publicProfileId, prev
 }
 
 async function readCount(userId, subcollectionName) {
-  const snapshot = await getDocs(subcollectionRef(userId, subcollectionName));
-  return snapshot.size;
+  const snapshot = await getCountFromServer(query(subcollectionRef(userId, subcollectionName)));
+  return snapshot.data().count;
 }
 
 async function createNotification(userId, payload) {
@@ -301,6 +331,7 @@ export async function ensureUserProfile(user) {
     username: sanitizeText(user.displayName, 40) || existingProfile?.username || getUserDisplayName(user),
     publicProfileId: existingProfile?.publicProfileId,
     avatarUrl: existingProfile?.avatarUrl || user.photoURL || '',
+    avatarStoragePath: existingProfile?.avatarStoragePath || '',
     bio: existingProfile?.bio || '',
     favoriteGenres: existingProfile?.favoriteGenres || [],
     privacy: existingProfile?.privacy || defaultPrivacy,
@@ -366,16 +397,33 @@ export async function updateUserProfile(userId, updates) {
     throw new Error('A valid user id is required.');
   }
 
+  const nextUsername = sanitizeText(updates.username, 40);
+  const nextBio = sanitizeText(updates.bio, 280);
+  const nextFavoriteGenres = Array.isArray(updates.favoriteGenres) ? sanitizeGenreList(updates.favoriteGenres) : undefined;
+
+  if (!nextUsername) {
+    throw new Error('Username is required.');
+  }
+
+  if (nextUsername.length < 3 || nextUsername.length > 30) {
+    throw new Error('Username must be between 3 and 30 characters.');
+  }
+
+  if (!USERNAME_PATTERN.test(nextUsername)) {
+    throw new Error('Username can only use letters, numbers, periods, underscores, and hyphens.');
+  }
+
   const snapshot = await getDoc(profileDocRef(userId));
   const existingProfile = snapshot.exists() ? normalizeProfile(snapshot) : buildFallbackProfile({ userId, username: updates.username || '' });
   const nextProfile = buildProfilePayload({ uid: userId, email: existingProfile.email }, {
     userId,
     email: existingProfile.email,
-    username: sanitizeText(updates.username, 40) || existingProfile.username,
+    username: nextUsername || existingProfile.username,
     publicProfileId: existingProfile.publicProfileId,
     avatarUrl: updates.avatarUrl ?? existingProfile.avatarUrl,
-    bio: updates.bio,
-    favoriteGenres: Array.isArray(updates.favoriteGenres) ? updates.favoriteGenres : existingProfile.favoriteGenres,
+    avatarStoragePath: updates.avatarStoragePath ?? existingProfile.avatarStoragePath,
+    bio: nextBio,
+    favoriteGenres: nextFavoriteGenres ?? existingProfile.favoriteGenres,
     privacy: {
       ...existingProfile.privacy,
       ...(updates.privacy ?? {}),
@@ -395,24 +443,262 @@ export async function updateUserProfile(userId, updates) {
   return nextProfile;
 }
 
-export async function uploadProfileAvatar(userId, file) {
-  if (!userId || !file) {
-    return '';
+function normalizeStorageUploadError(error) {
+  if (!error?.code) {
+    return error?.message || 'Avatar upload failed before it could complete.';
   }
 
-  const storageRef = ref(storage, `profile-avatars/${userId}/${Date.now()}-${file.name}`);
-  await uploadBytes(storageRef, file);
-  return getDownloadURL(storageRef);
+  const storageMessages = {
+    'storage/canceled': 'Avatar upload was canceled.',
+    'storage/invalid-checksum': 'Upload verification failed. Try again.',
+    'storage/object-not-found': 'The uploaded avatar could not be found after upload.',
+    'storage/project-not-found': 'Firebase Storage project configuration is invalid.',
+    'storage/quota-exceeded': 'Firebase Storage quota was exceeded.',
+    'storage/retry-limit-exceeded': 'The upload timed out before finishing. Try again.',
+    'storage/server-file-wrong-size': 'The uploaded file size did not match. Try again.',
+    'storage/unauthenticated': 'You must be signed in to upload an avatar.',
+    'storage/unauthorized': 'Storage rules blocked this upload. Check Firebase Storage rules for profile-avatars.',
+    'storage/unknown': 'Firebase Storage returned an unknown error while uploading your avatar.',
+  };
+
+  return storageMessages[error.code] || error.message || 'Avatar upload failed.';
 }
 
-export async function clearProfileAvatarFromStorage(avatarUrl) {
-  if (!avatarUrl) {
+export function createProfileAvatarUpload(userId, file, options = {}) {
+  const {
+    onProgress,
+    onStateChange,
+    logger = console,
+  } = options;
+
+  if (!userId || !file) {
+    throw new Error('Select an image before uploading.');
+  }
+
+  assertFirebaseStorageReady();
+
+  const acceptedTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
+  if (!acceptedTypes.has(file.type)) {
+    throw new Error('Upload a JPG, PNG, WEBP, or GIF image.');
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error('Avatar images must be 5 MB or smaller.');
+  }
+
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-').slice(-80) || 'avatar';
+  const avatarStoragePath = `profile-avatars/${userId}/${Date.now()}-${safeName}`;
+  const storageRef = ref(storage, avatarStoragePath);
+  const uploadTask = uploadBytesResumable(storageRef, file, {
+    contentType: file.type,
+    cacheControl: 'public,max-age=3600',
+  });
+
+  let hasProgressEvent = false;
+  let progressTimeoutId = null;
+  let hangTimeoutId = null;
+  const diagnostics = getFirebaseDiagnostics();
+
+  const promise = new Promise((resolve, reject) => {
+    if (typeof onStateChange === 'function') {
+      onStateChange('starting');
+    }
+
+    progressTimeoutId = setTimeout(() => {
+      if (!hasProgressEvent) {
+        logger.warn('Avatar upload started without a progress event yet.', {
+          userId,
+          avatarStoragePath,
+          storageBucket: diagnostics.storageBucket,
+          projectId: diagnostics.projectId,
+          fileType: file.type,
+          fileSize: file.size,
+        });
+        if (typeof onStateChange === 'function') {
+          onStateChange('uploading');
+        }
+      }
+    }, 1200);
+    hangTimeoutId = setTimeout(() => {
+      const hangError = new Error('Avatar upload did not receive progress from Firebase Storage.');
+      hangError.code = 'storage/no-progress';
+      uploadTask.cancel();
+      reject(Object.assign(hangError, {
+        userMessage: `Avatar upload could not start properly. Check the Firebase Storage bucket and deploy storage rules for ${diagnostics.projectId}.`,
+        diagnostics: {
+          ...diagnostics,
+          avatarStoragePath,
+          fileType: file.type,
+          fileSize: file.size,
+        },
+      }));
+    }, 15000);
+
+    uploadTask.on(
+      'state_changed',
+      async (snapshot) => {
+        hasProgressEvent = true;
+        if (hangTimeoutId) {
+          clearTimeout(hangTimeoutId);
+          hangTimeoutId = null;
+        }
+        if (typeof onStateChange === 'function') {
+          onStateChange(snapshot.state || 'uploading');
+        }
+        if (typeof onProgress === 'function' && snapshot.totalBytes > 0) {
+          const ratio = snapshot.bytesTransferred / snapshot.totalBytes;
+          const nextProgress = Math.max(1, Math.min(99, Math.round(ratio * 100)));
+          onProgress(snapshot.bytesTransferred >= snapshot.totalBytes ? 100 : nextProgress);
+        }
+      },
+      (error) => {
+        if (progressTimeoutId) {
+          clearTimeout(progressTimeoutId);
+        }
+        if (hangTimeoutId) {
+          clearTimeout(hangTimeoutId);
+        }
+        reject(Object.assign(error, {
+          userMessage: normalizeStorageUploadError(error),
+          diagnostics: {
+            ...diagnostics,
+            avatarStoragePath,
+            fileType: file.type,
+            fileSize: file.size,
+          },
+        }));
+      },
+      async () => {
+        try {
+          if (progressTimeoutId) {
+            clearTimeout(progressTimeoutId);
+          }
+          if (hangTimeoutId) {
+            clearTimeout(hangTimeoutId);
+          }
+          const avatarUrl = await getDownloadURL(storageRef);
+          resolve({
+            avatarUrl,
+            avatarStoragePath,
+          });
+        } catch (error) {
+          reject(Object.assign(error, {
+            userMessage: 'The avatar uploaded, but the download URL could not be retrieved.',
+            diagnostics: {
+              ...diagnostics,
+              avatarStoragePath,
+            },
+          }));
+        }
+      }
+    );
+  });
+
+  return {
+    avatarStoragePath,
+    cancel() {
+      uploadTask.cancel();
+    },
+    promise,
+  };
+}
+
+export async function uploadProfileAvatar(userId, file, options = {}) {
+  const upload = createProfileAvatarUpload(userId, file, options);
+  return upload.promise;
+}
+
+export async function clearProfileAvatarFromStorage(avatarStoragePath) {
+  if (!avatarStoragePath) {
     return;
   }
   try {
-    await deleteObject(ref(storage, avatarUrl));
+    await deleteObject(ref(storage, avatarStoragePath));
   } catch (error) {
     console.error('Failed to delete old avatar from storage', error);
+  }
+}
+
+async function commitChunkedUpdates(entries) {
+  for (let index = 0; index < entries.length; index += 400) {
+    const batch = writeBatch(db);
+    entries.slice(index, index + 400).forEach(({ ref: documentRef, data }) => {
+      batch.update(documentRef, data);
+    });
+    await batch.commit();
+  }
+}
+
+export async function syncProfileIdentityReferences(userId, profile) {
+  if (!userId || !profile) {
+    return;
+  }
+
+  const updateEntries = [];
+  const {
+    username = '',
+    avatarUrl = '',
+    publicProfileId = '',
+  } = profile;
+
+  const [followersSnapshot, followingSnapshot, requestsSnapshot, conversationsSnapshot, feedbackEntriesSnapshot, notificationsSnapshot] = await Promise.all([
+    getDocs(query(collectionGroup(db, 'followers'), where('userId', '==', userId))),
+    getDocs(query(collectionGroup(db, 'following'), where('userId', '==', userId))),
+    getDocs(query(collectionGroup(db, 'followRequests'), where('userId', '==', userId))),
+    getDocs(query(collectionGroup(db, 'conversations'), where('counterpartId', '==', userId))),
+    getDocs(query(collectionGroup(db, 'entries'), where('userId', '==', userId))),
+    getDocs(query(collectionGroup(db, 'notifications'), where('actorId', '==', userId))),
+  ]);
+
+  followersSnapshot.docs.forEach((snapshot) => {
+    updateEntries.push({
+      ref: snapshot.ref,
+      data: { username, avatarUrl, publicProfileId },
+    });
+  });
+  followingSnapshot.docs.forEach((snapshot) => {
+    updateEntries.push({
+      ref: snapshot.ref,
+      data: { username, avatarUrl, publicProfileId },
+    });
+  });
+  requestsSnapshot.docs.forEach((snapshot) => {
+    updateEntries.push({
+      ref: snapshot.ref,
+      data: { username, avatarUrl, publicProfileId },
+    });
+  });
+  conversationsSnapshot.docs.forEach((snapshot) => {
+    updateEntries.push({
+      ref: snapshot.ref,
+      data: { counterpartName: username, counterpartAvatarUrl: avatarUrl },
+    });
+  });
+  feedbackEntriesSnapshot.docs.forEach((snapshot) => {
+    updateEntries.push({
+      ref: snapshot.ref,
+      data: {
+        userDisplayName: username,
+        userUsername: username,
+        userAvatarUrl: avatarUrl,
+        userPublicProfileId: publicProfileId,
+      },
+    });
+  });
+  notificationsSnapshot.docs.forEach((snapshot) => {
+    updateEntries.push({
+      ref: snapshot.ref,
+      data: {
+        actorName: username,
+        actorAvatarUrl: avatarUrl,
+        actorPublicProfileId: publicProfileId,
+      },
+    });
+  });
+
+  if (updateEntries.length) {
+    await commitChunkedUpdates(updateEntries);
   }
 }
 
@@ -525,6 +811,7 @@ export async function requestOrFollowUser({ currentUser, targetUserId }) {
       actorId: currentUser.uid,
       actorName: currentProfile.username,
       actorAvatarUrl: currentProfile.avatarUrl || '',
+      actorPublicProfileId: currentProfile.publicProfileId || '',
       message: `${currentProfile.username} requested to follow you.`,
     });
 
@@ -539,6 +826,7 @@ export async function requestOrFollowUser({ currentUser, targetUserId }) {
     actorId: currentUser.uid,
     actorName: currentProfile.username,
     actorAvatarUrl: currentProfile.avatarUrl || '',
+    actorPublicProfileId: currentProfile.publicProfileId || '',
     message: `${currentProfile.username} started following you.`,
   });
 
@@ -593,6 +881,7 @@ export async function respondToFollowRequest({ currentUser, requesterUserId, acc
     actorId: currentUser.uid,
     actorName: currentProfile.username,
     actorAvatarUrl: currentProfile.avatarUrl || '',
+    actorPublicProfileId: currentProfile.publicProfileId || '',
     message: `${currentProfile.username} accepted your follow request.`,
   });
 }
@@ -690,6 +979,7 @@ export async function sendDirectMessage({ senderUser, recipientProfile, text }) 
     actorId: senderUser.uid,
     actorName: senderProfile.username,
     actorAvatarUrl: senderProfile.avatarUrl || '',
+    actorPublicProfileId: senderProfile.publicProfileId || '',
     conversationId,
     message: `${senderProfile.username} sent you a message.`,
   });

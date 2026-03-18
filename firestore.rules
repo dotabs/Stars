@@ -1,0 +1,68 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /userProfiles/{userId} {
+      allow read: if true;
+      allow create, update, delete: if isOwner(userId);
+
+      match /followers/{docId} {
+        allow read: if true;
+        allow create, update, delete: if isSignedIn();
+      }
+
+      match /following/{docId} {
+        allow read: if true;
+        allow create, update, delete: if isSignedIn();
+      }
+
+      match /followRequests/{docId} {
+        allow read: if isOwner(userId);
+        allow create, update, delete: if isSignedIn();
+      }
+
+      match /notifications/{docId} {
+        allow read, create, update, delete: if isOwner(userId);
+      }
+
+      match /conversations/{docId} {
+        allow read, create, update, delete: if isOwner(userId);
+      }
+
+      match /reviews/{docId} {
+        allow read: if true;
+        allow create, update, delete: if isOwner(userId);
+      }
+    }
+
+    match /userProfileHandles/{docId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn();
+    }
+
+    match /userLibraries/{userId} {
+      allow read, create, update, delete: if isOwner(userId);
+    }
+
+    match /movieFeedback/{movieId}/entries/{userId} {
+      allow read: if true;
+      allow create, update, delete: if isOwner(userId);
+    }
+
+    match /conversations/{conversationId} {
+      allow read, create, update, delete: if isSignedIn();
+    }
+
+    match /conversations/{conversationId}/messages/{messageId} {
+      allow read, create, update, delete: if isSignedIn();
+    }
+  }
+}

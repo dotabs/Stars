@@ -16,24 +16,32 @@ export function useUserProfile(userId, options = {}) {
     let cancelled = false;
 
     if (!userId) {
-      setState({
-        requestedUserId: null,
-        resolvedUserId: null,
-        profile: null,
-        isLoading: false,
-        error: '',
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setState({
+            requestedUserId: null,
+            resolvedUserId: null,
+            profile: null,
+            isLoading: false,
+            error: '',
+          });
+        }
       });
       return () => {
         cancelled = true;
       };
     }
 
-    setState((current) => ({
-      ...current,
-      requestedUserId: userId,
-      isLoading: true,
-      error: '',
-    }));
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setState((current) => ({
+          ...current,
+          requestedUserId: userId,
+          isLoading: true,
+          error: '',
+        }));
+      }
+    });
 
     async function loadProfile() {
       try {

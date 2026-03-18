@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Bookmark, ChevronRight, Heart, LoaderCircle, Share2, Sparkles, Star, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -69,6 +69,7 @@ export function Lists() {
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [loadMoreError, setLoadMoreError] = useState('');
+    const collectionsRef = useRef([]);
     const loadMoreRef = useRef(null);
     const loadingCollectionIdRef = useRef('');
 
@@ -122,7 +123,11 @@ export function Lists() {
         }));
     }
 
-    async function loadCollectionPage(collectionId, page, options = {}) {
+    useEffect(() => {
+        collectionsRef.current = collections;
+    }, [collections]);
+
+    const loadCollectionPage = useCallback(async (collectionId, page, options = {}) => {
         const { replace = false, limit = DETAIL_PAGE_SIZE } = options;
         const cacheKey = `${collectionId}:${page}:${limit}`;
         if (loadingCollectionIdRef.current === cacheKey) {
@@ -134,7 +139,7 @@ export function Lists() {
         }
         setLoadMoreError('');
         try {
-            const excludeIds = buildCollectionExclusionIds(collections, collectionId);
+            const excludeIds = buildCollectionExclusionIds(collectionsRef.current, collectionId);
             const payload = await fetchTmdbCollectionPage(collectionId, { page, limit, excludeIds });
             mergeCollectionPage(collectionId, payload, replace);
         }
@@ -146,7 +151,7 @@ export function Lists() {
             loadingCollectionIdRef.current = '';
             setIsLoadingMore(false);
         }
-    }
+    }, []);
 
     useEffect(() => {
         if (!selectedList) {
@@ -160,10 +165,9 @@ export function Lists() {
             return;
         }
         void loadCollectionPage(selectedList, 1, { replace: true, limit: DETAIL_PAGE_SIZE });
-    }, [collections, selectedList]);
+    }, [collections, loadCollectionPage, selectedList]);
 
     const selectedCollection = useMemo(() => collections.find((entry) => entry.id === selectedList) ?? null, [collections, selectedList]);
-    const totalLoadedMovies = useMemo(() => collections.reduce((total, collection) => total + collection.movies.length, 0), [collections]);
     const selectedCollectionStats = useMemo(() => {
         if (!selectedCollection) {
             return [];
@@ -208,7 +212,7 @@ export function Lists() {
         }, { rootMargin: '420px 0px' });
         observer.observe(node);
         return () => observer.disconnect();
-    }, [isLoadingMore, selectedCollection?.currentPage, selectedCollection?.hasMore, selectedList]);
+    }, [isLoadingMore, loadCollectionPage, selectedCollection?.currentPage, selectedCollection?.hasMore, selectedList]);
 
     const handleFollow = (listId) => {
         if (followedLists.includes(listId)) {

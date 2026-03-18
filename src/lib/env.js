@@ -42,3 +42,4 @@ export const appEnv = {
 };
 export const hasTmdbCredentials = Boolean(appEnv.tmdbApiKey || appEnv.tmdbReadAccessToken);
 export const hasFirebaseConfig = Boolean(appEnv.firebaseApiKey && appEnv.firebaseAuthDomain && appEnv.firebaseProjectId && appEnv.firebaseAppId);
+export const hasFirebaseStorageConfig = Boolean(hasFirebaseConfig && appEnv.firebaseStorageBucket);

@@ -8,6 +8,7 @@ import { useMovieFeedback } from '@/hooks/use-movie-feedback';
 import { useUserLibrary } from '@/hooks/use-user-library';
 import { openExternalUrl, shareUrl } from '@/lib/browser';
 import { isMovieFeedbackAuthError, saveMovieFeedback } from '@/lib/movie-feedback';
+import { getProfilePath } from '@/lib/social';
 import { fetchTvShowById } from '@/lib/tmdb-search';
 import { isLibraryAuthError, setLibraryItemState } from '@/lib/user-library';
 
@@ -53,7 +54,7 @@ function getReviewAvatar(name) {
 }
 
 function getReviewProfilePath(entry) {
-  return entry?.userId ? `/profile/${entry.userId}` : entry?.userPublicProfileId ? `/profile/${entry.userPublicProfileId}` : '';
+  return entry?.userPublicProfileId || entry?.userId ? getProfilePath(entry.userPublicProfileId || entry.userId) : '';
 }
 
 function getRatingTone(type, hasData, score) {

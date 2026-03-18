@@ -39,6 +39,3 @@ export function preloadAppRoute(pathname) {
         preloadedRoutes.delete(routeKey);
     });
 }
-export function preloadCoreRoutes() {
-    ['/browse', '/explore', '/search', '/lists', '/watchlist', '/profile', '/notifications', '/messages', '/login', '/signup'].forEach(preloadAppRoute);
-}

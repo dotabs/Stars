@@ -3,6 +3,7 @@ import {
   browserLocalPersistence,
   createUserWithEmailAndPassword,
   EmailAuthProvider,
+  reload,
   reauthenticateWithCredential,
   updatePassword,
   onAuthStateChanged,
@@ -14,7 +15,7 @@ import {
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { appEnv } from '@/lib/env';
+import { appEnv, hasFirebaseConfig, hasFirebaseStorageConfig } from '@/lib/env';
 
 const firebaseConfig = {
   apiKey: appEnv.firebaseApiKey,
@@ -28,7 +29,43 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
 export const db = getFirestore(firebaseApp);
-export const storage = getStorage(firebaseApp);
+const normalizedStorageBucket = appEnv.firebaseStorageBucket.replace(/^gs:\/\//, '').trim();
+const storageBucketUrl = normalizedStorageBucket ? `gs://${normalizedStorageBucket}` : undefined;
+export const storage = storageBucketUrl ? getStorage(firebaseApp, storageBucketUrl) : getStorage(firebaseApp);
+
+export function getFirebaseDiagnostics() {
+  return {
+    hasFirebaseConfig,
+    hasFirebaseStorageConfig,
+    projectId: appEnv.firebaseProjectId,
+    authDomain: appEnv.firebaseAuthDomain,
+    storageBucket: appEnv.firebaseStorageBucket,
+  };
+}
+
+export function assertFirebaseStorageReady() {
+  if (!hasFirebaseConfig) {
+    throw new Error('Firebase is not configured. Add the VITE_FIREBASE_* environment variables.');
+  }
+
+  if (!hasFirebaseStorageConfig) {
+    throw new Error('Firebase Storage is not configured. Set VITE_FIREBASE_STORAGE_BUCKET for this project.');
+  }
+}
+
+export function getAuthUserSnapshot(user = auth.currentUser) {
+  if (!user) {
+    return null;
+  }
+
+  return {
+    uid: user.uid,
+    email: user.email || '',
+    emailVerified: Boolean(user.emailVerified),
+    displayName: user.displayName || '',
+    photoURL: user.photoURL || '',
+  };
+}
 
 const persistenceReady = setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.error('Failed to enable Firebase auth persistence.', error);
@@ -68,6 +105,17 @@ export async function updateAuthProfileFields({ displayName, photoURL }) {
     displayName: displayName ?? auth.currentUser.displayName ?? '',
     photoURL: photoURL ?? auth.currentUser.photoURL ?? '',
   });
+
+  return getAuthUserSnapshot(auth.currentUser);
+}
+
+export async function refreshCurrentAuthUser() {
+  if (!auth.currentUser) {
+    return null;
+  }
+
+  await reload(auth.currentUser);
+  return getAuthUserSnapshot(auth.currentUser);
 }
 
 export async function updateAuthPassword({ currentPassword, nextPassword }) {

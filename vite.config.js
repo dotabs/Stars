@@ -31,6 +31,9 @@ export default defineConfig(({ mode }) => {
                         if (id.includes('react-router')) {
                             return 'router-vendor';
                         }
+                        if (id.includes('\\firebase\\') || id.includes('/firebase/')) {
+                            return 'firebase-vendor';
+                        }
                         if (id.includes('world-atlas') || id.includes('topojson-client') || id.includes('\\d3\\')) {
                             return 'globe-vendor';
                         }

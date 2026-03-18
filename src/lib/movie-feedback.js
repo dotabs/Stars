@@ -2,6 +2,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
   query,
   setDoc,
@@ -129,6 +130,10 @@ export async function saveMovieFeedback({ movieId, user, rating, reviewText, spo
   const normalizedRating = Number(rating);
   const hasRating = Number.isFinite(normalizedRating) && normalizedRating >= 1 && normalizedRating <= 10;
 
+  if (normalizedReviewText.length > 2000 || normalizedSpoilerText.length > 2000) {
+    throw new Error('Reviews and spoiler notes must be 2000 characters or less.');
+  }
+
   if (!hasRating && !normalizedReviewText && !normalizedSpoilerText) {
     await deleteDoc(getMovieFeedbackDocRef(movieId, user.uid)).catch((error) => {
       if (error?.code !== 'not-found') {
@@ -141,6 +146,8 @@ export async function saveMovieFeedback({ movieId, user, rating, reviewText, spo
 
   const now = new Date().toISOString();
   const userProfile = await ensureUserProfile(user);
+  const existingSnapshot = await getDoc(getMovieFeedbackDocRef(movieId, user.uid));
+  const createdAt = existingSnapshot.exists() ? toIsoString(existingSnapshot.data()?.createdAt) || now : now;
 
   await setDoc(
     getMovieFeedbackDocRef(movieId, user.uid),
@@ -154,7 +161,7 @@ export async function saveMovieFeedback({ movieId, user, rating, reviewText, spo
       rating: hasRating ? Math.round(normalizedRating) : null,
       reviewText: normalizedReviewText,
       spoilerText: normalizedSpoilerText,
-      createdAt: now,
+      createdAt,
       updatedAt: now,
     },
     { merge: true }

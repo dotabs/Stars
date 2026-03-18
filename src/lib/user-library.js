@@ -10,7 +10,6 @@ import { db } from '@/lib/firebase';
 import { syncUserProfileStats } from '@/lib/social';
 
 const COLLECTION_NAME = 'userLibraries';
-const LIBRARY_UPDATED_EVENT = 'stars:library-updated';
 const AUTH_REQUIRED_ERROR = 'library/auth-required';
 
 const emptyLibraryState = Object.freeze({
@@ -19,8 +18,6 @@ const emptyLibraryState = Object.freeze({
   watched: [],
   favorites: [],
 });
-
-let cachedLibraryState = emptyLibraryState;
 
 function encodeMovieKey(movieId) {
   return encodeURIComponent(movieId);
@@ -78,14 +75,6 @@ function normalizeLibraryState(data) {
   };
 }
 
-function setCachedLibraryState(nextState) {
-  cachedLibraryState = nextState;
-
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent(LIBRARY_UPDATED_EVENT, { detail: nextState }));
-  }
-}
-
 function getUserLibraryRef(userId) {
   return doc(db, COLLECTION_NAME, userId);
 }
@@ -131,6 +120,14 @@ async function readLibraryState(userId) {
   return normalizeLibraryState(snapshot.data());
 }
 
+export async function readUserLibrarySnapshot(userId) {
+  if (!userId) {
+    return getEmptyUserLibrary();
+  }
+
+  return readLibraryState(userId);
+}
+
 async function writeLibraryItem(userId, movieId, nextItem) {
   const key = encodeMovieKey(movieId);
 
@@ -158,30 +155,20 @@ export function getEmptyUserLibrary() {
   return emptyLibraryState;
 }
 
-export function getUserLibrary() {
-  return cachedLibraryState;
-}
-
 export function subscribeToUserLibrary(userId, callback) {
   if (!userId) {
-    const nextState = getEmptyUserLibrary();
-    setCachedLibraryState(nextState);
-    callback(nextState);
+    callback(getEmptyUserLibrary());
     return () => {};
   }
 
   return onSnapshot(
     getUserLibraryRef(userId),
     (snapshot) => {
-      const nextState = normalizeLibraryState(snapshot.data());
-      setCachedLibraryState(nextState);
-      callback(nextState);
+      callback(normalizeLibraryState(snapshot.data()));
     },
     (error) => {
       console.error('Failed to subscribe to user library', error);
-      const nextState = getEmptyUserLibrary();
-      setCachedLibraryState(nextState);
-      callback(nextState);
+      callback(getEmptyUserLibrary());
     }
   );
 }
@@ -252,8 +239,4 @@ export async function removeLibraryItem({ userId, movieId }) {
 
 export function isLibraryAuthError(error) {
   return error?.code === AUTH_REQUIRED_ERROR;
-}
-
-export function getLibraryUpdatedEventName() {
-  return LIBRARY_UPDATED_EVENT;
 }

@@ -15,7 +15,13 @@ const navLinks = [
   { path: '/watchlist', label: 'Watchlist' },
 ];
 
-function UserAvatar({ initials, className = 'h-10 w-10' }) {
+function UserAvatar({ initials, photoURL = '', className = 'h-10 w-10' }) {
+  const [hasImageError, setHasImageError] = useState(false);
+
+  if (photoURL && !hasImageError) {
+    return <img src={photoURL} alt="Profile avatar" className={`${className} rounded-full object-cover`} onError={() => setHasImageError(true)} />;
+  }
+
   return (
     <span
       className={`flex items-center justify-center rounded-full text-sm font-bold text-white ${className}`}
@@ -112,7 +118,7 @@ export function Navbar() {
                 <HoverCard openDelay={120}>
                   <HoverCardTrigger asChild>
                     <button className="hidden items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] py-1.5 pl-1.5 pr-4 text-left transition-all duration-300 hover:border-[#d26d47]/35 hover:bg-white/[0.06] sm:flex">
-                      <UserAvatar initials={initials} />
+                      <UserAvatar initials={initials} photoURL={currentUser?.photoURL} />
                       <span className="min-w-0">
                         <span className="block max-w-[9rem] truncate text-sm font-semibold text-white">{displayName}</span>
                         <span className="block text-xs text-muted-foreground">Account</span>
@@ -124,7 +130,7 @@ export function Navbar() {
                     className="w-56 rounded-2xl border-white/10 bg-[#14100f]/95 p-2 text-white shadow-[0_24px_60px_-32px_rgba(0,0,0,0.95)] backdrop-blur-xl"
                   >
                     <div className="flex items-center gap-3 rounded-xl px-3 py-2">
-                      <UserAvatar initials={initials} />
+                      <UserAvatar initials={initials} photoURL={currentUser?.photoURL} />
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold text-white">{displayName}</p>
                         <p className="text-xs text-muted-foreground">Signed in</p>
@@ -153,13 +159,13 @@ export function Navbar() {
 
                 <button
                   onClick={handleLogout}
-                  className="flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-sm font-bold transition-all hover:scale-105 sm:hidden"
+                  className="flex h-10 min-w-10 items-center justify-center overflow-hidden rounded-full px-3 text-sm font-bold transition-all hover:scale-105 sm:hidden"
                   style={{
                     background: 'linear-gradient(135deg, #d26d47 0%, #9f472a 100%)',
                     boxShadow: '0 0 15px rgba(210, 109, 71, 0.24)',
                   }}
                 >
-                  {initials}
+                  {currentUser?.photoURL ? <img src={currentUser.photoURL} alt="Profile avatar" className="h-full w-full object-cover" /> : initials}
                 </button>
               </>
             ) : (
@@ -196,7 +202,7 @@ export function Navbar() {
           <div className="space-y-1 px-4 py-4">
             {isAuthenticated && (
               <div className="mb-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-3">
-                <UserAvatar initials={initials} className="h-11 w-11" />
+                <UserAvatar initials={initials} photoURL={currentUser?.photoURL} className="h-11 w-11" />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-white">{displayName}</p>
                   <p className="text-xs text-muted-foreground">Account</p>

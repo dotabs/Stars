@@ -20,6 +20,7 @@ import { useUserLibrary } from '@/hooks/use-user-library';
 import { getMovieById, movies as localMovies } from '@/data/movies';
 import { openExternalUrl, shareUrl } from '@/lib/browser';
 import { isMovieFeedbackAuthError, saveMovieFeedback } from '@/lib/movie-feedback';
+import { getProfilePath } from '@/lib/social';
 import { fetchTmdbMovieByRouteId, isTmdbMovieId } from '@/lib/tmdb-movies';
 import { isLibraryAuthError, setLibraryItemState } from '@/lib/user-library';
 
@@ -178,7 +179,7 @@ function getReviewAvatar(name) {
 }
 
 function getReviewProfilePath(entry) {
-  return entry?.userId ? `/profile/${entry.userId}` : entry?.userPublicProfileId ? `/profile/${entry.userPublicProfileId}` : '';
+  return entry?.userPublicProfileId || entry?.userId ? getProfilePath(entry.userPublicProfileId || entry.userId) : '';
 }
 
 function PersonCard({ person, subtitle, onOpen }) {

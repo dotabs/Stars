@@ -1,0 +1,47 @@
+[debug] [2026-03-18T21:23:54.049Z] ----------------------------------------------------------------------
+[debug] [2026-03-18T21:23:54.051Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\bin\firebase.js projects:list
+[debug] [2026-03-18T21:23:54.051Z] CLI Version:   15.10.1
+[debug] [2026-03-18T21:23:54.051Z] Platform:      win32
+[debug] [2026-03-18T21:23:54.051Z] Node Version:  v22.20.0
+[debug] [2026-03-18T21:23:54.051Z] Time:          Wed Mar 18 2026 14:23:54 GMT-0700 (Pacific Daylight Time)
+[debug] [2026-03-18T21:23:54.051Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-18T21:23:54.052Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-03-18T21:23:54.163Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-18T21:23:54.189Z] Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:287:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async GoogleAuth._GoogleAuth_determineClient (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:834:32)
+    at async GoogleAuth.getClient (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:698:20)
+    at async GoogleAuth.getAccessToken (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:722:24)
+    at async autoAuth (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\requireAuth.js:28:19)
+    at async Object.requireAuth [as fn] (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\requireAuth.js:90:20)
+    at async C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\command.js:264:17
+[error] 
+[error] Error: Failed to authenticate, have you run firebase login?
+[debug] [2026-03-18T21:23:54.377Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-03-18T21:23:54.377Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-03-18T21:23:54.049Z] ----------------------------------------------------------------------
+[debug] [2026-03-18T21:23:54.050Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:rules,storage --project stars-4a09e
+[debug] [2026-03-18T21:23:54.050Z] CLI Version:   15.10.1
+[debug] [2026-03-18T21:23:54.050Z] Platform:      win32
+[debug] [2026-03-18T21:23:54.050Z] Node Version:  v22.20.0
+[debug] [2026-03-18T21:23:54.050Z] Time:          Wed Mar 18 2026 14:23:54 GMT-0700 (Pacific Daylight Time)
+[debug] [2026-03-18T21:23:54.051Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-18T21:23:54.052Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-03-18T21:23:54.841Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-18T21:23:54.847Z] Error: Could not load the default credentials. Browse to https://cloud.google.com/docs/authentication/getting-started for more information.
+    at GoogleAuth.getApplicationDefaultAsync (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:287:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async GoogleAuth._GoogleAuth_determineClient (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:834:32)
+    at async GoogleAuth.getClient (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:698:20)
+    at async GoogleAuth.getAccessToken (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\google-auth-library\build\src\auth\googleauth.js:722:24)
+    at async autoAuth (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\requireAuth.js:28:19)
+    at async requireAuth (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\requireAuth.js:90:20)
+    at async requirePermissions (C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\requirePermissions.js:17:5)
+    at async C:\Users\newna\OneDrive\Documents\Desktop\app\node_modules\firebase-tools\lib\command.js:264:17
+[error] 
+[error] Error: Failed to authenticate, have you run firebase login?
+[debug] [2026-03-18T21:23:55.000Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-03-18T21:23:55.000Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
