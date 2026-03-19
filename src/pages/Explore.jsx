@@ -1,6 +1,6 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bookmark, Compass, Film, Globe2, MapPinned, RefreshCw, Search, Shuffle, Sparkles, Star, Ticket, } from 'lucide-react';
+import { Bookmark, Compass, Film, Globe2, MapPinned, RefreshCw, Search, Shuffle, Star, Ticket, } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CinematicGlobe, FilterChips, PosterImage } from '@/components/ui-custom';

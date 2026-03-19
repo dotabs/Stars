@@ -129,8 +129,11 @@ export function CinematicGlobe({ countries, selectedCountryKey, pinnedCountryKey
         if (animationFrameRef.current !== null) {
             cancelAnimationFrame(animationFrameRef.current);
             animationFrameRef.current = null;
+            // If we cancel an in-progress spin animation, make sure the UI doesn't stay stuck in "spinning".
+            setIsSpinning(false);
+            onSpinStateChange?.(false);
         }
-    }, []);
+    }, [onSpinStateChange]);
     const animateToRotation = useCallback((targetRotation, options) => {
         stopActiveAnimation();
         const startRotation = rotationRef.current;
