@@ -129,8 +129,11 @@ export function CinematicGlobe({ countries, selectedCountryKey, pinnedCountryKey
         if (animationFrameRef.current !== null) {
             cancelAnimationFrame(animationFrameRef.current);
             animationFrameRef.current = null;
+            // If we cancel an in-progress spin animation, make sure the UI doesn't stay stuck in "spinning".
+            setIsSpinning(false);
+            onSpinStateChange?.(false);
         }
-    }, []);
+    }, [onSpinStateChange]);
     const animateToRotation = useCallback((targetRotation, options) => {
         stopActiveAnimation();
         const startRotation = rotationRef.current;
@@ -308,12 +311,45 @@ export function CinematicGlobe({ countries, selectedCountryKey, pinnedCountryKey
         })
             .filter(Boolean);
     }, [centerCoordinates, countries, featureByName, markerRadiusScale, projection]);
-    const handleWheel = (event) => {
+
+    const scaleRef = useRef(scale);
+    const wheelDeltaRef = useRef(0);
+    const wheelFrameRef = useRef(null);
+
+    useEffect(() => {
+        scaleRef.current = scale;
+    }, [scale]);
+
+    const handleWheel = useCallback((event) => {
         event.preventDefault();
-        const nextScale = Math.max(0.8, Math.min(2.25, scale - event.deltaY * 0.001));
-        setScale(nextScale);
-    };
-    return (<div ref={wrapperRef} className={className} onWheel={handleWheel}>
+
+        // Touchpad scroll events can fire at very high frequency; batch them per frame
+        wheelDeltaRef.current += event.deltaY;
+        if (wheelFrameRef.current !== null)
+            return;
+
+        wheelFrameRef.current = requestAnimationFrame(() => {
+            const delta = wheelDeltaRef.current;
+            wheelDeltaRef.current = 0;
+            wheelFrameRef.current = null;
+
+            const scaledDelta = Math.sign(delta) * Math.min(Math.abs(delta), 80);
+            const nextScale = Math.max(0.8, Math.min(2.25, scaleRef.current - scaledDelta * 0.0007));
+            setScale(nextScale);
+        });
+    }, []);
+
+    useEffect(() => {
+        const element = wrapperRef.current;
+        if (!element)
+            return;
+        element.addEventListener('wheel', handleWheel, { passive: false });
+        return () => {
+            element.removeEventListener('wheel', handleWheel);
+        };
+    }, [handleWheel]);
+
+    return (<div ref={wrapperRef} className={className}>
       <div className="absolute inset-0 rounded-full opacity-80" style={{
             background: 'radial-gradient(circle at 35% 30%, rgba(255,59,59,0.12) 0%, rgba(11,18,32,0) 42%), radial-gradient(circle at 68% 74%, rgba(92,128,255,0.14) 0%, rgba(11,18,32,0) 38%)',
             filter: 'blur(18px)',

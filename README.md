@@ -45,6 +45,8 @@ If you leave the TMDB values empty, the app still starts, but TMDB-backed featur
 - TMDB requests should go through `src/lib/tmdb.ts`.
 - Environment settings live in `src/lib/env.ts`.
 
+**NOTE:** If you choose to use either the TMDB key or token by itself, remove the other entry entirely
+
 ## Production
 
 - Default router mode is `hash`, which is safer on static hosts without SPA rewrites.

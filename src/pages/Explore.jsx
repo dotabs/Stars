@@ -1,6 +1,6 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bookmark, Compass, Film, Globe2, MapPinned, RefreshCw, Search, Shuffle, Sparkles, Star, Ticket, } from 'lucide-react';
+import { Bookmark, Compass, Film, Globe2, MapPinned, RefreshCw, Search, Shuffle, Star, Ticket, } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CinematicGlobe, FilterChips, PosterImage } from '@/components/ui-custom';
@@ -202,11 +202,6 @@ export function Explore() {
         setSpinToken((value) => value + 1);
         handleCountrySelect(randomCountry);
     };
-    const handleSurpriseMe = () => {
-        const randomCountry = pickRandomCountry(countries, [...visitedCountries.slice(-4), selectedCountryKey].filter(Boolean));
-        setSpinToken((value) => value + 1);
-        handleCountrySelect(randomCountry);
-    };
     const handleShuffleCurrentCountry = async () => {
         setIsCountryLoading(true);
         setCountryError('');
@@ -261,23 +256,23 @@ export function Explore() {
               </div>
 
               <div className="grid grid-cols-2 gap-3 sm:w-auto sm:grid-cols-4">
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
-                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">Countries</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">{countries.length}</p>
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40 text-center">Countries</p>
+                  <p className="mt-2 text-2xl font-semibold text-white text-center">{countries.length}</p>
                 </div>
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
-                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">Visited</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">{visitedCountries.length}</p>
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40 text-center">Visited</p>
+                  <p className="mt-2 text-2xl font-semibold text-white text-center">{visitedCountries.length}</p>
                 </div>
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
-                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40">Pool</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 backdrop-blur-xl">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-white/40 text-center">Pool</p>
+                  <p className="mt-2 text-2xl font-semibold text-white text-center">
                     {(selectedCountryData.totalPoolResults ?? selectedCountryData.filmCount).toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-[#f3c86a]/20 bg-[#f3c86a]/[0.06] p-4">
-                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-[#f3c86a]/70">Passport</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">{exploredProgress}%</p>
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-[#f3c86a]/20 bg-[#f3c86a]/[0.06] p-4">
+                  <p className="text-mono text-[10px] uppercase tracking-[0.22em] text-[#f3c86a]/70 text-center">Passport</p>
+                  <p className="mt-2 text-2xl font-semibold text-white text-center">{exploredProgress}%</p>
                 </div>
               </div>
             </div>
@@ -368,10 +363,10 @@ export function Explore() {
                       <RefreshCw className={`mr-2 h-4 w-4 ${isSpinning ? 'animate-spin' : ''}`}/>
                       Spin Again
                     </Button>
-                    <Button onClick={handleSurpriseMe} variant="outline" className="h-12 rounded-full border-white/10 bg-white/[0.03] px-5 hover:bg-white/5">
-                      <Sparkles className="mr-2 h-4 w-4"/>
-                      Surprise Me
-                    </Button>
+                    
+
+
+
                   </div>
                 </div>
 
