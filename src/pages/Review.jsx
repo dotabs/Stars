@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   AlertTriangle,
@@ -147,7 +147,7 @@ function getRatingTone(type, hasData, score) {
   };
 }
 
-function RatingPill({ label, value, hint, tone = 'tmdb', score, hasData = true }) {
+function RatingPill({ label, value, hint, tone = 'tmdb', score, hasData = true}) {
   const styles = getRatingTone(tone, hasData, score);
 
   return (
@@ -261,6 +261,7 @@ export function Review() {
   const [isDeletingReview, setIsDeletingReview] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { feedback, isLoading: isFeedbackLoading } = useMovieFeedback(movie?.id);
+  const reviewRef = useRef(null);
 
   function handleBack() {
     if (window.history.length > 1) {
@@ -339,6 +340,12 @@ export function Review() {
     setRatingInput(userEntry?.rating ?? 0);
     setReviewInput(userEntry?.reviewText ?? '');
   }, [movie?.id, userEntry?.rating, userEntry?.reviewText]);
+  useEffect(() => {
+    if (!isEditorOpen) {
+      return;
+    }
+    reviewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [isEditorOpen]);
 
   useEffect(() => {
     function handleKeyDown(event) {
@@ -617,7 +624,7 @@ export function Review() {
                   <RatingPill
                     label="TMDB rating"
                     value={tmdbRating !== null ? `${tmdbRating}/10` : 'Not available'}
-                    hint={tmdbRating !== null ? 'TMDB score' : 'TMDB missing'}
+                    hint={tmdbRating !== null ? '' : 'TMDB missing'}
                     tone="tmdb"
                     score={tmdbRating}
                     hasData={tmdbRating !== null}
@@ -625,20 +632,26 @@ export function Review() {
                   <RatingPill
                     label="Community Rating"
                     value={averageRating !== null ? `${averageRating} (${totalRatings.toLocaleString()} ${totalRatings === 1 ? 'rating' : 'ratings'})` : 'No app ratings'}
-                    hint={averageRating !== null ? 'community' : 'community'}
+                    hint={''}
                     tone="community"
                     score={averageRating}
                     hasData={averageRating !== null}
                   />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-stretch">
-                  <RatingPill
-                    label="My rating"
-                    value={userEntry?.rating ? `${userEntry.rating}/10` : isAuthenticated ? 'Not rated' : 'Sign in'}
-                    hint={userEntry?.rating ? 'your score' : isAuthenticated ? 'add yours' : 'to rate'}
-                    tone="personal"
-                    hasData={Boolean(userEntry?.rating)}
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsEditorOpen((current) => !current)}
+                    className="text-left"
+                  >
+                    <RatingPill
+                      label="My rating"
+                      value={userEntry?.rating ? `${userEntry.rating}/10` : isAuthenticated ? 'Not rated' : 'Sign in'}
+                      hint={userEntry?.rating ? 'your score' : isAuthenticated ? 'add yours' : 'to rate'}
+                      tone="personal"
+                      hasData={Boolean(userEntry?.rating)}
+                    />
+                  </button>
                   <Button
                     className={`rounded-full border px-5 transition-all duration-200 ${
                       isInWatchlist
@@ -675,7 +688,14 @@ export function Review() {
                       <Play className="mr-2 h-4 w-4" />
                       Watch Trailer on YouTube
                     </Button>
-                  ) : null}
+                  ) : (
+                    <div className="invisible">
+                      <Button className="btn-outline rounded-full px-5">
+                        <Play className="mr-2 h-4 w-4" />
+                        Watch Trailer on YouTube
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -737,7 +757,7 @@ export function Review() {
             {isEditorOpen ? (
               <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
                 <div className="flex items-start justify-between gap-4">
-                  <div>
+                  <div ref={reviewRef}>
                     <h2 className="text-2xl font-semibold text-white">Your review</h2>
                     <p className="mt-2 text-sm leading-6 text-white/62">Save your rating and a public review for this movie.</p>
                   </div>
