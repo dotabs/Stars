@@ -188,15 +188,15 @@ export function Messages() {
                 <div className="mt-6 space-y-3">
                   {messagesState.items.slice().reverse().map((message) => (
                     <div key={message.id} className={`flex ${message.senderId === currentUser?.uid ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[70%] rounded-2xl px-4 py-3 text-sm ${message.senderId === currentUser?.uid ? 'bg-[#d26d47]/18 text-white' : 'bg-black/25 text-white/82'}`}>
+                      <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm sm:max-w-[70%] ${message.senderId === currentUser?.uid ? 'bg-[#d26d47]/18 text-white' : 'bg-black/25 text-white/82'}`}>
                         {message.text}
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="mt-6 flex gap-3">
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                   <input value={messageInput} onChange={(event) => setMessageInput(event.target.value)} placeholder="Write a message..." className="input-cinematic flex-1" />
-                  <Button className="btn-primary" onClick={() => void handleSend()} disabled={isSending || !messageInput.trim()}>
+                  <Button className="btn-primary w-full sm:w-auto" onClick={() => void handleSend()} disabled={isSending || !messageInput.trim()}>
                     {isSending ? 'Sending...' : 'Send'}
                   </Button>
                 </div>

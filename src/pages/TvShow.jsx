@@ -504,7 +504,7 @@ export function TvShow() {
                 <p className="text-sm uppercase tracking-[0.28em] text-[#f2b38c]">TV series detail</p>
                 <h1 className="heading-display mt-3 text-4xl text-white sm:text-5xl lg:text-6xl">{show.title}</h1>
                 <p className="mt-3 text-base text-white/60 sm:text-lg">
-                  {show.firstAirYear} • {show.genres.join(' / ') || 'Genre pending'} • {show.episodeRuntime ? `${show.episodeRuntime} min episodes` : 'Runtime pending'}
+                  {show.firstAirYear} / {show.genres.join(' / ') || 'Genre pending'} / {show.episodeRuntime ? `${show.episodeRuntime} min episodes` : 'Runtime pending'}
                 </p>
                 <p className="mt-2 text-sm text-white/55 sm:text-base">
                   Created by {show.creators.length ? show.creators.join(', ') : 'Unknown creators'}
@@ -531,7 +531,7 @@ export function TvShow() {
                     hasData={averageRating !== null}
                   />
                 </div>
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-stretch">
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto] lg:items-stretch">
                   <RatingPill
                     label="My rating"
                     value={userEntry?.rating ? `${userEntry.rating}/10` : isAuthenticated ? 'Not rated' : 'Sign in'}
@@ -795,7 +795,7 @@ export function TvShow() {
                 <div className="rounded-2xl border border-white/[0.08] bg-black/20 p-4">
                   <p className="text-xs uppercase tracking-[0.22em] text-white/42">Seasons & episodes</p>
                   <p className="mt-2 text-white">
-                    {show.seasons} season{show.seasons === 1 ? '' : 's'} • {show.episodes} episode{show.episodes === 1 ? '' : 's'}
+                    {show.seasons} season{show.seasons === 1 ? '' : 's'} / {show.episodes} episode{show.episodes === 1 ? '' : 's'}
                   </p>
                 </div>
               </div>
@@ -929,3 +929,5 @@ export function TvShow() {
     </div>
   );
 }
+
+

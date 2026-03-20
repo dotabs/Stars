@@ -3,7 +3,7 @@ import { countryCatalog, countryCatalogByGlobeName, countryCatalogByKey } from '
 function getTopGenres(countryMovies) {
     const genreMap = new Map();
     for (const movie of countryMovies) {
-        for (const genre of movie.genres) {
+        for (const genre of movie.genres ?? []) {
             genreMap.set(genre, (genreMap.get(genre) ?? 0) + 1);
         }
     }

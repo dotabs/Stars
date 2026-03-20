@@ -4,6 +4,9 @@ import { countryCatalogByKey } from '@/lib/country-catalog';
 import { getTmdbImageUrl, tmdbFetch } from '@/lib/tmdb';
 const explorePoolCache = new Map();
 const genreMapCache = new Map();
+const maxLineupMovies = 8;
+const maxShelfMovies = 6;
+const maxTmdbPages = 500;
 const bucketDefinitions = [
     {
         id: 'popular',
@@ -79,7 +82,7 @@ function scoreToVerdict(score) {
 function getTopGenres(countryMovies) {
     const genreMap = new Map();
     for (const movie of countryMovies) {
-        for (const genre of movie.genres) {
+        for (const genre of movie.genres ?? []) {
             genreMap.set(genre, (genreMap.get(genre) ?? 0) + 1);
         }
     }
@@ -90,16 +93,25 @@ function getTopGenres(countryMovies) {
 function normalizeMovieCountry(countryKey) {
     return countryKey === 'USA' ? 'USA' : countryKey === 'UK' ? 'UK' : countryKey;
 }
+function getCatalogEntry(countryKey) {
+    return countryCatalogByKey.get(countryKey) ?? countryCatalogByKey.get(defaultExploreCountry.key) ?? countryCatalogByKey.values().next().value;
+}
 async function getGenreMap() {
     const cacheKey = 'tmdb-movie-genres';
     if (!genreMapCache.has(cacheKey)) {
-        genreMapCache.set(cacheKey, tmdbFetch('/genre/movie/list').then((response) => new Map(response.genres.map((genre) => [genre.id, genre.name]))));
+        const promise = tmdbFetch('/genre/movie/list')
+            .then((response) => new Map((response?.genres ?? []).map((genre) => [genre.id, genre.name])))
+            .catch(() => {
+            genreMapCache.delete(cacheKey);
+            throw new Error('Failed to load TMDB genres');
+        });
+        genreMapCache.set(cacheKey, promise);
     }
     return genreMapCache.get(cacheKey);
 }
 function mapTmdbMovie(movie, genreMap, countryKey) {
     const year = getReleaseYear(movie.release_date);
-    const score = Number(movie.vote_average.toFixed(1));
+    const score = Number((movie.vote_average ?? 0).toFixed(1));
     const genres = movie.genre_ids
         ?.map((genreId) => genreMap.get(genreId))
         .filter((genre) => Boolean(genre)) ?? [];
@@ -133,7 +145,27 @@ function getLocalCountryFallback(countryKey) {
     const averageScore = fallbackMovies.length === 0
         ? 0
         : Number((fallbackMovies.reduce((total, movie) => total + movie.score, 0) / fallbackMovies.length).toFixed(1));
-    const entry = countryCatalogByKey.get(countryKey) ?? countryCatalogByKey.get(defaultExploreCountry.key);
+    const entry = getCatalogEntry(countryKey);
+    if (!entry) {
+        return {
+            key: countryKey,
+            label: countryKey,
+            globeName: countryKey,
+            flag: 'N/A',
+            region: 'Unknown',
+            filmCount: fallbackMovies.length,
+            averageScore,
+            topGenres: genreCounts.slice(0, 4).map(({ genre }) => genre),
+            genreCounts,
+            topFilms: [...fallbackMovies].sort((left, right) => right.score - left.score || right.year - left.year).slice(0, 5),
+            posterFilms: fallbackMovies.filter((movie) => movie.poster).slice(0, 4),
+            movies: [...fallbackMovies].sort((left, right) => right.year - left.year || right.score - left.score),
+            explored: false,
+            totalPoolResults: fallbackMovies.length,
+            source: 'local',
+            standoutTitles: fallbackMovies.slice(0, 4).map((movie) => movie.title),
+        };
+    }
     return {
         key: entry.key,
         label: entry.label,
@@ -170,7 +202,7 @@ function mulberry32(seed) {
     };
 }
 function choosePages(totalPages, maxPages, seed) {
-    const cappedTotalPages = Math.max(1, Math.min(totalPages, 500));
+    const cappedTotalPages = Math.max(1, Math.min(Number.isFinite(totalPages) ? totalPages : 1, maxTmdbPages));
     const targetCount = Math.min(cappedTotalPages, maxPages);
     const random = mulberry32(seed);
     const pages = new Set([1]);
@@ -183,44 +215,52 @@ async function fetchBucketMovies(countryKey, definition, genreMap) {
     const country = countryCatalogByKey.get(countryKey);
     if (!country)
         return { movies: [], totalResults: 0 };
-    const baseQuery = {
-        include_adult: false,
-        include_video: false,
-        language: 'en-US',
-        sort_by: definition.sortBy,
-        with_origin_country: country.code,
-        ...definition.query,
-    };
-    const firstPage = await tmdbFetch('/discover/movie', {
-        query: {
-            ...baseQuery,
-            page: 1,
-        },
-    });
-    const seed = createSeedFromCountry(`${countryKey}-${definition.id}`);
-    const pages = choosePages(firstPage.total_pages, definition.maxPages, seed);
-    const extraPages = await Promise.all(pages
-        .filter((page) => page !== 1)
-        .map((page) => tmdbFetch('/discover/movie', {
-        query: {
-            ...baseQuery,
-            page,
-        },
-    })));
-    const movies = [firstPage, ...extraPages]
-        .flatMap((response) => response.results)
-        .filter((movie) => Boolean(movie.title))
-        .map((movie) => mapTmdbMovie(movie, genreMap, countryKey));
-    return {
-        movies,
-        totalResults: firstPage.total_results,
-    };
+    try {
+        const baseQuery = {
+            include_adult: false,
+            include_video: false,
+            language: 'en-US',
+            sort_by: definition.sortBy,
+            with_origin_country: country.code,
+            ...definition.query,
+        };
+        const firstPage = await tmdbFetch('/discover/movie', {
+            query: {
+                ...baseQuery,
+                page: 1,
+            },
+        });
+        const seed = createSeedFromCountry(`${countryKey}-${definition.id}`);
+        const pages = choosePages(firstPage?.total_pages ?? 1, definition.maxPages, seed);
+        const extraPages = await Promise.all(pages
+            .filter((page) => page !== 1)
+            .map((page) => tmdbFetch('/discover/movie', {
+            query: {
+                ...baseQuery,
+                page,
+            },
+        })));
+        const movies = [firstPage, ...extraPages]
+            .flatMap((response) => response?.results ?? [])
+            .filter((movie) => Boolean(movie?.title))
+            .map((movie) => mapTmdbMovie(movie, genreMap, countryKey));
+        return {
+            movies,
+            totalResults: firstPage?.total_results ?? movies.length,
+        };
+    }
+    catch {
+        return { movies: [], totalResults: 0 };
+    }
 }
 function dedupeMovies(movies) {
     return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
 }
 function buildCountryPool(countryKey, movies, totalPoolResults, source) {
-    const entry = countryCatalogByKey.get(countryKey) ?? countryCatalogByKey.get(defaultExploreCountry.key);
+    const entry = getCatalogEntry(countryKey);
+    if (!entry) {
+        return getLocalCountryFallback(countryKey);
+    }
     const sortedMovies = dedupeMovies(movies).sort((left, right) => {
         const popularityDelta = (right.popularity ?? 0) - (left.popularity ?? 0);
         if (Math.abs(popularityDelta) > 0.001)
@@ -272,6 +312,15 @@ function bucketizeMovies(movies) {
             .sort((left, right) => right.year - left.year || right.score - left.score),
     };
 }
+function shuffleMovies(movies, seed) {
+    const shuffled = [...movies];
+    const random = mulberry32(seed);
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(random() * (index + 1));
+        [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+    }
+    return shuffled;
+}
 function pickFreshMovies(source, count, usedIds, recentIds, genreCooldown) {
     const fresh = source.filter((movie) => !usedIds.has(movie.id) &&
         !recentIds.has(movie.id) &&
@@ -296,7 +345,14 @@ export async function fetchExploreCountryPool(countryKey, options) {
     const poolPromise = (async () => {
         try {
             const genreMap = await getGenreMap();
-            const bucketResults = await Promise.all(bucketDefinitions.map((definition) => fetchBucketMovies(countryKey, definition, genreMap)));
+            const bucketResults = await Promise.all(bucketDefinitions.map(async (definition) => {
+                try {
+                    return await fetchBucketMovies(countryKey, definition, genreMap);
+                }
+                catch {
+                    return { movies: [], totalResults: 0 };
+                }
+            }));
             const allMovies = dedupeMovies(bucketResults.flatMap((bucket) => bucket.movies));
             const totalPoolResults = Math.max(...bucketResults.map((bucket) => bucket.totalResults), allMovies.length);
             if (allMovies.length === 0) {
@@ -313,29 +369,24 @@ export async function fetchExploreCountryPool(countryKey, options) {
 }
 export function buildExploreDiscovery(country, options) {
     const recentIds = new Set(options?.recentMovieIds ?? []);
-    const shuffledMovies = [...country.movies];
-    if (options?.shuffleSeed !== undefined) {
-        const random = mulberry32(options.shuffleSeed);
-        shuffledMovies.sort(() => random() - 0.5);
-    }
+    const shuffledMovies = options?.shuffleSeed !== undefined ? shuffleMovies(country.movies, options.shuffleSeed) : [...country.movies];
     const buckets = bucketizeMovies(shuffledMovies);
     const usedIds = new Set();
     const genreCooldown = new Set();
+    const lineupTarget = Math.min(maxLineupMovies, shuffledMovies.length);
     const lineup = [
         ...pickFreshMovies(buckets.topPicks, 3, usedIds, recentIds, genreCooldown),
         ...pickFreshMovies(buckets.hiddenGems, 2, usedIds, recentIds, genreCooldown),
         ...pickFreshMovies(buckets.recent, 2, usedIds, recentIds, genreCooldown),
         ...pickFreshMovies(buckets.classics, 1, usedIds, recentIds, genreCooldown),
     ];
-    if (lineup.length < 8) {
-        lineup.push(...pickFreshMovies(shuffledMovies, 8 - lineup.length, usedIds, recentIds, genreCooldown));
-    }
+    lineup.push(...pickFreshMovies(shuffledMovies, Math.max(0, lineupTarget - lineup.length), usedIds, recentIds, genreCooldown));
     return {
         country,
-        lineup: lineup.slice(0, 8),
-        topPicks: buckets.topPicks.slice(0, 6),
-        newestPicks: buckets.newestPicks.slice(0, 6),
-        hiddenGems: (buckets.hiddenGems.length > 0 ? buckets.hiddenGems : shuffledMovies).slice(0, 6),
+        lineup: lineup.slice(0, lineupTarget),
+        topPicks: buckets.topPicks.slice(0, maxShelfMovies),
+        newestPicks: buckets.newestPicks.slice(0, maxShelfMovies),
+        hiddenGems: (buckets.hiddenGems.length > 0 ? buckets.hiddenGems : shuffledMovies).slice(0, maxShelfMovies),
         source: country.source ?? 'local',
     };
 }

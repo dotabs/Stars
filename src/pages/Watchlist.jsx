@@ -287,7 +287,7 @@ export function Watchlist() {
                 <h1 className="heading-display mt-3 text-4xl text-white sm:text-5xl">Watchlist</h1>
                 <p className="mt-4 max-w-2xl text-sm leading-6 text-white/65 sm:text-base">Real saved titles, synced per user, with quick actions for watched status, favorites, and queue cleanup.</p>
               </div>
-              <div className="grid grid-cols-3 gap-3 sm:min-w-[22rem]">
+              <div className="grid w-full grid-cols-3 gap-3 lg:min-w-[22rem] lg:w-auto">
                 {heroStats.map((stat) => <div key={stat.label} className="rounded-[1.4rem] border border-white/10 bg-black/20 px-4 py-4 text-center backdrop-blur-sm"><p className="text-[11px] uppercase tracking-[0.2em] text-white/40">{stat.label}</p><p className="mt-2 text-2xl font-semibold text-white">{stat.value}</p></div>)}
               </div>
             </div>

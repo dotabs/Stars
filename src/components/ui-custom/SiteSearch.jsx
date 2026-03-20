@@ -43,7 +43,7 @@ function SiteSearchInner({ variant = 'desktop', onAfterNavigate, value, onValueC
         onDropdownVisibilityChange?.(dropdownVisible);
     }, [dropdownVisible, onDropdownVisibilityChange]);
     const inputClassName = variant === 'desktop'
-        ? 'search-input-field search-input-field-with-action h-10 w-56 rounded-full border-white/10 bg-black/20 text-sm text-white placeholder:text-muted-foreground hover:border-white/20 focus-visible:ring-white/20'
+        ? 'search-input-field search-input-field-with-clear h-10 w-[26rem] rounded-full border-white/10 bg-black/20 text-sm text-white placeholder:text-muted-foreground hover:border-white/20 focus-visible:ring-white/20'
         : variant === 'inline'
             ? 'input-cinematic search-input-field search-input-field-with-clear-and-action h-12 rounded-2xl border-white/10 bg-white/[0.03] text-white'
             : 'search-input-field search-input-field-with-clear-and-action h-11 rounded-xl border-white/10 bg-black/20 text-white';
@@ -117,15 +117,12 @@ function SiteSearchInner({ variant = 'desktop', onAfterNavigate, value, onValueC
             if (query.trim().length > 0) {
                 setIsOpen(true);
             }
-        }} onKeyDown={handleKeyDown} placeholder="Search for a movie, TV show, or person..." className={cn(inputClassName, !query.trim() && variant === 'desktop' ? 'w-72' : '')} aria-expanded={dropdownVisible} aria-controls={listboxId} aria-activedescendant={activeResult ? `${listboxId}-${activeResult.mediaType}-${activeResult.id}` : undefined} aria-autocomplete="list"/>
-      {query.trim() && (<button type="button" onClick={clearSearch} className={cn('absolute top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-white', variant === 'desktop' ? 'right-14' : 'right-12')} aria-label="Clear search">
+        }} onKeyDown={handleKeyDown} placeholder="Search for a movie, TV show, or person..." className={inputClassName} aria-expanded={dropdownVisible} aria-controls={listboxId} aria-activedescendant={activeResult ? `${listboxId}-${activeResult.mediaType}-${activeResult.id}` : undefined} aria-autocomplete="list"/>
+      {query.trim() && (<button type="button" onClick={clearSearch} className={cn('absolute top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-white', variant === 'desktop' ? 'right-4' : 'right-12')} aria-label="Clear search">
           <X className="h-4 w-4"/>
         </button>)}
-      <button type="submit" className={cn('absolute top-1/2 -translate-y-1/2 border border-white/10 bg-white/[0.04] font-semibold text-white transition-all hover:border-white/20 hover:bg-white/[0.08]', variant === 'desktop'
-            ? 'right-1.5 flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-[11px]'
-            : 'right-1.5 rounded-lg px-3 py-1.5 text-xs')} aria-label={activeResult ? 'Open selected result' : 'Open full search results'}>
-        {variant === 'desktop' ? 'Search' : 'Open'}
-      </button>
+
+
 
       {dropdownVisible && (<div className={dropdownClassName}>
           <div className="border-b border-white/8 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">

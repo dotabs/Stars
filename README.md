@@ -1,6 +1,6 @@
 # STARS
 
-Editorial-style film review frontend built with React, TypeScript, and Vite.
+Editorial-style film review frontend built with React and Vite.
 
 ## Setup
 
@@ -42,16 +42,26 @@ If you leave the TMDB values empty, the app still starts, but TMDB-backed featur
 
 - Put your API key in `.env.local` at `VITE_TMDB_API_KEY`.
 - If you prefer the bearer token, use `VITE_TMDB_READ_ACCESS_TOKEN`.
-- TMDB requests should go through `src/lib/tmdb.ts`.
-- Environment settings live in `src/lib/env.ts`.
+- TMDB requests should go through `src/lib/tmdb.js`.
+- Environment settings live in `src/lib/env.js`.
 
 **NOTE:** If you choose to use either the TMDB key or token by itself, remove the other entry entirely
 
 ## Production
 
-- Default router mode is `hash`, which is safer on static hosts without SPA rewrites.
-- If your host supports rewrites, set `VITE_ROUTER_MODE=browser`.
+- Default router mode is `browser`, which matches the included `vercel.json` SPA rewrite setup.
+- Use `VITE_ROUTER_MODE=hash` only if you deploy to a host without SPA rewrites.
 - If deploying under a subpath, set `VITE_BASE_PATH` to that path, for example `/stars/`.
+
+## Vercel
+
+1. Import the repo into Vercel.
+2. Leave the framework preset on `Vite`.
+3. Add the environment variables from `.env.example` in the Vercel project settings.
+4. Keep `VITE_ROUTER_MODE=browser` for Vercel.
+5. Deploy after confirming your Firebase project config and TMDB credential are set.
+
+The included `vercel.json` already adds SPA rewrites and a small set of security headers.
 
 ## Commands
 

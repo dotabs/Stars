@@ -27,7 +27,7 @@ function normalizeBasePath(value) {
 const tmdbCredentials = normalizeTmdbCredentials(import.meta.env.VITE_TMDB_API_KEY, import.meta.env.VITE_TMDB_READ_ACCESS_TOKEN);
 export const appEnv = {
     appName: import.meta.env.VITE_APP_NAME?.trim() || 'STARS',
-    routerMode: import.meta.env.VITE_ROUTER_MODE === 'browser' ? 'browser' : 'hash',
+    routerMode: import.meta.env.VITE_ROUTER_MODE === 'hash' ? 'hash' : 'browser',
     basePath: normalizeBasePath(import.meta.env.VITE_BASE_PATH),
     tmdbApiKey: tmdbCredentials.tmdbApiKey,
     tmdbReadAccessToken: tmdbCredentials.tmdbReadAccessToken,

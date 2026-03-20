@@ -289,11 +289,11 @@ export function ControlRoom() {
             
             {renderContent()}
 
-            <div className="mt-12 pt-8 border-t border-white/[0.06]">
-              <Button className="btn-primary">
+            <div className="mt-12 flex flex-col gap-3 border-t border-white/[0.06] pt-8 sm:flex-row">
+              <Button className="btn-primary w-full sm:w-auto">
                 Save Changes
               </Button>
-              <Button variant="outline" className="ml-3 btn-outline">
+              <Button variant="outline" className="btn-outline w-full sm:w-auto">
                 Reset to Default
               </Button>
             </div>

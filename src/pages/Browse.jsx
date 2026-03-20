@@ -88,7 +88,11 @@ export function Browse() {
     const { currentUser, library } = useUserLibrary();
     const [searchParams, setSearchParams] = useSearchParams();
     const [sortBy, setSortBy] = useState(null);
-    const [showFilters, setShowFilters] = useState(true);
+    const [showFilters, setShowFilters] = useState(() => {
+        if (typeof window === 'undefined')
+            return true;
+        return window.innerWidth >= 1024;
+    });
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [selectedLanguages, setSelectedLanguages] = useState([]);
     const [selectedVerdicts, setSelectedVerdicts] = useState([]);
@@ -186,6 +190,19 @@ export function Browse() {
         void loadTrending();
         return () => {
             cancelled = true;
+        };
+    }, []);
+    useEffect(() => {
+        if (typeof window === 'undefined')
+            return undefined;
+        const mediaQuery = window.matchMedia('(min-width: 1024px)');
+        const handleChange = (event) => {
+            setShowFilters(event.matches);
+        };
+        handleChange(mediaQuery);
+        mediaQuery.addEventListener('change', handleChange);
+        return () => {
+            mediaQuery.removeEventListener('change', handleChange);
         };
     }, []);
     const activeFiltersCount = useMemo(() => selectedGenres.length +
@@ -732,3 +749,5 @@ export function Browse() {
       </div>
     </div>);
 }
+
+

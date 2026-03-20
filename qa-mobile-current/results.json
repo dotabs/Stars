@@ -1,0 +1,1311 @@
+[
+  {
+    "route": "http://127.0.0.1:4173/",
+    "name": "home",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "h1": "Peaky Blinders: The Immortal Man",
+    "bodyText": "STARS\nSign in\nCURATED TMDB SPOTLIGHT\nFEATURED NOW\n2026\nCRIME / DRAMA\nPeaky Blinders: The Immortal Man\n\nAfter his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.\n\nTMDB 8.1\nMar 4, 2026\n115 min runtime\nOPEN DETAILS\nWATCH TRAILER\nADD TO LIST\n8.1\n2026\n\nCrime / Drama\n\nAUTO-ROTATING FEATURED LINEUP\n\nTRENDING TODAY IS LIVE\nIN-THEATERS PICKS BELOW\n\nTRENDING TODAY\n\nWhat is moving fastest right now\n\nTRENDING THIS WEEK\n\nWeekly TMDB momentum\n\nIN THEATERS\n\nNow playing in theaters\n\nPOPULAR\n\nBig audience pull worldwide\n\nTOP RATED\n\nLong-run TMDB favorites\n\nUPCOMING\n\nRelease radar\n\nDISCOVERY\n\nKeep exploring the catalog\nOpen Browse\n\nFEATURED HERO\n\nPeaky Blinders: The Immortal Man\n\nJump back into the live TMDB spotlight and open the full movie page or trailer.\n\n8.1\nMar 4, 2026\n\nTRENDING TODAY\n\nDo Not Enter\n\nSame-day TMDB heat. This title is moving fastest in the daily movie feed.\n\n5.5\nMar 19, 2026\n\nCOMING SOON\n\nReturn to Silent Hill\n\nKeep exploring the release calendar with upcoming TMDB titles.\n\n5.0\nJan 20, 2026\nSTARS\n\nA faster way to jump back into reviews, lists, and live movie discovery.\n\nDISCOVER\nBrowse ",
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360.375,
+        "right": 409.1875
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-2 gap-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 400
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38",
+        "text": "My List",
+        "left": 408,
+        "right": 511
+      },
+      {
+        "tag": "svg",
+        "className": {},
+        "text": "",
+        "left": 429.796875,
+        "right": 441.796875
+      },
+      {
+        "tag": "path",
+        "className": {},
+        "text": "",
+        "left": 432.296875,
+        "right": 439.296875
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618.28125
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "http://127.0.0.1:4173/browse",
+    "name": "browse",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "h1": "Peaky Blinders: The Immortal Man",
+    "bodyText": "STARS\nSign in\nCURATED TMDB SPOTLIGHT\nFEATURED NOW\n2026\nCRIME / DRAMA\nPeaky Blinders: The Immortal Man\n\nAfter his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.\n\nTMDB 8.1\nMar 4, 2026\n115 min runtime\nOPEN DETAILS\nWATCH TRAILER\nADD TO LIST\n8.1\n2026\n\nCrime / Drama\n\nAUTO-ROTATING FEATURED LINEUP\n\nTRENDING TODAY IS LIVE\nIN-THEATERS PICKS BELOW\n\nTRENDING TODAY\n\nWhat is moving fastest right now\n\nTRENDING THIS WEEK\n\nWeekly TMDB momentum\n\nIN THEATERS\n\nNow playing in theaters\n\nPOPULAR\n\nBig audience pull worldwide\n\nTOP RATED\n\nLong-run TMDB favorites\n\nUPCOMING\n\nRelease radar\n\nDISCOVERY\n\nKeep exploring the catalog\nOpen Browse\n\nFEATURED HERO\n\nPeaky Blinders: The Immortal Man\n\nJump back into the live TMDB spotlight and open the full movie page or trailer.\n\n8.1\nMar 4, 2026\n\nTRENDING TODAY\n\nDo Not Enter\n\nSame-day TMDB heat. This title is moving fastest in the daily movie feed.\n\n5.5\nMar 19, 2026\n\nCOMING SOON\n\nReturn to Silent Hill\n\nKeep exploring the release calendar with upcoming TMDB titles.\n\n5.0\nJan 20, 2026\nSTARS\n\nA faster way to jump back into reviews, lists, and live movie discovery.\n\nDISCOVER\nBrowse ",
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360.375,
+        "right": 409.1875
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-2 gap-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 400
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38",
+        "text": "My List",
+        "left": 408,
+        "right": 511
+      },
+      {
+        "tag": "svg",
+        "className": {},
+        "text": "",
+        "left": 429.796875,
+        "right": 441.796875
+      },
+      {
+        "tag": "path",
+        "className": {},
+        "text": "",
+        "left": 432.296875,
+        "right": 439.296875
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618.28125
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "http://127.0.0.1:4173/lists",
+    "name": "lists",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "h1": "Peaky Blinders: The Immortal Man",
+    "bodyText": "STARS\nSign in\nCURATED TMDB SPOTLIGHT\nFEATURED NOW\n2026\nCRIME / DRAMA\nPeaky Blinders: The Immortal Man\n\nAfter his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.\n\nTMDB 8.1\nMar 4, 2026\n115 min runtime\nOPEN DETAILS\nWATCH TRAILER\nADD TO LIST\n8.1\n2026\n\nCrime / Drama\n\nAUTO-ROTATING FEATURED LINEUP\n\nTRENDING TODAY IS LIVE\nIN-THEATERS PICKS BELOW\n\nTRENDING TODAY\n\nWhat is moving fastest right now\n\nTRENDING THIS WEEK\n\nWeekly TMDB momentum\n\nIN THEATERS\n\nNow playing in theaters\n\nPOPULAR\n\nBig audience pull worldwide\n\nTOP RATED\n\nLong-run TMDB favorites\n\nUPCOMING\n\nRelease radar\n\nDISCOVERY\n\nKeep exploring the catalog\nOpen Browse\n\nFEATURED HERO\n\nPeaky Blinders: The Immortal Man\n\nJump back into the live TMDB spotlight and open the full movie page or trailer.\n\n8.1\nMar 4, 2026\n\nTRENDING TODAY\n\nDo Not Enter\n\nSame-day TMDB heat. This title is moving fastest in the daily movie feed.\n\n5.5\nMar 19, 2026\n\nCOMING SOON\n\nReturn to Silent Hill\n\nKeep exploring the release calendar with upcoming TMDB titles.\n\n5.0\nJan 20, 2026\nSTARS\n\nA faster way to jump back into reviews, lists, and live movie discovery.\n\nDISCOVER\nBrowse ",
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360.375,
+        "right": 409.1875
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-2 gap-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 400
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38",
+        "text": "My List",
+        "left": 408,
+        "right": 511
+      },
+      {
+        "tag": "svg",
+        "className": {},
+        "text": "",
+        "left": 429.796875,
+        "right": 441.796875
+      },
+      {
+        "tag": "path",
+        "className": {},
+        "text": "",
+        "left": 432.296875,
+        "right": 439.296875
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618.28125
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "http://127.0.0.1:4173/watchlist",
+    "name": "watchlist",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "h1": "Peaky Blinders: The Immortal Man",
+    "bodyText": "STARS\nSign in\nCURATED TMDB SPOTLIGHT\nFEATURED NOW\n2026\nCRIME / DRAMA\nPeaky Blinders: The Immortal Man\n\nAfter his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.\n\nTMDB 8.1\nMar 4, 2026\n115 min runtime\nOPEN DETAILS\nWATCH TRAILER\nADD TO LIST\n8.1\n2026\n\nCrime / Drama\n\nAUTO-ROTATING FEATURED LINEUP\n\nTRENDING TODAY IS LIVE\nIN-THEATERS PICKS BELOW\n\nTRENDING TODAY\n\nWhat is moving fastest right now\n\nTRENDING THIS WEEK\n\nWeekly TMDB momentum\n\nIN THEATERS\n\nNow playing in theaters\n\nPOPULAR\n\nBig audience pull worldwide\n\nTOP RATED\n\nLong-run TMDB favorites\n\nUPCOMING\n\nRelease radar\n\nDISCOVERY\n\nKeep exploring the catalog\nOpen Browse\n\nFEATURED HERO\n\nPeaky Blinders: The Immortal Man\n\nJump back into the live TMDB spotlight and open the full movie page or trailer.\n\n8.1\nMar 4, 2026\n\nTRENDING TODAY\n\nDo Not Enter\n\nSame-day TMDB heat. This title is moving fastest in the daily movie feed.\n\n5.5\nMar 19, 2026\n\nCOMING SOON\n\nReturn to Silent Hill\n\nKeep exploring the release calendar with upcoming TMDB titles.\n\n5.0\nJan 20, 2026\nSTARS\n\nA faster way to jump back into reviews, lists, and live movie discovery.\n\nDISCOVER\nBrowse ",
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360.375,
+        "right": 409.1875
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-2 gap-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 400
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38",
+        "text": "My List",
+        "left": 408,
+        "right": 511
+      },
+      {
+        "tag": "svg",
+        "className": {},
+        "text": "",
+        "left": 429.796875,
+        "right": 441.796875
+      },
+      {
+        "tag": "path",
+        "className": {},
+        "text": "",
+        "left": 432.296875,
+        "right": 439.296875
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618.28125
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "http://127.0.0.1:4173/profile",
+    "name": "profile",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "h1": "Peaky Blinders: The Immortal Man",
+    "bodyText": "STARS\nSign in\nCURATED TMDB SPOTLIGHT\nFEATURED NOW\n2026\nCRIME / DRAMA\nPeaky Blinders: The Immortal Man\n\nAfter his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.\n\nTMDB 8.1\nMar 4, 2026\n115 min runtime\nOPEN DETAILS\nWATCH TRAILER\nADD TO LIST\n8.1\n2026\n\nCrime / Drama\n\nAUTO-ROTATING FEATURED LINEUP\n\nTRENDING TODAY IS LIVE\nIN-THEATERS PICKS BELOW\n\nTRENDING TODAY\n\nWhat is moving fastest right now\n\nTRENDING THIS WEEK\n\nWeekly TMDB momentum\n\nIN THEATERS\n\nNow playing in theaters\n\nPOPULAR\n\nBig audience pull worldwide\n\nTOP RATED\n\nLong-run TMDB favorites\n\nUPCOMING\n\nRelease radar\n\nDISCOVERY\n\nKeep exploring the catalog\nOpen Browse\n\nFEATURED HERO\n\nPeaky Blinders: The Immortal Man\n\nJump back into the live TMDB spotlight and open the full movie page or trailer.\n\n8.1\nMar 4, 2026\n\nTRENDING TODAY\n\nDo Not Enter\n\nSame-day TMDB heat. This title is moving fastest in the daily movie feed.\n\n5.5\nMar 19, 2026\n\nCOMING SOON\n\nReturn to Silent Hill\n\nKeep exploring the release calendar with upcoming TMDB titles.\n\n5.0\nJan 20, 2026\nSTARS\n\nA faster way to jump back into reviews, lists, and live movie discovery.\n\nDISCOVER\nBrowse ",
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360.375,
+        "right": 409.1875
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-2 gap-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 400
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38",
+        "text": "My List",
+        "left": 408,
+        "right": 511
+      },
+      {
+        "tag": "svg",
+        "className": {},
+        "text": "",
+        "left": 429.796875,
+        "right": 441.796875
+      },
+      {
+        "tag": "path",
+        "className": {},
+        "text": "",
+        "left": 432.296875,
+        "right": 439.296875
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618.28125
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "http://127.0.0.1:4173/login",
+    "name": "login",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "h1": "Peaky Blinders: The Immortal Man",
+    "bodyText": "STARS\nSign in\nCURATED TMDB SPOTLIGHT\nFEATURED NOW\n2026\nCRIME / DRAMA\nPeaky Blinders: The Immortal Man\n\nAfter his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.\n\nTMDB 8.1\nMar 4, 2026\n115 min runtime\nOPEN DETAILS\nWATCH TRAILER\nADD TO LIST\n8.1\n2026\n\nCrime / Drama\n\nAUTO-ROTATING FEATURED LINEUP\n\nTRENDING TODAY IS LIVE\nIN-THEATERS PICKS BELOW\n\nTRENDING TODAY\n\nWhat is moving fastest right now\n\nTRENDING THIS WEEK\n\nWeekly TMDB momentum\n\nIN THEATERS\n\nNow playing in theaters\n\nPOPULAR\n\nBig audience pull worldwide\n\nTOP RATED\n\nLong-run TMDB favorites\n\nUPCOMING\n\nRelease radar\n\nDISCOVERY\n\nKeep exploring the catalog\nOpen Browse\n\nFEATURED HERO\n\nPeaky Blinders: The Immortal Man\n\nJump back into the live TMDB spotlight and open the full movie page or trailer.\n\n8.1\nMar 4, 2026\n\nTRENDING TODAY\n\nDo Not Enter\n\nSame-day TMDB heat. This title is moving fastest in the daily movie feed.\n\n5.5\nMar 19, 2026\n\nCOMING SOON\n\nReturn to Silent Hill\n\nKeep exploring the release calendar with upcoming TMDB titles.\n\n5.0\nJan 20, 2026\nSTARS\n\nA faster way to jump back into reviews, lists, and live movie discovery.\n\nDISCOVER\nBrowse ",
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360.375,
+        "right": 409.1875
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-2 gap-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 400
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38",
+        "text": "My List",
+        "left": 408,
+        "right": 511
+      },
+      {
+        "tag": "svg",
+        "className": {},
+        "text": "",
+        "left": 429.796875,
+        "right": 441.796875
+      },
+      {
+        "tag": "path",
+        "className": {},
+        "text": "",
+        "left": 432.296875,
+        "right": 439.296875
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618.28125
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "http://127.0.0.1:4173/signup",
+    "name": "signup",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "h1": "Peaky Blinders: The Immortal Man",
+    "bodyText": "STARS\nSign in\nCURATED TMDB SPOTLIGHT\nFEATURED NOW\n2026\nCRIME / DRAMA\nPeaky Blinders: The Immortal Man\n\nAfter his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.\n\nTMDB 8.1\nMar 4, 2026\n115 min runtime\nOPEN DETAILS\nWATCH TRAILER\nADD TO LIST\n8.1\n2026\n\nCrime / Drama\n\nAUTO-ROTATING FEATURED LINEUP\n\nTRENDING TODAY IS LIVE\nIN-THEATERS PICKS BELOW\n\nTRENDING TODAY\n\nWhat is moving fastest right now\n\nTRENDING THIS WEEK\n\nWeekly TMDB momentum\n\nIN THEATERS\n\nNow playing in theaters\n\nPOPULAR\n\nBig audience pull worldwide\n\nTOP RATED\n\nLong-run TMDB favorites\n\nUPCOMING\n\nRelease radar\n\nDISCOVERY\n\nKeep exploring the catalog\nOpen Browse\n\nFEATURED HERO\n\nPeaky Blinders: The Immortal Man\n\nJump back into the live TMDB spotlight and open the full movie page or trailer.\n\n8.1\nMar 4, 2026\n\nTRENDING TODAY\n\nDo Not Enter\n\nSame-day TMDB heat. This title is moving fastest in the daily movie feed.\n\n5.5\nMar 19, 2026\n\nCOMING SOON\n\nReturn to Silent Hill\n\nKeep exploring the release calendar with upcoming TMDB titles.\n\n5.0\nJan 20, 2026\nSTARS\n\nA faster way to jump back into reviews, lists, and live movie discovery.\n\nDISCOVER\nBrowse ",
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360.375,
+        "right": 409.1875
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-2 gap-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 400
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38",
+        "text": "My List",
+        "left": 408,
+        "right": 511
+      },
+      {
+        "tag": "svg",
+        "className": {},
+        "text": "",
+        "left": 429.796875,
+        "right": 441.796875
+      },
+      {
+        "tag": "path",
+        "className": {},
+        "text": "",
+        "left": 432.296875,
+        "right": 439.296875
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792
+      },
+      {
+        "tag": "img",
+        "className": "aspect-[4/5] sm:aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618.28125
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

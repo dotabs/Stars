@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowUpRight, Bell, Mail, Menu, User, X } from 'lucide-react';
+import { ArrowUpRight, Bell, LogIn, Mail, Menu, User, X } from 'lucide-react';
 import { useAuth } from '@/components/auth/useAuth';
 import { BrandLogo } from '@/components/ui-custom/BrandLogo';
 import { SiteSearch } from '@/components/ui-custom/SiteSearch';
@@ -172,13 +172,15 @@ export function Navbar() {
                 </Link>
                 <Link
                   to="/login"
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-all hover:scale-105 sm:hidden"
+                  aria-label="Sign in"
+                  className="flex h-10 min-w-10 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-semibold text-white transition-all hover:scale-105 sm:hidden"
                   style={{
                     background: 'linear-gradient(135deg, #d26d47 0%, #9f472a 100%)',
                     boxShadow: '0 0 15px rgba(210, 109, 71, 0.24)',
                   }}
                 >
-                  S
+                  <LogIn className="h-4 w-4" />
+                  <span className="sr-only">Sign in</span>
                 </Link>
               </>
             )}

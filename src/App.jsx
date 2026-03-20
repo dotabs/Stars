@@ -21,6 +21,8 @@ const Messages = lazy(() => import('@/pages/Messages').then((module) => ({ defau
 const ControlRoom = lazy(() => import('@/pages/ControlRoom').then((module) => ({ default: module.ControlRoom })));
 const Login = lazy(() => import('@/pages/Login').then((module) => ({ default: module.Login })));
 const Signup = lazy(() => import('@/pages/Signup').then((module) => ({ default: module.Signup })));
+const Terms = lazy(() => import('@/pages/Terms').then((module) => ({ default: module.Terms })));
+const Privacy = lazy(() => import('@/pages/Privacy').then((module) => ({ default: module.Privacy })));
 function RouteFallback() {
     return (<div className="flex min-h-[40vh] items-center justify-center px-4 py-16">
       <div className="section-panel w-full max-w-md px-6 py-10 text-center">
@@ -104,6 +106,8 @@ function App() {
             <Route path="/signup" element={<AuthGate>
                   <Signup />
                 </AuthGate>}/>
+            <Route path="/terms" element={<Terms />}/>
+            <Route path="/privacy" element={<Privacy />}/>
             <Route path="*" element={<NotFound />}/>
           </Routes>
         </Layout>
@@ -111,3 +115,4 @@ function App() {
     </AppErrorBoundary>);
 }
 export default App;
+

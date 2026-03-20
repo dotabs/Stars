@@ -1,0 +1,3932 @@
+[
+  {
+    "route": "/",
+    "name": "home",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/explore",
+    "name": "explore",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/browse",
+    "name": "browse",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/search?q=batman",
+    "name": "search",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/review/tmdb-550",
+    "name": "review",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/tv/1399",
+    "name": "tv",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/person/287",
+    "name": "person",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/watchlist",
+    "name": "watchlist",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/lists",
+    "name": "lists",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/profile",
+    "name": "profile",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/notifications",
+    "name": "notifications",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/messages",
+    "name": "messages",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/control-room",
+    "name": "control-room",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/login",
+    "name": "login",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  },
+  {
+    "route": "/signup",
+    "name": "signup",
+    "viewportWidth": 393,
+    "scrollWidth": 393,
+    "hasHorizontalOverflow": false,
+    "overflowing": [
+      {
+        "tag": "div",
+        "className": "absolute left-[-12rem] top-[8rem] h-[22rem] w-[22rem] rounded-full bg-[#d26d47]/12 blur-3xl",
+        "text": "",
+        "left": -192,
+        "right": 160,
+        "width": 352,
+        "scrollWidth": 352,
+        "clientWidth": 352
+      },
+      {
+        "tag": "div",
+        "className": "flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+        "text": "5.52026Do Not EnterHorrorWatch TrailerMy List7.62026Ready or Not: Here I ComeHorror / ComedyWatch Tr",
+        "left": 16,
+        "right": 377,
+        "width": 361,
+        "scrollWidth": 1608,
+        "clientWidth": 361
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 280,
+        "right": 528,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "7.62026Ready or Not: Here I ComeHorror / ComedyWatch TrailerMy List",
+        "left": 281,
+        "right": 527,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "7.62026",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "rounded-full border border-white/12 bg-white/8 px-2.5 py-1",
+        "text": "2026",
+        "left": 360,
+        "right": 409,
+        "width": 49,
+        "scrollWidth": 47,
+        "clientWidth": 47
+      },
+      {
+        "tag": "h3",
+        "className": "line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684] text-lg",
+        "text": "Ready or Not: Here I Come",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "p",
+        "className": "mt-1 line-clamp-1 text-xs text-white/58",
+        "text": "Horror / Comedy",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "div",
+        "className": "grid grid-cols-1 gap-2 sm:grid-cols-2",
+        "text": "Watch TrailerMy List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40p",
+        "text": "Watch Trailer",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "button",
+        "className": "flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all",
+        "text": "My List",
+        "left": 297,
+        "right": 511,
+        "width": 214,
+        "scrollWidth": 212,
+        "clientWidth": 212
+      },
+      {
+        "tag": "article",
+        "className": "group relative flex-none cursor-pointer snap-start w-[15.5rem] sm:w-[21rem] lg:w-[23rem] [content-visibility:auto] [contain-intrinsic-size:340px_260px]",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 248,
+        "clientWidth": 248
+      },
+      {
+        "tag": "div",
+        "className": "relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hov",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 544,
+        "right": 792,
+        "width": 248,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "img",
+        "className": "aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        "text": "",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "absolute inset-x-0 bottom-0 p-4",
+        "text": "0.02026The Super Mario Galaxy MovieFamily / FantasyWatch TrailerMy List",
+        "left": 545,
+        "right": 791,
+        "width": 246,
+        "scrollWidth": 246,
+        "clientWidth": 246
+      },
+      {
+        "tag": "div",
+        "className": "mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86",
+        "text": "0.02026",
+        "left": 561,
+        "right": 775,
+        "width": 214,
+        "scrollWidth": 214,
+        "clientWidth": 214
+      },
+      {
+        "tag": "span",
+        "className": "inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]",
+        "text": "0.0",
+        "left": 561,
+        "right": 618,
+        "width": 57,
+        "scrollWidth": 55,
+        "clientWidth": 55
+      },
+      {
+        "tag": "svg",
+        "className": "[object SVGAnimatedString]",
+        "text": "",
+        "left": 572,
+        "right": 586,
+        "width": 14,
+        "scrollWidth": 14,
+        "clientWidth": 14
+      }
+    ],
+    "title": "STARS | Film Reviews",
+    "consoleErrors": [],
+    "pageErrors": []
+  }
+]

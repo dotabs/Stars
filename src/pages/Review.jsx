@@ -613,7 +613,7 @@ export function Review() {
                 <p className="text-sm uppercase tracking-[0.28em] text-[#f2b38c]">Movie detail</p>
                 <h1 className="heading-display mt-3 text-4xl text-white sm:text-5xl lg:text-6xl">{movie.title}</h1>
                 <p className="mt-3 text-base text-white/68 sm:text-lg">
-                  {movie.year} • {movie.genres.join(' / ')} • {movie.runtime ? `${movie.runtime} min` : 'Runtime pending'}
+                  {movie.year} / {movie.genres.join(' / ')} / {movie.runtime ? `${movie.runtime} min` : 'Runtime pending'}
                 </p>
                 <p className="mt-2 text-sm text-white/62 sm:text-base">Directed by {movie.director || 'Unknown director'}</p>
                 <p className="mt-5 max-w-3xl text-sm leading-7 text-white/78 sm:text-base">{storyText}</p>
@@ -638,7 +638,7 @@ export function Review() {
                     hasData={averageRating !== null}
                   />
                 </div>
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] sm:items-stretch">
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto] lg:items-stretch">
                   <button
                     type="button"
                     onClick={() => setIsEditorOpen((current) => !current)}
@@ -1065,3 +1065,5 @@ export function Review() {
     </div>
   );
 }
+
+

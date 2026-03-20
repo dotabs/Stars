@@ -10,23 +10,36 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    function isParticipant(data) {
+      return isSignedIn() && request.auth.uid in data.participantIds;
+    }
+
     match /userProfiles/{userId} {
       allow read: if true;
       allow create, update, delete: if isOwner(userId);
 
       match /followers/{docId} {
         allow read: if true;
-        allow create, update, delete: if isSignedIn();
+        allow create, update: if isSignedIn()
+          && request.auth.uid == docId
+          && request.resource.data.userId == docId;
+        allow delete: if isSignedIn() && request.auth.uid == docId;
       }
 
       match /following/{docId} {
         allow read: if true;
-        allow create, update, delete: if isSignedIn();
+        allow create, update: if isOwner(userId)
+          && request.resource.data.userId == docId;
+        allow delete: if isOwner(userId);
       }
 
       match /followRequests/{docId} {
         allow read: if isOwner(userId);
-        allow create, update, delete: if isSignedIn();
+        allow create: if isSignedIn()
+          && request.auth.uid == docId
+          && request.resource.data.userId == docId;
+        allow update: if isOwner(userId);
+        allow delete: if isOwner(userId) || (isSignedIn() && request.auth.uid == docId);
       }
 
       match /notifications/{docId} {
@@ -45,7 +58,11 @@ service cloud.firestore {
 
     match /userProfileHandles/{docId} {
       allow read: if true;
-      allow create, update, delete: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
     }
 
     match /userLibraries/{userId} {
@@ -58,11 +75,19 @@ service cloud.firestore {
     }
 
     match /conversations/{conversationId} {
-      allow read, create, update, delete: if isSignedIn();
+      allow read: if isParticipant(resource.data);
+      allow create: if isParticipant(request.resource.data);
+      allow update: if isParticipant(resource.data) && isParticipant(request.resource.data);
+      allow delete: if false;
     }
 
     match /conversations/{conversationId}/messages/{messageId} {
-      allow read, create, update, delete: if isSignedIn();
+      allow read: if isSignedIn()
+        && request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds;
+      allow create: if isSignedIn()
+        && request.resource.data.senderId == request.auth.uid
+        && request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participantIds;
+      allow update, delete: if false;
     }
   }
 }

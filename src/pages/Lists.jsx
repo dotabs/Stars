@@ -41,7 +41,7 @@ function buildCollectionSummary(collection) {
     const leadVotes = leadMovie?.reviewCount
         ? `${formatCompactNumber(leadMovie.reviewCount)} votes on ${leadMovie.title}`
         : leadMovie?.title ?? 'TMDB collection';
-    return `${yearSummary} • ${leadVotes}`;
+    return `${yearSummary} / ${leadVotes}`;
 }
 function getCollectionStatusLabel(collection) {
     if (collection.id === 'trending-day') {
@@ -535,3 +535,4 @@ export function Lists() {
       </div>
     </div>);
 }
+

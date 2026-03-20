@@ -138,7 +138,7 @@ function HomeSkeleton() {
               </div>
               <div className="flex gap-4 overflow-hidden">
                 {Array.from({ length: 6 }).map((_, cardIndex) => (
-                  <div key={cardIndex} className="w-[11.5rem] flex-none space-y-3">
+                  <div key={cardIndex} className="w-[11rem] flex-none space-y-3 sm:w-[11.5rem]">
                     <Skeleton className="aspect-[2/3] rounded-[1.2rem] bg-white/10" />
                     <Skeleton className="h-4 w-[90%] bg-white/10" />
                     <Skeleton className="h-4 w-[60%] bg-white/10" />
@@ -158,20 +158,45 @@ function RowCard({ movie, variant = 'poster', onOpen, onWatchTrailer, onSave, is
 
   return (
     <article
-      className={`group relative flex-none cursor-pointer snap-start ${isWide ? 'w-[15.5rem] sm:w-[21rem] lg:w-[23rem]' : 'w-[10rem] sm:w-[12.75rem] lg:w-[14rem]'} [content-visibility:auto] [contain-intrinsic-size:340px_260px]`}
+      className={`group relative flex-none cursor-pointer snap-start ${isWide ? 'w-[calc(100vw-2rem)] sm:w-[21rem] lg:w-[23rem]' : 'w-[9.75rem] sm:w-[12.75rem] lg:w-[14rem]'} [content-visibility:auto] [contain-intrinsic-size:340px_260px]`}
       onClick={onOpen}
     >
       <div className="relative overflow-hidden rounded-[1.35rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.3))] transition-all duration-300 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.035] group-hover:border-white/24 group-hover:shadow-[0_28px_54px_rgba(0,0,0,0.42)] motion-reduce:transform-none">
-        <PosterImage
-          src={isWide ? movie.backdrop || movie.poster : movie.poster}
-          title={movie.title}
-          className={`${isWide ? 'aspect-video' : 'aspect-[2/3]'} w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none`}
-          width={isWide ? 780 : 342}
-          height={isWide ? 440 : 513}
-          loading={eager ? 'eager' : 'lazy'}
-          fetchPriority={eager ? 'high' : 'auto'}
-          sizes={isWide ? '(min-width: 1280px) 23rem, (min-width: 640px) 21rem, 82vw' : '(min-width: 1280px) 14rem, (min-width: 1024px) 13rem, (min-width: 640px) 12rem, 42vw'}
-        />
+        {isWide ? (
+          <>
+            <PosterImage
+              src={movie.poster || movie.backdrop}
+              title={movie.title}
+              className="aspect-[2/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none sm:hidden"
+              width={342}
+              height={513}
+              loading={eager ? 'eager' : 'lazy'}
+              fetchPriority={eager ? 'high' : 'auto'}
+              sizes="(max-width: 639px) calc(100vw - 2rem), 0px"
+            />
+            <PosterImage
+              src={movie.backdrop || movie.poster}
+              title={movie.title}
+              className="hidden aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none sm:block"
+              width={780}
+              height={440}
+              loading={eager ? 'eager' : 'lazy'}
+              fetchPriority={eager ? 'high' : 'auto'}
+              sizes="(min-width: 1280px) 23rem, (min-width: 640px) 21rem, 72vw"
+            />
+          </>
+        ) : (
+          <PosterImage
+            src={movie.poster}
+            title={movie.title}
+            className="aspect-[2/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none"
+            width={342}
+            height={513}
+            loading={eager ? 'eager' : 'lazy'}
+            fetchPriority={eager ? 'high' : 'auto'}
+            sizes="(min-width: 1280px) 14rem, (min-width: 1024px) 13rem, (min-width: 640px) 12rem, 42vw"
+          />
+        )}
 
         <div className={`pointer-events-none absolute inset-0 ${isWide ? 'bg-gradient-to-t from-black via-black/40 to-transparent' : 'bg-gradient-to-t from-black via-black/28 to-transparent'} opacity-90`} />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_40%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -198,9 +223,9 @@ function RowCard({ movie, variant = 'poster', onOpen, onWatchTrailer, onSave, is
                   event.stopPropagation();
                   onWatchTrailer();
                 }}
-                className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-3 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94"
+                className="flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]"
               >
-                <Play className="h-3.5 w-3.5 fill-current" />
+                <Play className="h-3 w-3 fill-current sm:h-3.5 sm:w-3.5" />
                 Watch Trailer
               </button>
               <button
@@ -209,13 +234,13 @@ function RowCard({ movie, variant = 'poster', onOpen, onWatchTrailer, onSave, is
                   event.stopPropagation();
                   onSave();
                 }}
-                className={`flex min-h-12 items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 ${
+                className={`flex min-h-10 items-center justify-center gap-1 rounded-2xl border px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] ${
                   isSaved
                     ? 'border-[#d26d47]/45 bg-[#d26d47]/16 text-[#f4c3a4] shadow-[0_14px_34px_rgba(210,109,71,0.12)]'
                     : 'border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38'
                 }`}
               >
-                <Bookmark className="h-3.5 w-3.5" />
+                <Bookmark className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 {isSaved ? 'Saved' : 'My List'}
               </button>
             </div>
@@ -299,7 +324,7 @@ function MovieRow({ label, title, movies, variant = 'poster', accent = 'default'
                 <button
                   type="button"
                   onClick={() => handleScroll(-1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 text-white/75 transition-colors hover:border-white/20 hover:text-white"
+                  className="hidden h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 text-white/75 transition-colors hover:border-white/20 hover:text-white sm:flex"
                   aria-label={`Scroll ${title} left`}
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -307,7 +332,7 @@ function MovieRow({ label, title, movies, variant = 'poster', accent = 'default'
                 <button
                   type="button"
                   onClick={() => handleScroll(1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 text-white/75 transition-colors hover:border-white/20 hover:text-white"
+                  className="hidden h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 text-white/75 transition-colors hover:border-white/20 hover:text-white sm:flex"
                   aria-label={`Scroll ${title} right`}
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -320,7 +345,7 @@ function MovieRow({ label, title, movies, variant = 'poster', accent = 'default'
         <div className="overflow-hidden rounded-[1.5rem]">
           <div
             ref={setScroller}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-6 sm:px-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pr-4 sm:px-1 sm:pr-6 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]"
           >
             {movies.map((movie, index) => (
               <RowCard
@@ -408,9 +433,9 @@ function DiscoverySection({ navigate, heroMovie, trendingTodayMovie, recommended
             >
               <div className="relative">
                 <PosterImage
-                  src={card.movie.backdrop || card.movie.poster}
+                  src={card.movie.poster || card.movie.backdrop}
                   title={card.movie.title}
-                  className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] sm:aspect-video"
                   width={780}
                   height={440}
                   sizes="(min-width: 1024px) 30vw, 100vw"
@@ -711,7 +736,7 @@ export function Home() {
                 <span>{heroGenres.join(' / ')}</span>
               </div>
 
-              <h1 className="mt-4 min-h-[2.8em] max-w-[11ch] text-5xl font-semibold leading-[0.9] tracking-[-0.06em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:min-h-[2.8em] sm:text-6xl lg:min-h-[2.7em] lg:text-[5.6rem] xl:text-[7.15rem]">
+              <h1 className="mt-4 min-h-[2.2em] max-w-[9ch] text-[3.35rem] font-semibold leading-[0.9] tracking-[-0.06em] text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.38)] sm:min-h-[2.8em] sm:max-w-[11ch] sm:text-6xl lg:min-h-[2.7em] lg:text-[5.6rem] xl:text-[7.15rem]">
                 {spotlightMovie.title}
               </h1>
 
@@ -736,10 +761,10 @@ export function Home() {
                 ) : null}
               </div>
 
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="mt-7 flex flex-wrap items-center gap-2.5 sm:mt-8 sm:gap-3">
                 <button
                   type="button"
-                  className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94"
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:px-5 sm:text-[12px] sm:tracking-[0.16em]"
                   onClick={() => navigate(`/review/${spotlightMovie.id}`)}
                 >
                   Open Details
@@ -747,7 +772,7 @@ export function Home() {
                 </button>
                 <button
                   type="button"
-                  className="flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/12 bg-black/26 px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-black/38"
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/12 bg-black/26 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-white backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-black/38 sm:min-h-12 sm:px-5 sm:text-[12px] sm:tracking-[0.16em]"
                   onClick={() => openExternalUrl(spotlightMovie.trailerUrl || buildYouTubeSearchUrl(`${spotlightMovie.title} ${spotlightMovie.year} trailer`))}
                 >
                   <Play className="h-3.5 w-3.5 fill-current" />
@@ -755,7 +780,7 @@ export function Home() {
                 </button>
                 <button
                   type="button"
-                  className={`flex min-h-12 items-center justify-center gap-2 rounded-2xl border px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 ${
+                  className={`flex min-h-11 items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:px-5 sm:text-[12px] sm:tracking-[0.16em] ${
                     isHeroSaved
                       ? 'border-[#d26d47]/45 bg-[#d26d47]/16 text-[#f4c3a4] shadow-[0_14px_34px_rgba(210,109,71,0.12)]'
                       : 'border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38'
@@ -767,7 +792,35 @@ export function Home() {
                 </button>
               </div>
 
-              <div className="mt-10 flex flex-wrap items-center gap-4">
+
+              <div className="mt-8 lg:hidden">
+                <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(0,0,0,0.38))] p-3 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.82)] backdrop-blur-xl">
+                  <div className="relative overflow-hidden rounded-[1.3rem]">
+                    <PosterImage
+                      src={spotlightMovie.poster || spotlightMovie.backdrop}
+                      title={spotlightMovie.title}
+                      className="aspect-[2/3] w-full object-cover"
+                      width={780}
+                      height={975}
+                      sizes="92vw"
+                      loading="eager"
+                      fetchPriority="high"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/18 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-4">
+                      <div className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86">
+                        <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]">
+                          <Star className="h-3.5 w-3.5 fill-current" />
+                          {spotlightMovie.score.toFixed(1)}
+                        </span>
+                        <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1">{spotlightMovie.year}</span>
+                      </div>
+                      <p className="line-clamp-1 text-sm text-white/62">{heroGenres.join(' / ')}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-8 flex flex-wrap items-center gap-4 sm:mt-10">
                 <div className="flex flex-wrap items-center gap-2" aria-label="Hero rotation status" role="status">
                   {heroCandidates.map((movie, index) => (
                     <div
@@ -780,7 +833,7 @@ export function Home() {
                 <p className="select-none text-xs uppercase tracking-[0.22em] text-white/38">Auto-rotating featured lineup</p>
               </div>
 
-              <div className="mt-10 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.2em] text-white/44">
+              <div className="mt-8 flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.18em] text-white/44 sm:mt-10 sm:text-xs sm:tracking-[0.2em]">
                 <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/18 px-4 py-2">
                   <Flame className="h-3.5 w-3.5 text-[#f4b684]" />
                   Trending today is live
