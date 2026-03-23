@@ -50,7 +50,7 @@ const defaultStats = Object.freeze({
   followingCount: 0,
 });
 
-const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9._-]{1,28}[a-zA-Z0-9])?$/;
+const USERNAME_PATTERN = /^[a-zA-Z0-9](?:[a-zA-Z0-9._\- ]{1,28}[a-zA-Z0-9])?$/;
 
 function nowIso() {
   return new Date().toISOString();
@@ -410,7 +410,7 @@ export async function updateUserProfile(userId, updates) {
   }
 
   if (!USERNAME_PATTERN.test(nextUsername)) {
-    throw new Error('Username can only use letters, numbers, periods, underscores, and hyphens.');
+    throw new Error('Username can only use letters, numbers, periods, underscores, in-string spaces, and hyphens.');
   }
 
   const snapshot = await getDoc(profileDocRef(userId));
