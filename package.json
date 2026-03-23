@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "node server/index.js"
   },
   "dependencies": {
     "@radix-ui/react-hover-card": "^1.1.15",
@@ -16,7 +17,10 @@
     "@radix-ui/react-switch": "^1.2.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cors": "^2.8.6",
     "d3": "^7.9.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
     "firebase": "^12.10.0",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
