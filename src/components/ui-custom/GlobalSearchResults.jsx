@@ -240,7 +240,6 @@ export function SearchResultCard({ result, onOpen, isInWatchlist = false, isLike
             subtitle,
             badges: [
                 { label: 'Person', icon: UserRound, tone: 'primary' },
-                { label: `${Math.max(movie.reviewCount ?? 0, 0)} credits`, icon: Users, tone: 'secondary' },
             ],
             tags: movie.genres.slice(0, 3),
             previewSubtitle: subtitle,
