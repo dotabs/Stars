@@ -107,6 +107,7 @@ const BrowseGridMovieCard = memo(function BrowseGridMovieCard({ movie, isInWatch
 });
 export function Browse() {
     const restoredBrowseSession = useRef(readBrowseSessionState());
+    const hasAppliedInitialRestoreRef = useRef(false);
     const navigate = useNavigate();
     const { toast } = useToast();
     const { currentUser, library } = useUserLibrary();
@@ -502,6 +503,10 @@ export function Browse() {
             },
         });
     }, [browseQueryKey, castQuery, catalogState.loadedPage, catalogState.movies, catalogState.source, catalogState.totalPages, catalogState.totalResults, directorQuery, exactYear, minRating, renderLimit, runtimeRange, selectedDecades, selectedGenres, selectedLanguages, selectedStreamingServices, selectedVerdicts, showFilters, sortBy, yearRange]);
+    const openResult = useCallback((href) => {
+        persistBrowseSession(typeof window === 'undefined' ? 0 : window.scrollY);
+        navigate(href);
+    }, [navigate, persistBrowseSession]);
     const openMovie = useCallback((movieId) => {
         persistBrowseSession(typeof window === 'undefined' ? 0 : window.scrollY);
         navigate(`/review/${movieId}`);
@@ -513,12 +518,42 @@ export function Browse() {
         if (!hasRestoredCatalog || typeof window === 'undefined') {
             return;
         }
-        const scrollY = Number(restoredBrowseSession.current?.scrollY ?? 0);
-        window.requestAnimationFrame(() => {
-            window.scrollTo({ top: Number.isFinite(scrollY) ? scrollY : 0, behavior: 'auto' });
-        });
-        restoredBrowseSession.current = null;
-    }, [hasRestoredCatalog]);
+        if (hasAppliedInitialRestoreRef.current) {
+            return;
+        }
+        const targetScrollY = Number(restoredBrowseSession.current?.scrollY ?? 0);
+        if (!Number.isFinite(targetScrollY) || targetScrollY <= 0) {
+            hasAppliedInitialRestoreRef.current = true;
+            restoredBrowseSession.current = null;
+            return;
+        }
+        let frameId = 0;
+        let attempts = 0;
+        const maxAttempts = 12;
+        const restoreScroll = () => {
+            const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+            const nextScrollY = Math.min(targetScrollY, maxScrollY);
+            window.scrollTo({ top: nextScrollY, behavior: 'auto' });
+            const isRestored = Math.abs(window.scrollY - nextScrollY) <= 2;
+            const canReachTarget = maxScrollY >= targetScrollY - 2;
+            if (isRestored && canReachTarget) {
+                hasAppliedInitialRestoreRef.current = true;
+                restoredBrowseSession.current = null;
+                return;
+            }
+            attempts += 1;
+            if (attempts < maxAttempts) {
+                frameId = window.requestAnimationFrame(restoreScroll);
+                return;
+            }
+            hasAppliedInitialRestoreRef.current = true;
+            restoredBrowseSession.current = null;
+        };
+        frameId = window.requestAnimationFrame(restoreScroll);
+        return () => {
+            window.cancelAnimationFrame(frameId);
+        };
+    }, [hasRestoredCatalog, renderLimit, visibleMovies.length]);
     const browseGridClassName = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
     const loadingSkeletonCount = 10;
     const filtersPanel = useMemo(() => (<>
@@ -763,7 +798,7 @@ export function Browse() {
               </div>) : globalSearchError ? (<div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-100">
                 {globalSearchError}
               </div>) : globalSearchResults.length > 0 ? (<div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {globalSearchResults.map((result) => (<SearchResultCard key={`${result.mediaType}-${result.id}`} result={result} onOpen={(href) => navigate(href)} isInWatchlist={watchlistSet.has(`tmdb-${result.id}`)} isLiked={favoritesSet.has(`tmdb-${result.id}`)} onToggleWatchlist={() => handleToggleWatchlist(`tmdb-${result.id}`)} onToggleLike={() => handleToggleLike(`tmdb-${result.id}`)}/>))}
+                {globalSearchResults.map((result) => (<SearchResultCard key={`${result.mediaType}-${result.id}`} result={result} onOpen={openResult} isInWatchlist={watchlistSet.has(`tmdb-${result.id}`)} isLiked={favoritesSet.has(`tmdb-${result.id}`)} onToggleWatchlist={() => handleToggleWatchlist(`tmdb-${result.id}`)} onToggleLike={() => handleToggleLike(`tmdb-${result.id}`)}/>))}
               </div>) : (<div className="py-20 text-center">
                 <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <Film className="h-8 w-8 text-muted-foreground"/>

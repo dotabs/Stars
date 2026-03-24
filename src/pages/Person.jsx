@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Clapperboard, MapPin, Sparkles, UserRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { fetchPersonById, getSearchResultHref, getSearchResultTypeLabel } from '@/lib/tmdb-search';
 
 const TIMELINE_PAGE_SIZE = 24;
+const personSessionStorageKey = 'person:session-state';
+const personStateCache = new Map();
 const timelineTabs = [
   { id: 'all', label: 'All' },
   { id: 'acting', label: 'Acting' },
@@ -49,10 +51,59 @@ function groupTimelineCredits(credits) {
   }, new Map());
 }
 
-function KnownForCard({ credit }) {
+function readPersonSessionState() {
+  if (typeof window === 'undefined') {
+    return {};
+  }
+
+  try {
+    const rawValue = window.sessionStorage.getItem(personSessionStorageKey);
+    return rawValue ? JSON.parse(rawValue) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writePersonSessionState(state) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    window.sessionStorage.setItem(personSessionStorageKey, JSON.stringify(state));
+  } catch {
+    // Ignore session storage write failures.
+  }
+}
+
+function persistPersonSessionEntry(personId, entry) {
+  if (!Number.isFinite(personId)) {
+    return;
+  }
+
+  writePersonSessionState({
+    ...readPersonSessionState(),
+    [personId]: entry,
+  });
+}
+
+function clearPersonSessionEntry(personId) {
+  if (!Number.isFinite(personId) || typeof window === 'undefined') {
+    return;
+  }
+
+  const nextState = { ...readPersonSessionState() };
+  delete nextState[personId];
+  writePersonSessionState(nextState);
+}
+
+function KnownForCard({ credit, onOpen }) {
+  const href = getSearchResultHref({ id: credit.id, mediaType: credit.mediaType });
+
   return (
     <Link
-      to={getSearchResultHref({ id: credit.id, mediaType: credit.mediaType })}
+      to={href}
+      onClick={() => onOpen?.()}
       className="group flex items-center gap-3 rounded-[1.2rem] border border-white/8 bg-white/[0.03] p-3 transition-all hover:-translate-y-0.5 hover:border-[#d26d47]/35 hover:bg-white/[0.05]"
     >
       <div className="flex h-16 w-12 flex-none items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-white/[0.04]">
@@ -75,10 +126,13 @@ function KnownForCard({ credit }) {
   );
 }
 
-function TimelineItem({ credit }) {
+function TimelineItem({ credit, onOpen }) {
+  const href = getSearchResultHref({ id: credit.id, mediaType: credit.mediaType });
+
   return (
     <Link
-      to={getSearchResultHref({ id: credit.id, mediaType: credit.mediaType })}
+      to={href}
+      onClick={() => onOpen?.()}
       className="group grid gap-4 rounded-[1.4rem] border border-white/[0.08] bg-white/[0.03] p-4 transition-all hover:-translate-y-0.5 hover:border-[#d26d47]/35 hover:bg-white/[0.05] sm:grid-cols-[72px_minmax(0,1fr)]"
     >
       <div className="flex h-24 w-[4.5rem] items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
@@ -111,16 +165,42 @@ export function Person() {
   const navigate = useNavigate();
   const personId = Number(id);
   const hasValidPersonId = Number.isFinite(personId);
+  const restoredSessionRef = useRef(readPersonSessionState());
+  const restoredPersonEntry = hasValidPersonId && restoredSessionRef.current?.[personId]?.restoreOnReturn
+    ? restoredSessionRef.current[personId]
+    : null;
+  const restoredCachedPerson = restoredPersonEntry && hasValidPersonId ? personStateCache.get(personId) ?? null : null;
+  const hasAppliedInitialRestoreRef = useRef(false);
   const [state, setState] = useState({
-    personId: null,
-    person: null,
+    personId: restoredCachedPerson ? personId : null,
+    person: restoredCachedPerson,
     loadError: '',
   });
   const [timelineState, setTimelineState] = useState({
-    personId: null,
-    activeTab: 'all',
-    visibleCount: TIMELINE_PAGE_SIZE,
+    personId: restoredPersonEntry?.timelineState ? personId : null,
+    activeTab: restoredPersonEntry?.timelineState?.activeTab ?? 'all',
+    visibleCount: restoredPersonEntry?.timelineState?.visibleCount ?? TIMELINE_PAGE_SIZE,
   });
+  const person = state.personId === personId ? state.person : null;
+  const loadError = state.personId === personId ? state.loadError : '';
+  const isLoading = hasValidPersonId && state.personId !== personId;
+  const activeTab = timelineState.personId === personId ? timelineState.activeTab : 'all';
+  const visibleCount = timelineState.personId === personId ? timelineState.visibleCount : TIMELINE_PAGE_SIZE;
+
+  const persistCurrentSession = useCallback((scrollY = typeof window === 'undefined' ? 0 : window.scrollY, restoreOnReturn = false) => {
+    if (!hasValidPersonId) {
+      return;
+    }
+
+    persistPersonSessionEntry(personId, {
+      timelineState: {
+        activeTab: timelineState.personId === personId ? timelineState.activeTab : 'all',
+        visibleCount: timelineState.personId === personId ? timelineState.visibleCount : TIMELINE_PAGE_SIZE,
+      },
+      scrollY,
+      restoreOnReturn,
+    });
+  }, [hasValidPersonId, personId, state.person, state.personId, timelineState.activeTab, timelineState.personId, timelineState.visibleCount]);
 
   function handleBack() {
     if (window.history.length > 1) {
@@ -141,6 +221,7 @@ export function Person() {
     void fetchPersonById(personId)
       .then((response) => {
         if (!cancelled) {
+          personStateCache.set(personId, response);
           setState({
             personId,
             person: response,
@@ -165,6 +246,67 @@ export function Person() {
   }, [hasValidPersonId, personId]);
 
   useEffect(() => {
+    if (!hasValidPersonId) {
+      return;
+    }
+
+    if (!restoredPersonEntry) {
+      clearPersonSessionEntry(personId);
+    }
+  }, [hasValidPersonId, personId, restoredPersonEntry]);
+
+  useEffect(() => {
+    if (!hasValidPersonId || !restoredPersonEntry || typeof window === 'undefined') {
+      return;
+    }
+
+    if (hasAppliedInitialRestoreRef.current) {
+      return;
+    }
+
+    const targetScrollY = Number(restoredPersonEntry.scrollY ?? 0);
+    if (!Number.isFinite(targetScrollY) || targetScrollY <= 0) {
+      hasAppliedInitialRestoreRef.current = true;
+      clearPersonSessionEntry(personId);
+      return;
+    }
+
+    let frameId = 0;
+    let attempts = 0;
+    const maxAttempts = 12;
+
+    const restoreScroll = () => {
+      const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const nextScrollY = Math.min(targetScrollY, maxScrollY);
+
+      window.scrollTo({ top: nextScrollY, behavior: 'auto' });
+
+      const isRestored = Math.abs(window.scrollY - nextScrollY) <= 2;
+      const canReachTarget = maxScrollY >= targetScrollY - 2;
+
+      if (isRestored && canReachTarget) {
+        hasAppliedInitialRestoreRef.current = true;
+        clearPersonSessionEntry(personId);
+        return;
+      }
+
+      attempts += 1;
+      if (attempts < maxAttempts) {
+        frameId = window.requestAnimationFrame(restoreScroll);
+        return;
+      }
+
+      hasAppliedInitialRestoreRef.current = true;
+      clearPersonSessionEntry(personId);
+    };
+
+    frameId = window.requestAnimationFrame(restoreScroll);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [hasValidPersonId, person, personId, restoredPersonEntry, timelineState.activeTab, timelineState.visibleCount]);
+
+  useEffect(() => {
     function handleKeyDown(event) {
       if (event.key === 'Escape') {
         if (window.history.length > 1) {
@@ -181,12 +323,6 @@ export function Person() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [navigate]);
-
-  const person = state.personId === personId ? state.person : null;
-  const loadError = state.personId === personId ? state.loadError : '';
-  const isLoading = hasValidPersonId && state.personId !== personId;
-  const activeTab = timelineState.personId === personId ? timelineState.activeTab : 'all';
-  const visibleCount = timelineState.personId === personId ? timelineState.visibleCount : TIMELINE_PAGE_SIZE;
 
   const timelineCredits = useMemo(() => {
     if (!person) {
@@ -309,7 +445,7 @@ export function Person() {
                 {person.knownFor.length > 0 ? (
                   <div className="mt-4 grid gap-3 md:grid-cols-2">
                     {person.knownFor.slice(0, 6).map((credit) => (
-                      <KnownForCard key={`${credit.mediaType}-${credit.id}`} credit={credit} />
+                      <KnownForCard key={`${credit.mediaType}-${credit.id}`} credit={credit} onOpen={() => persistCurrentSession(typeof window === 'undefined' ? 0 : window.scrollY, true)} />
                     ))}
                   </div>
                 ) : (
@@ -363,7 +499,7 @@ export function Person() {
                   </div>
                   <div className="space-y-3 border-l border-white/10 pl-5">
                     {credits.map((credit) => (
-                      <TimelineItem key={`${credit.mediaType}-${credit.id}-${credit.roleLabel}`} credit={credit} />
+                      <TimelineItem key={`${credit.mediaType}-${credit.id}-${credit.roleLabel}`} credit={credit} onOpen={() => persistCurrentSession(typeof window === 'undefined' ? 0 : window.scrollY, true)} />
                     ))}
                   </div>
                 </section>
