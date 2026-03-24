@@ -1,5 +1,9 @@
+// TMDB client: shared request and image helpers for every movie, TV, and person feature.
+// Why it exists: central caching and auth headers prevent each feature from rebuilding API logic.
+// Connection: higher-level helpers in tmdb-movies.js and tmdb-search.js call into this module.
 import { appEnv } from '@/lib/env';
 const DEFAULT_CACHE_TTL_MS = 5 * 60 * 1000;
+// Lightweight in-memory cache to reduce repeat TMDB requests while users move around the app.
 const responseCache = new Map();
 function buildTmdbUrl(path, query = {}) {
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;

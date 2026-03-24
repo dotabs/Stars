@@ -1,3 +1,6 @@
+// Firebase gateway: initializes Auth, Firestore, and Storage for all account and social features.
+// Why it exists: authentication, profile storage, notifications, messages, and library persistence all depend on it.
+// Connection: this file is the main bridge from the React app into Firebase services.
 import { initializeApp } from 'firebase/app';
 import {
   browserLocalPersistence,
@@ -17,6 +20,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { appEnv, hasFirebaseConfig, hasFirebaseStorageConfig } from '@/lib/env';
 
+// Read Firebase project settings from the normalized env layer so deployment config stays in one place.
 const firebaseConfig = {
   apiKey: appEnv.firebaseApiKey,
   authDomain: appEnv.firebaseAuthDomain,
@@ -67,6 +71,7 @@ export function getAuthUserSnapshot(user = auth.currentUser) {
   };
 }
 
+// Keep users signed in between visits because most features are account-driven.
 const persistenceReady = setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.error('Failed to enable Firebase auth persistence.', error);
 });

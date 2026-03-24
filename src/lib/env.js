@@ -1,3 +1,5 @@
+// Environment parsing: centralizes every Vite env var the app uses.
+// Why it exists: TMDB and Firebase config should be normalized once, then reused everywhere else.
 const DEFAULT_TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const DEFAULT_TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p';
 function normalizeTmdbCredentials(apiKey, readAccessToken) {

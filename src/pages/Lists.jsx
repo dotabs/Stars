@@ -1,3 +1,6 @@
+// Lists page: curated TMDB collections with deeper infinite-scroll detail views.
+// Why it exists: the home page links here when users want to expand a chart or themed collection.
+// Connection: collections are loaded from TMDB and titles can be saved into Firebase watchlists.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Bookmark, ChevronRight, Heart, LoaderCircle, Share2, Sparkles, Star, Users } from 'lucide-react';
@@ -12,6 +15,7 @@ import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 const PREVIEW_PAGE_SIZE = 8;
 const DETAIL_PAGE_SIZE = 18;
 
+// Avoid repeated titles when paged TMDB results overlap or custom exclusions are imperfect.
 function dedupeMovies(movies) {
     return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
 }

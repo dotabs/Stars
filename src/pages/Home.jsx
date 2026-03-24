@@ -1,3 +1,6 @@
+// Home page: presents the main landing experience with TMDB-powered hero picks and rows.
+// Why it exists: gives users a fast entry point into trending titles, recommendations, and their library.
+// Connection: reads TMDB movie feeds and lets signed-in users save titles to Firebase library lists.
 import { startTransition, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Bookmark, CalendarDays, ChevronLeft, ChevronRight, Clock3, Flame, Play, Sparkles, Star, Ticket } from 'lucide-react';
@@ -153,6 +156,7 @@ function HomeSkeleton() {
   );
 }
 
+// Shared card for the landing page shelves and hero-adjacent rows.
 function RowCard({ movie, variant = 'poster', onOpen, onWatchTrailer, onSave, isSaved, eager }) {
   const isWide = variant === 'wide';
 

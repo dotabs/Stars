@@ -1,3 +1,6 @@
+// Notifications page: lists follow, message, and system events for the signed-in user.
+// Why it exists: users need a simple audit trail for social activity generated in Firebase.
+// Connection: reads notification documents from Firestore and marks unread items as read.
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/components/auth/useAuth';

@@ -1,3 +1,6 @@
+// Auth provider: exposes the signed-in Firebase user to the rest of the app.
+// Why it exists: pages should consume one shared auth state instead of each one subscribing separately.
+// Connection: when Firebase auth changes, we also ensure the matching social profile exists in Firestore.
 import { useEffect, useState } from 'react';
 import { AuthContext } from '@/components/auth/auth-context';
 import { getAuthUserSnapshot, logOut, refreshCurrentAuthUser, subscribeToAuthState } from '@/lib/firebase';

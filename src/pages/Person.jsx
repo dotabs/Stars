@@ -1,3 +1,6 @@
+// Person page: TMDB-backed detail view for actors, directors, and other film people.
+// Why it exists: search results should open into a richer filmography view instead of a shallow card.
+// Connection: reads TMDB person details and preserves local session state for smoother back navigation.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Clapperboard, MapPin, Sparkles, UserRound } from 'lucide-react';
@@ -200,7 +203,7 @@ export function Person() {
       scrollY,
       restoreOnReturn,
     });
-  }, [hasValidPersonId, personId, state.person, state.personId, timelineState.activeTab, timelineState.personId, timelineState.visibleCount]);
+  }, [hasValidPersonId, personId, timelineState.activeTab, timelineState.personId, timelineState.visibleCount]);
 
   function handleBack() {
     if (window.history.length > 1) {

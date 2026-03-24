@@ -1,3 +1,6 @@
+// Profile data loader: gathers the library and review slices shown on profile screens.
+// Why it exists: profile pages need one place that joins Firebase documents with movie metadata.
+// Connection: reads Firebase collections first, then hydrates movie and TV titles from TMDB helpers.
 import { collection, doc, getDoc, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import { movies as localMovies } from '@/data/movies';
 import { db } from '@/lib/firebase';

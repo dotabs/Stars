@@ -1,3 +1,6 @@
+// Browse page: full catalog explorer with filters, sorting, and optional global search fallback.
+// Why it exists: users need a power-user view for narrowing large TMDB movie sets.
+// Connection: fetches TMDB browse/trending data and writes watchlist actions to Firebase.
 import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Calendar, Film, Grid3X3, Search, SlidersHorizontal, TrendingUp, X, } from 'lucide-react';
@@ -60,6 +63,7 @@ function sortMovies(movies, sortBy) {
     });
     return sorted;
 }
+// Session state lets users return from a detail page without losing browse filters and scroll context.
 function readBrowseSessionState() {
     if (typeof window === 'undefined') {
         return null;
@@ -80,8 +84,10 @@ function writeBrowseSessionState(state) {
         window.sessionStorage.setItem(browseSessionStorageKey, JSON.stringify(state));
     }
     catch {
+        // Ignore storage failures and keep browse usable in private/incognito contexts.
     }
 }
+
 function BrowseCardSkeleton() {
     return (<div className="space-y-3">
       <Skeleton className="aspect-[2/3] rounded-[1.2rem] bg-white/10"/>

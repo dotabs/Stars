@@ -1,3 +1,5 @@
+// Library hook: keeps the current user's Firebase library document in sync with React state.
+// Feature: watchlist, watched history, and favorites across Home, Browse, Lists, Review, and Profile.
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/auth/useAuth';
 import { getEmptyUserLibrary, subscribeToUserLibrary } from '@/lib/user-library';

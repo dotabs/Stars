@@ -1,3 +1,6 @@
+// Explore page: country-based discovery experience that surfaces international cinema.
+// Why it exists: this is the app's "discover outside your usual taste" feature.
+// Connection: movie pools come from TMDB through explore-discovery helpers, while visited/pinned state is local per user.
 import { startTransition, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bookmark, Compass, Film, Globe2, MapPinned, RefreshCw, Search, Shuffle, Star, Ticket, } from 'lucide-react';
@@ -20,6 +23,7 @@ const shelfOptions = [
     ['new', 'Newest'],
     ['hidden', 'Hidden Gems'],
 ];
+// Persist country exploration state separately for each signed-in user or guest session.
 function buildStorageKey(userScope, suffix) {
     return `stars:explore:${userScope}:${suffix}`;
 }

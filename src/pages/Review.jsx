@@ -1,3 +1,6 @@
+// Review/detail page: combines a title's TMDB metadata with personal and social feedback.
+// Why it exists: this is where users inspect a movie deeply, review it, and manage library state.
+// Connection: TMDB supplies movie metadata while Firebase stores user reactions, lists, and review history.
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -57,6 +60,7 @@ function formatDate(value) {
   });
 }
 
+// Local fallback keeps the page usable for hardcoded demo titles or partial TMDB responses.
 function buildFallbackPeople(movie) {
   return {
     castMembers: (movie.cast ?? []).map((name, index) => ({

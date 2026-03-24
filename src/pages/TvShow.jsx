@@ -1,3 +1,6 @@
+// TV detail page: TMDB-backed detail view for series, seasons, cast, and user reactions.
+// Why it exists: TV search results need the same depth and feedback tools as movie detail pages.
+// Connection: TMDB supplies the show data while Firebase stores personal reactions and social feedback.
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Bookmark, Check, Heart, MessageCircleHeart, Play, Share2, Star } from 'lucide-react';

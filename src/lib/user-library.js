@@ -1,3 +1,6 @@
+// User library persistence: stores watchlist, watched, and favorite states in Firestore.
+// Why it exists: multiple pages need the same per-user movie state and profile counts.
+// Connection: writes to Firebase and then syncs summary counts back to the social profile document.
 import {
   deleteField,
   doc,
@@ -27,6 +30,7 @@ function sortByDateDescending(entries) {
   return [...entries].sort((left, right) => right[1].localeCompare(left[1]));
 }
 
+// Normalize Firestore document data into a predictable shape for UI hooks and pages.
 function normalizeLibraryState(data) {
   const rawItems = data?.items ?? {};
   const itemsById = {};

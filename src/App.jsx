@@ -1,3 +1,6 @@
+// App shell: owns routing, shared layout, and lazy loading for the main STARS features.
+// Why it exists: this is the single place where page-level features are wired together.
+// Connections: routed pages pull movie/TV/person data from TMDB and account/social data from Firebase.
 import { Suspense, lazy, useLayoutEffect } from 'react';
 import { BrowserRouter, HashRouter, Navigate, Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import { AppErrorBoundary } from '@/components/ui-custom/AppErrorBoundary';
@@ -55,7 +58,7 @@ function AuthGate({ children }) {
     }
     return children;
 }
-// Layout component that conditionally shows navbar/footer
+// Shared chrome for every routed page except auth screens.
 function Layout({ children }) {
     const location = useLocation();
     const navigationType = useNavigationType();
