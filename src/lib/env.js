@@ -31,6 +31,7 @@ export const appEnv = {
     appName: import.meta.env.VITE_APP_NAME?.trim() || 'STARS',
     routerMode: import.meta.env.VITE_ROUTER_MODE === 'hash' ? 'hash' : 'browser',
     basePath: normalizeBasePath(import.meta.env.VITE_BASE_PATH),
+    apiBaseUrl: import.meta.env.VITE_API_BASE_URL?.trim() || 'http://localhost:10000',
     tmdbApiKey: tmdbCredentials.tmdbApiKey,
     tmdbReadAccessToken: tmdbCredentials.tmdbReadAccessToken,
     tmdbBaseUrl: import.meta.env.VITE_TMDB_BASE_URL?.trim() || DEFAULT_TMDB_BASE_URL,

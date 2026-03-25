@@ -227,7 +227,7 @@ function RowCard({ movie, variant = 'poster', onOpen, onWatchTrailer, onSave, is
                   event.stopPropagation();
                   onWatchTrailer();
                 }}
-                className="flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]"
+                className="flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-5 py-2 text-center text-[8px] font-semibold uppercase tracking-[0.025em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-6 sm:py-3 sm:text-[12px] sm:tracking-[0.04em]"
               >
                 <span className="flex h-4 w-4 flex-none items-center justify-center sm:h-5 sm:w-5">
                   <Play className="h-3.5 w-3.5 flex-none fill-current stroke-[2.2] sm:h-4 sm:w-4" />

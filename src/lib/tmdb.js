@@ -7,15 +7,12 @@ const DEFAULT_CACHE_TTL_MS = 5 * 60 * 1000;
 const responseCache = new Map();
 function buildTmdbUrl(path, query = {}) {
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-    const url = new URL(`${appEnv.tmdbBaseUrl}${normalizedPath}`);
+    const url = new URL(`${appEnv.apiBaseUrl}/api/tmdb${normalizedPath}`);
     Object.entries(query).forEach(([key, value]) => {
         if (value !== undefined && value !== '') {
             url.searchParams.set(key, String(value));
         }
     });
-    if (appEnv.tmdbApiKey) {
-        url.searchParams.set('api_key', appEnv.tmdbApiKey);
-    }
     return url.toString();
 }
 export function getTmdbImageUrl(path, size = 'w342') {
@@ -27,9 +24,6 @@ export function getTmdbImageUrl(path, size = 'w342') {
 }
 export async function tmdbFetch(path, options = {}) {
     const headers = new Headers(options.headers);
-    if (appEnv.tmdbReadAccessToken) {
-        headers.set('Authorization', `Bearer ${appEnv.tmdbReadAccessToken}`);
-    }
     const requestUrl = buildTmdbUrl(path, options.query);
     const method = options.method?.toUpperCase() ?? 'GET';
     const canCache = !options.skipCache && method === 'GET' && !options.body;
