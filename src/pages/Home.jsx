@@ -1,3 +1,6 @@
+// Home page: presents the main landing experience with TMDB-powered hero picks and rows.
+// Why it exists: gives users a fast entry point into trending titles, recommendations, and their library.
+// Connection: reads TMDB movie feeds and lets signed-in users save titles to Firebase library lists.
 import { startTransition, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Bookmark, CalendarDays, ChevronLeft, ChevronRight, Clock3, Flame, Play, Sparkles, Star, Ticket } from 'lucide-react';
@@ -153,6 +156,7 @@ function HomeSkeleton() {
   );
 }
 
+// Shared card for the landing page shelves and hero-adjacent rows.
 function RowCard({ movie, variant = 'poster', onOpen, onWatchTrailer, onSave, isSaved, eager }) {
   const isWide = variant === 'wide';
 
@@ -225,7 +229,9 @@ function RowCard({ movie, variant = 'poster', onOpen, onWatchTrailer, onSave, is
                 }}
                 className="flex min-h-10 items-center justify-center gap-1 rounded-2xl bg-white px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]"
               >
-                <Play className="h-3 w-3 fill-current sm:h-3.5 sm:w-3.5" />
+                <span className="flex h-4 w-4 flex-none items-center justify-center sm:h-5 sm:w-5">
+                  <Play className="h-3.5 w-3.5 flex-none fill-current stroke-[2.2] sm:h-4 sm:w-4" />
+                </span>
                 Watch Trailer
               </button>
               <button

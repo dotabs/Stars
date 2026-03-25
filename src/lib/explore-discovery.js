@@ -1,3 +1,6 @@
+// Explore discovery helper: builds country-specific movie pools for the Explore page.
+// Why it exists: the page needs curated lineups, not raw TMDB responses.
+// Connection: combines TMDB discover data with local fallback content and country metadata.
 import { movies as localMovies } from '@/data/movies';
 import { defaultExploreCountry } from '@/data/explore';
 import { countryCatalogByKey } from '@/lib/country-catalog';

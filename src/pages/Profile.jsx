@@ -1,3 +1,6 @@
+// Profile page: user identity, privacy settings, social graph, and public activity hub.
+// Why it exists: this is the main account surface for editing profile data and viewing social content.
+// Connection: most data here comes from Firebase profiles, follows, reviews, notifications, and library summaries.
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Bell, Bookmark, Check, Lock, Mail, Shield, Star, UserPlus, UserRound, Users, X } from 'lucide-react';
@@ -72,6 +75,7 @@ function getFavoriteGenreLabels(profile) {
     : ['No favorite genres set'];
 }
 
+// Reusable profile section wrapper keeps account panels visually consistent.
 function SectionCard({ title, description, action, children }) {
   return (
     <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">

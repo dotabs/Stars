@@ -1,3 +1,6 @@
+// Movie discovery layer: shapes TMDB movie endpoints into the format STARS pages render.
+// Feature ownership: Home, Browse, Lists, Review, and Watchlist all depend on these helpers.
+// Connection: this module talks to TMDB, then maps results into the app's local movie card model.
 import { browseStreamingPlatforms } from '@/lib/movie-constants';
 import { movies as localMovies } from '@/data/movies';
 import { getTmdbImageUrl, tmdbFetch } from '@/lib/tmdb';
@@ -42,6 +45,7 @@ function formatDateOffset({ years = 0, months = 0, days = 0 } = {}) {
     date.setDate(date.getDate() + days);
     return date.toISOString().slice(0, 10);
 }
+// Curated list feeds the Lists page with a mix of raw TMDB charts and custom discover queries.
 const collectionDefinitions = [
     {
         id: 'trending-week',

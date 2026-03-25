@@ -1,3 +1,6 @@
+// Search results page: dedicated full-page view for cross-media TMDB search.
+// Why it exists: users can filter one search query across movies, TV, and people in a stable route.
+// Connection: search data comes from TMDB; save actions update Firebase library documents.
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';

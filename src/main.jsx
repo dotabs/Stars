@@ -1,3 +1,5 @@
+// Entry point: mounts global providers before the routed app renders.
+// Why it exists: auth and toast state need to be available to every feature page.
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';

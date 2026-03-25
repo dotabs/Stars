@@ -1,3 +1,6 @@
+// Watchlist page: account library manager for watchlist, watched history, and favorites.
+// Why it exists: users need one place to review and reorganize everything saved to their account.
+// Connection: reads Firebase library state, then hydrates movie metadata from TMDB and local demo data.
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookmarkMinus, Check, Clock3, Filter, Grid3X3, Heart, List, Search, Sparkles, Star, Trash2 } from 'lucide-react';

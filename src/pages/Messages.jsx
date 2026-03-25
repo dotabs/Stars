@@ -1,3 +1,6 @@
+// Messages page: direct messaging inbox between Firebase user profiles.
+// Why it exists: social features need a simple private conversation surface tied to follow/privacy rules.
+// Connection: conversations and messages are loaded from Firestore through the social data layer.
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/components/auth/useAuth';

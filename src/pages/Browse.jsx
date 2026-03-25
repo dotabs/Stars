@@ -1,3 +1,6 @@
+// Browse page: full catalog explorer with filters, sorting, and optional global search fallback.
+// Why it exists: users need a power-user view for narrowing large TMDB movie sets.
+// Connection: fetches TMDB browse/trending data and writes watchlist actions to Firebase.
 import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Calendar, Film, Grid3X3, Search, SlidersHorizontal, TrendingUp, X, } from 'lucide-react';
@@ -19,6 +22,7 @@ const initialCatalogPages = 1;
 const searchDebounceMs = 250;
 const initialRenderCount = 20;
 const renderBatchSize = 20;
+const browseSessionStorageKey = 'browse:session-state';
 function dedupeMovies(movies) {
     return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
 }
@@ -59,6 +63,31 @@ function sortMovies(movies, sortBy) {
     });
     return sorted;
 }
+// Session state lets users return from a detail page without losing browse filters and scroll context.
+function readBrowseSessionState() {
+    if (typeof window === 'undefined') {
+        return null;
+    }
+    try {
+        const rawValue = window.sessionStorage.getItem(browseSessionStorageKey);
+        return rawValue ? JSON.parse(rawValue) : null;
+    }
+    catch {
+        return null;
+    }
+}
+function writeBrowseSessionState(state) {
+    if (typeof window === 'undefined') {
+        return;
+    }
+    try {
+        window.sessionStorage.setItem(browseSessionStorageKey, JSON.stringify(state));
+    }
+    catch {
+        // Ignore storage failures and keep browse usable in private/incognito contexts.
+    }
+}
+
 function BrowseCardSkeleton() {
     return (<div className="space-y-3">
       <Skeleton className="aspect-[2/3] rounded-[1.2rem] bg-white/10"/>
@@ -83,27 +112,32 @@ const BrowseGridMovieCard = memo(function BrowseGridMovieCard({ movie, isInWatch
     return (<MovieCard movie={movie} variant="compact" showRank={showRank} onClick={handleOpen} onPlay={handlePlay} onToggleWatchlist={handleToggleWatchlist} isInWatchlist={isInWatchlist}/>);
 });
 export function Browse() {
+    const restoredBrowseSession = useRef(readBrowseSessionState());
+    const hasAppliedInitialRestoreRef = useRef(false);
     const navigate = useNavigate();
     const { toast } = useToast();
     const { currentUser, library } = useUserLibrary();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [sortBy, setSortBy] = useState(null);
+    const [sortBy, setSortBy] = useState(() => restoredBrowseSession.current?.sortBy ?? null);
     const [showFilters, setShowFilters] = useState(() => {
+        if (typeof restoredBrowseSession.current?.showFilters === 'boolean') {
+            return restoredBrowseSession.current.showFilters;
+        }
         if (typeof window === 'undefined')
             return true;
         return window.innerWidth >= 1024;
     });
-    const [selectedGenres, setSelectedGenres] = useState([]);
-    const [selectedLanguages, setSelectedLanguages] = useState([]);
-    const [selectedVerdicts, setSelectedVerdicts] = useState([]);
-    const [selectedDecades, setSelectedDecades] = useState([]);
-    const [selectedStreamingServices, setSelectedStreamingServices] = useState([]);
-    const [minRating, setMinRating] = useState([0]);
-    const [yearRange, setYearRange] = useState([yearBounds[0], yearBounds[1]]);
-    const [runtimeRange, setRuntimeRange] = useState([0, 240]);
-    const [exactYear, setExactYear] = useState('');
-    const [directorQuery, setDirectorQuery] = useState('');
-    const [castQuery, setCastQuery] = useState('');
+    const [selectedGenres, setSelectedGenres] = useState(() => restoredBrowseSession.current?.selectedGenres ?? []);
+    const [selectedLanguages, setSelectedLanguages] = useState(() => restoredBrowseSession.current?.selectedLanguages ?? []);
+    const [selectedVerdicts, setSelectedVerdicts] = useState(() => restoredBrowseSession.current?.selectedVerdicts ?? []);
+    const [selectedDecades, setSelectedDecades] = useState(() => restoredBrowseSession.current?.selectedDecades ?? []);
+    const [selectedStreamingServices, setSelectedStreamingServices] = useState(() => restoredBrowseSession.current?.selectedStreamingServices ?? []);
+    const [minRating, setMinRating] = useState(() => restoredBrowseSession.current?.minRating ?? [0]);
+    const [yearRange, setYearRange] = useState(() => restoredBrowseSession.current?.yearRange ?? [yearBounds[0], yearBounds[1]]);
+    const [runtimeRange, setRuntimeRange] = useState(() => restoredBrowseSession.current?.runtimeRange ?? [0, 240]);
+    const [exactYear, setExactYear] = useState(() => restoredBrowseSession.current?.exactYear ?? '');
+    const [directorQuery, setDirectorQuery] = useState(() => restoredBrowseSession.current?.directorQuery ?? '');
+    const [castQuery, setCastQuery] = useState(() => restoredBrowseSession.current?.castQuery ?? '');
     const [languageOptions, setLanguageOptions] = useState([]);
     const [isLanguageOptionsLoading, setIsLanguageOptionsLoading] = useState(true);
     const [showAllLanguages, setShowAllLanguages] = useState(false);
@@ -113,17 +147,17 @@ export function Browse() {
     const deferredSearchInput = useDeferredValue(searchInputValue);
     const debouncedSearchQuery = useDebouncedValue(deferredSearchInput, searchDebounceMs);
     const [catalogState, setCatalogState] = useState({
-        movies: [],
-        totalResults: 0,
-        totalPages: 1,
-        loadedPage: 0,
-        source: 'tmdb',
-        isInitialLoading: true,
+        movies: restoredBrowseSession.current?.catalogState?.movies ?? [],
+        totalResults: restoredBrowseSession.current?.catalogState?.totalResults ?? 0,
+        totalPages: restoredBrowseSession.current?.catalogState?.totalPages ?? 1,
+        loadedPage: restoredBrowseSession.current?.catalogState?.loadedPage ?? 0,
+        source: restoredBrowseSession.current?.catalogState?.source ?? 'tmdb',
+        isInitialLoading: !(restoredBrowseSession.current?.catalogState?.movies?.length > 0),
         isRefreshing: false,
         isLoadingMore: false,
         loadError: '',
     });
-    const [renderLimit, setRenderLimit] = useState(initialRenderCount);
+    const [renderLimit, setRenderLimit] = useState(() => restoredBrowseSession.current?.renderLimit ?? initialRenderCount);
     const renderMoreRef = useRef(null);
     const { trimmedQuery: trimmedGlobalQuery, results: globalSearchResults, isLoading: isGlobalSearchLoading, errorMessage: globalSearchError, hasQuery: hasGlobalSearchQuery, } = useGlobalSearch(debouncedSearchQuery, { limit: 60, maxPages: 3 });
     useEffect(() => {
@@ -262,6 +296,9 @@ export function Browse() {
     const deferredBrowseQuery = useDeferredValue(browseApiQuery);
     const browseQueryKey = useMemo(() => serializeBrowseMovieQuery(deferredBrowseQuery), [deferredBrowseQuery]);
     const isDefaultBrowseState = activeFiltersCount === 0 && !sortBy;
+    const hasRestoredCatalog = restoredBrowseSession.current?.browseQueryKey === browseQueryKey &&
+        Array.isArray(restoredBrowseSession.current?.catalogState?.movies) &&
+        restoredBrowseSession.current.catalogState.movies.length > 0;
     useEffect(() => {
         let cancelled = false;
         async function loadCatalog() {
@@ -273,7 +310,10 @@ export function Browse() {
                 loadError: '',
             }));
             try {
-                const responses = await Promise.all(Array.from({ length: initialCatalogPages }, (_, index) => fetchBrowseMovies({
+                const pagesToLoad = hasRestoredCatalog
+                    ? Math.max(initialCatalogPages, restoredBrowseSession.current?.catalogState?.loadedPage ?? initialCatalogPages)
+                    : initialCatalogPages;
+                const responses = await Promise.all(Array.from({ length: pagesToLoad }, (_, index) => fetchBrowseMovies({
                     ...deferredBrowseQuery,
                     page: index + 1,
                 })));
@@ -314,10 +354,10 @@ export function Browse() {
         return () => {
             cancelled = true;
         };
-    }, [browseQueryKey, deferredBrowseQuery, sortBy]);
+    }, [browseQueryKey, deferredBrowseQuery, hasRestoredCatalog, sortBy]);
     const visibleMovies = useMemo(() => (sortBy ? sortMovies(catalogState.movies, sortBy) : catalogState.movies), [catalogState.movies, sortBy]);
     useEffect(() => {
-        setRenderLimit(Math.min(visibleMovies.length, initialRenderCount));
+        setRenderLimit((current) => Math.min(visibleMovies.length, Math.max(initialRenderCount, current)));
     }, [browseQueryKey, visibleMovies.length]);
     const hasMoreToRender = renderLimit < visibleMovies.length;
     const renderedMovies = useMemo(() => visibleMovies.slice(0, renderLimit), [renderLimit, visibleMovies]);
@@ -442,9 +482,84 @@ export function Browse() {
     const handleToggleLike = useCallback((movieId) => {
         void handleToggleLibraryItem('favorites', movieId);
     }, [handleToggleLibraryItem]);
+    const persistBrowseSession = useCallback((scrollY = 0) => {
+        writeBrowseSessionState({
+            browseQueryKey,
+            sortBy,
+            showFilters,
+            selectedGenres,
+            selectedLanguages,
+            selectedVerdicts,
+            selectedDecades,
+            selectedStreamingServices,
+            minRating,
+            yearRange,
+            runtimeRange,
+            exactYear,
+            directorQuery,
+            castQuery,
+            renderLimit,
+            scrollY,
+            catalogState: {
+                movies: catalogState.movies,
+                totalResults: catalogState.totalResults,
+                totalPages: catalogState.totalPages,
+                loadedPage: catalogState.loadedPage,
+                source: catalogState.source,
+            },
+        });
+    }, [browseQueryKey, castQuery, catalogState.loadedPage, catalogState.movies, catalogState.source, catalogState.totalPages, catalogState.totalResults, directorQuery, exactYear, minRating, renderLimit, runtimeRange, selectedDecades, selectedGenres, selectedLanguages, selectedStreamingServices, selectedVerdicts, showFilters, sortBy, yearRange]);
+    const openResult = useCallback((href) => {
+        persistBrowseSession(typeof window === 'undefined' ? 0 : window.scrollY);
+        navigate(href);
+    }, [navigate, persistBrowseSession]);
     const openMovie = useCallback((movieId) => {
+        persistBrowseSession(typeof window === 'undefined' ? 0 : window.scrollY);
         navigate(`/review/${movieId}`);
-    }, [navigate]);
+    }, [navigate, persistBrowseSession]);
+    useEffect(() => {
+        persistBrowseSession(typeof window === 'undefined' ? 0 : window.scrollY);
+    }, [persistBrowseSession]);
+    useEffect(() => {
+        if (!hasRestoredCatalog || typeof window === 'undefined') {
+            return;
+        }
+        if (hasAppliedInitialRestoreRef.current) {
+            return;
+        }
+        const targetScrollY = Number(restoredBrowseSession.current?.scrollY ?? 0);
+        if (!Number.isFinite(targetScrollY) || targetScrollY <= 0) {
+            hasAppliedInitialRestoreRef.current = true;
+            restoredBrowseSession.current = null;
+            return;
+        }
+        let frameId = 0;
+        let attempts = 0;
+        const maxAttempts = 12;
+        const restoreScroll = () => {
+            const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+            const nextScrollY = Math.min(targetScrollY, maxScrollY);
+            window.scrollTo({ top: nextScrollY, behavior: 'auto' });
+            const isRestored = Math.abs(window.scrollY - nextScrollY) <= 2;
+            const canReachTarget = maxScrollY >= targetScrollY - 2;
+            if (isRestored && canReachTarget) {
+                hasAppliedInitialRestoreRef.current = true;
+                restoredBrowseSession.current = null;
+                return;
+            }
+            attempts += 1;
+            if (attempts < maxAttempts) {
+                frameId = window.requestAnimationFrame(restoreScroll);
+                return;
+            }
+            hasAppliedInitialRestoreRef.current = true;
+            restoredBrowseSession.current = null;
+        };
+        frameId = window.requestAnimationFrame(restoreScroll);
+        return () => {
+            window.cancelAnimationFrame(frameId);
+        };
+    }, [hasRestoredCatalog, renderLimit, visibleMovies.length]);
     const browseGridClassName = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
     const loadingSkeletonCount = 10;
     const filtersPanel = useMemo(() => (<>
@@ -689,7 +804,7 @@ export function Browse() {
               </div>) : globalSearchError ? (<div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-100">
                 {globalSearchError}
               </div>) : globalSearchResults.length > 0 ? (<div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {globalSearchResults.map((result) => (<SearchResultCard key={`${result.mediaType}-${result.id}`} result={result} onOpen={(href) => navigate(href)} isInWatchlist={watchlistSet.has(`tmdb-${result.id}`)} isLiked={favoritesSet.has(`tmdb-${result.id}`)} onToggleWatchlist={() => handleToggleWatchlist(`tmdb-${result.id}`)} onToggleLike={() => handleToggleLike(`tmdb-${result.id}`)}/>))}
+                {globalSearchResults.map((result) => (<SearchResultCard key={`${result.mediaType}-${result.id}`} result={result} onOpen={openResult} isInWatchlist={watchlistSet.has(`tmdb-${result.id}`)} isLiked={favoritesSet.has(`tmdb-${result.id}`)} onToggleWatchlist={() => handleToggleWatchlist(`tmdb-${result.id}`)} onToggleLike={() => handleToggleLike(`tmdb-${result.id}`)}/>))}
               </div>) : (<div className="py-20 text-center">
                 <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full" style={{ background: 'rgba(255,255,255,0.05)' }}>
                   <Film className="h-8 w-8 text-muted-foreground"/>

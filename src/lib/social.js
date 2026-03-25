@@ -1,3 +1,6 @@
+// Social/profile layer: all Firebase profile, follow, notification, and messaging logic lives here.
+// Feature ownership: Profile, Profile Connections, Messages, Notifications, and Control Room.
+// Connection: reads and writes Firestore documents plus Firebase Storage avatar uploads.
 import {
   addDoc,
   collectionGroup,
@@ -136,6 +139,7 @@ function buildPublicProfileId({ userId, username, email }) {
   return `${baseId}-${uidSuffix}`.slice(0, 48);
 }
 
+// Build a safe profile shape so UI code can render even when optional Firestore fields are missing.
 function buildFallbackProfile({
   userId = '',
   email = '',

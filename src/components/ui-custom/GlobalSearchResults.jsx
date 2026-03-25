@@ -1,5 +1,8 @@
+// Feature: reusable global search result cards used by the search page and browse page.
+// Why it exists: one component keeps TMDB movie/TV/person search results visually consistent.
+// Data flow: each card starts from a TMDB search hit, then hydrates extra TMDB details on demand.
 import { useEffect, useMemo, useState } from 'react';
-import { Clapperboard, Sparkles, Star, Tv, UserRound, Users } from 'lucide-react';
+import { Clapperboard, Sparkles, Star, Tv, UserRound } from 'lucide-react';
 import { fetchTmdbMovieByRouteId } from '@/lib/tmdb-movies';
 import { fetchPersonById, fetchTvShowById, getSearchResultHref } from '@/lib/tmdb-search';
 import { getPosterFallback } from '@/lib/posters';
@@ -98,6 +101,7 @@ function buildPersonMovie(details) {
         decade: Math.floor(year / 10) * 10,
     };
 }
+// Cache resolved TMDB detail lookups so repeated search cards do not refetch the same title/person.
 const resolvedStateCache = new Map();
 const resolvedStatePromiseCache = new Map();
 function buildBaseResolvedState(result) {
@@ -240,7 +244,6 @@ export function SearchResultCard({ result, onOpen, isInWatchlist = false, isLike
             subtitle,
             badges: [
                 { label: 'Person', icon: UserRound, tone: 'primary' },
-                { label: `${Math.max(movie.reviewCount ?? 0, 0)} credits`, icon: Users, tone: 'secondary' },
             ],
             tags: movie.genres.slice(0, 3),
             previewSubtitle: subtitle,

@@ -1,3 +1,6 @@
+// Control Room page: local preferences console for discovery, layout, and safety settings.
+// Why it exists: gives the product a future-facing settings surface even before every option is persisted.
+// Connection: this page is currently local UI state only and does not yet write to TMDB or Firebase.
 import { useState } from 'react';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';

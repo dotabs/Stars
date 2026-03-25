@@ -1,3 +1,6 @@
+// Search data layer: converts TMDB multi-search and detail endpoints into UI-ready search results.
+// Feature ownership: powers the global search bar, Search Results page, Person page, and TV detail page.
+// Connection: reads TMDB movie, TV, person, and watch-provider data.
 import { hasTmdbCredentials } from '@/lib/env';
 import { getTmdbImageUrl, tmdbFetch } from '@/lib/tmdb';
 const DEFAULT_GLOBAL_SEARCH_LIMIT = 48;

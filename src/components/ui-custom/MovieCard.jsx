@@ -19,6 +19,10 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
     const reviewCountLabel = `${reviewCount.toLocaleString()} reviews`;
     const FallbackIcon = display?.fallbackIcon;
     const saveAction = onToggleWatchlist ?? onSave;
+    const displayBadges = Array.isArray(display?.badges) ? display.badges.filter(Boolean) : null;
+    const displayTags = Array.isArray(display?.tags) ? display.tags.filter(Boolean) : null;
+    const showPlayAction = typeof onPlay === 'function';
+    const showActionRow = showPlayAction || Boolean(saveAction);
     if (variant === 'horizontal') {
         return (<div onClick={onClick} className="group flex cursor-pointer gap-4 rounded-xl p-4 transition-all duration-300" style={{
                 background: 'linear-gradient(145deg, rgba(28, 21, 18, 0.9) 0%, rgba(17, 13, 11, 0.96) 100%)',
@@ -64,36 +68,53 @@ export const MovieCard = memo(function MovieCard({ movie, variant = 'default', o
                 </div>)}
               <div className="absolute inset-x-0 bottom-0 p-4">
                 <div className="mb-2 flex items-center gap-2 text-[11px] font-semibold text-white/86">
-                  <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]">
-                    <Star className="h-3.5 w-3.5 fill-current"/>
-                    {movie.score.toFixed(1)}
-                  </span>
-                  <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1">{movie.year}</span>
+                  {displayBadges
+                    ? displayBadges.slice(0, 2).map((badge) => {
+                        const BadgeIcon = badge.icon;
+                        const badgeToneClassName = badge.tone === 'secondary'
+                            ? 'border-white/12 bg-white/8 text-white/86'
+                            : 'border-[#d26d47]/30 bg-[#d26d47]/15 text-[#f4b684]';
+                        return (<span key={`${badge.label}-${badge.tone ?? 'primary'}`} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${badgeToneClassName}`}>
+                        {BadgeIcon ? <BadgeIcon className="h-3.5 w-3.5 fill-current"/> : null}
+                        {badge.label}
+                      </span>);
+                    })
+                    : <>
+                        <span className="inline-flex items-center gap-1 rounded-full border border-[#d26d47]/30 bg-[#d26d47]/15 px-2.5 py-1 text-[#f4b684]">
+                          <Star className="h-3.5 w-3.5 fill-current"/>
+                          {movie.score.toFixed(1)}
+                        </span>
+                        <span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1">{movie.year}</span>
+                      </>}
                 </div>
                 <h3 className="line-clamp-2 font-semibold text-white transition-colors group-hover:text-[#f4b684]">
                   {titleText}
                 </h3>
-                <p className="mt-1 line-clamp-1 text-xs text-white/58">{movie.genres.slice(0, 2).join(' / ')}</p>
-                <div className="mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
+                <p className="mt-1 line-clamp-1 text-xs text-white/58">
+                  {displayTags && displayTags.length > 0 ? displayTags.slice(0, 3).join(' / ') : movie.genres.slice(0, 2).join(' / ')}
+                </p>
+                {showActionRow ? <div className="mt-3 opacity-100 transition-all duration-300 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    <button type="button" onClick={(event) => {
-                        event.stopPropagation();
-                        onPlay?.();
-                    }} className="flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]">
-                      <Play className="h-3 w-3 fill-current sm:h-3.5 sm:w-3.5"/>
-                      Watch Trailer
-                    </button>
+                    {showPlayAction ? <button type="button" onClick={(event) => {
+                            event.stopPropagation();
+                            onPlay?.();
+                        }} className="flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-white px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-black shadow-[0_18px_40px_rgba(255,255,255,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/94 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em]">
+                        <span className="flex h-4 w-4 flex-none items-center justify-center sm:h-5 sm:w-5">
+                          <Play className="h-3.5 w-3.5 flex-none fill-current stroke-[2.2] sm:h-4 sm:w-4"/>
+                        </span>
+                        Watch Trailer
+                      </button> : null}
                     {saveAction && (<button type="button" onClick={(event) => {
                             event.stopPropagation();
                             saveAction();
-                        }} className={`flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] ${isInWatchlist
+                        }} className={`flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border px-2.5 py-2.5 text-center text-[11px] font-semibold uppercase tracking-[0.14em] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 sm:min-h-12 sm:gap-2 sm:px-3 sm:py-3 sm:text-[12px] sm:tracking-[0.16em] ${(showPlayAction ? '' : 'sm:col-span-2 ') + (isInWatchlist
                             ? 'border-[#d26d47]/45 bg-[#d26d47]/16 text-[#f4c3a4] shadow-[0_14px_34px_rgba(210,109,71,0.12)]'
-                            : 'border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38'}`}>
+                            : 'border-white/12 bg-black/26 text-white hover:border-white/20 hover:bg-black/38')}`}>
                         <Bookmark className="h-3 w-3 sm:h-3.5 sm:w-3.5"/>
                         {isInWatchlist ? 'Saved' : 'My List'}
                       </button>)}
                   </div>
-                </div>
+                </div> : null}
               </div>
             </div>
           </div>);
