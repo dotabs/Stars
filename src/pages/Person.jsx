@@ -15,10 +15,12 @@ function hasText(value) {
   return Boolean(typeof value === 'string' && value.trim());
 }
 
+// Infer a broad acting-vs-crew split from the available TMDB credit fields.
 function getCreditCategory(credit) {
   return hasText(credit.role) ? 'acting' : 'crew';
 }
 
+// Merge cast and crew into one chronologically sorted stream for the timeline view.
 function buildTimelineCredits(person) {
   const merged = [...(person.castCredits ?? []), ...(person.crewCredits ?? [])]
     .map((credit) => ({
@@ -38,6 +40,7 @@ function buildTimelineCredits(person) {
   return Array.from(new Map(merged.map((credit) => [`${credit.mediaType}-${credit.id}-${credit.roleLabel}`, credit])).values());
 }
 
+// Group credits by release year so the timeline can render in readable year sections.
 function groupTimelineCredits(credits) {
   return credits.reduce((groups, credit) => {
     const year = credit.subtitle || 'Date TBD';
@@ -122,6 +125,7 @@ export function Person() {
     visibleCount: TIMELINE_PAGE_SIZE,
   });
 
+  // Prefer true browser back behavior, but fall back to browse when the page is opened directly.
   function handleBack() {
     if (window.history.length > 1) {
       navigate(-1);
@@ -164,6 +168,7 @@ export function Person() {
     };
   }, [hasValidPersonId, personId]);
 
+  // Escape mirrors the back button to make the detail page feel modal-like when entered from search.
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.key === 'Escape') {
@@ -188,6 +193,7 @@ export function Person() {
   const activeTab = timelineState.personId === personId ? timelineState.activeTab : 'all';
   const visibleCount = timelineState.personId === personId ? timelineState.visibleCount : TIMELINE_PAGE_SIZE;
 
+  // Filter the unified timeline client-side so switching tabs does not require a refetch.
   const timelineCredits = useMemo(() => {
     if (!person) {
       return [];

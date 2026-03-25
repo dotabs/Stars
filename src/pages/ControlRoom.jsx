@@ -3,6 +3,8 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Palette, Compass, Layout, Globe, Shield, Heart, GripVertical, X, Check } from 'lucide-react';
+
+// The side navigation and content switcher both read from the same menu definition.
 const menuItems = [
     { id: 'taste', label: 'My Taste', icon: Heart },
     { id: 'discovery', label: 'Discovery Rules', icon: Compass },
@@ -25,6 +27,8 @@ const homeSections = [
 ];
 export function ControlRoom() {
     const [activeMenu, setActiveMenu] = useState('taste');
+
+    // These values model the user's recommendation profile rather than being fetched from a backend yet.
     // Taste preferences
     const [genreWeights, setGenreWeights] = useState({
         'Drama': 8, 'Sci-Fi': 9, 'Thriller': 7, 'Comedy': 5
@@ -44,6 +48,8 @@ export function ControlRoom() {
     // Safety
     const [spoilerBlur, setSpoilerBlur] = useState(true);
     const [contentWarnings, setContentWarnings] = useState(true);
+
+    // Toggle genre membership in the preferred list while keeping the state update logic in one place.
     const toggleGenre = (genre) => {
         if (preferredGenres.includes(genre)) {
             setPreferredGenres(preferredGenres.filter(g => g !== genre));
@@ -52,12 +58,18 @@ export function ControlRoom() {
             setPreferredGenres([...preferredGenres, genre]);
         }
     };
+
+    // Flip a homepage section on or off without changing its current position in the layout list.
     const toggleSection = (sectionId) => {
         setSections(sections.map(s => s.id === sectionId ? { ...s, enabled: !s.enabled } : s));
     };
+
+    // Remove a country chip from the pinned list used by the globe customization view.
     const removePinnedCountry = (country) => {
         setPinnedCountries(pinnedCountries.filter(c => c !== country));
     };
+
+    // Each menu tab renders its own settings panel, keeping the top-level layout component simple.
     const renderContent = () => {
         switch (activeMenu) {
             case 'taste':
@@ -280,6 +292,7 @@ export function ControlRoom() {
         {/* Main Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
           <div className="max-w-2xl">
+            {/* Derive the page title from the same menu config used to render the navigation buttons. */}
             <h1 className="heading-display text-3xl mb-2">
               {menuItems.find(m => m.id === activeMenu)?.label}
             </h1>

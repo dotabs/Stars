@@ -15,6 +15,7 @@ const runtimeOptions = [{ value: 'all', label: 'Any runtime' }, { value: 'short'
 const ratingOptions = [{ value: 'all', label: 'Any rating' }, { value: '7', label: '7.0+' }, { value: '8', label: '8.0+' }, { value: '9', label: '9.0+' }];
 const tabs = [{ id: 'watchlist', label: 'Watchlist', icon: BookmarkMinus }, { id: 'watched', label: 'Watched', icon: Check }, { id: 'favorites', label: 'Favorites', icon: Heart }];
 
+// Filter helpers stay outside the component so sorting and matching logic remains easy to scan.
 function formatRuntime(runtime) {
   if (!runtime || runtime <= 0) return 'Runtime pending';
   const hours = Math.floor(runtime / 60);
@@ -164,6 +165,7 @@ export function Watchlist() {
   const [isLoadingMovies, setIsLoadingMovies] = useState(false);
   const [loadError, setLoadError] = useState('');
 
+  // Resolve saved ids into full movie objects from both the local seed catalog and TMDB-backed entries.
   useEffect(() => {
     let cancelled = false;
     async function loadMovies() {
@@ -197,6 +199,7 @@ export function Watchlist() {
   }, [library.favorites, library.watchlist, library.watched]);
 
   const movieMap = useMemo(() => new Map(loadedMovies.map((movie) => [movie.id, movie])), [loadedMovies]);
+  // Build the active tab from library ids so filters and view modes work the same across all three lists.
   const tabMovies = useMemo(() => (library[activeTab] ?? []).map((movieId) => {
     const movie = movieMap.get(movieId);
     const entry = library.itemsById[movieId];
@@ -230,6 +233,7 @@ export function Watchlist() {
   const heroStats = [{ label: 'Saved', value: String(library.watchlist.length) }, { label: 'Watched', value: String(library.watched.length) }, { label: 'Favorites', value: String(library.favorites.length) }];
   const isBusy = !authReady || isLibraryLoading || isLoadingMovies;
 
+  // All library actions surface the same auth and failure messaging to avoid drifting behavior between buttons.
   const handleActionError = (error, fallbackTitle) => {
     if (isLibraryAuthError(error)) {
       toast({ title: 'Sign in required', description: 'Your library is stored per account. Sign in to manage saved movies.', variant: 'destructive' });

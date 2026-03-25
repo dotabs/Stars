@@ -12,6 +12,7 @@ import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 
 const heroRotationIntervalMs = 7000;
 
+// Trim long synopses without cutting off in the middle of a word.
 function clampCopy(value, maxLength = 220) {
   if (!value) {
     return '';
@@ -26,6 +27,7 @@ function clampCopy(value, maxLength = 220) {
   return `${safeValue.slice(0, Math.max(lastSpaceIndex, maxLength - 24)).trimEnd()}...`;
 }
 
+// Row labels map to route-specific collection pages when there is a more precise destination than /browse.
 function getBrowseHrefForRow(label) {
   if (label === 'Trending Today') {
     return '/lists?collection=trending-day';
@@ -76,6 +78,7 @@ function dedupeMovies(movies = []) {
   return Array.from(new Map(movies.filter(Boolean).map((movie) => [movie.id, movie])).values());
 }
 
+// Build a lightweight recommendation score from genres, TMDB score, and popularity across saved titles.
 function rankRecommendedMovies(savedMovies = [], candidateMovies = [], excludedIds = new Set()) {
   if (!savedMovies.length) {
     return [];
@@ -265,6 +268,7 @@ function MovieRow({ label, title, movies, variant = 'poster', accent = 'default'
     };
   }, [movies, scroller]);
 
+  // Scroll rows by roughly one viewport so the controls feel like paging rather than nudging.
   function handleScroll(direction) {
     if (!scroller || !canScroll) {
       return;
@@ -450,6 +454,7 @@ export function Home() {
   useEffect(() => {
     let cancelled = false;
 
+    // Fetch the full TMDB home feed once, then let the page derive rows and hero state from it.
     async function loadFeed() {
       setIsLoading(true);
       setLoadError('');
@@ -495,6 +500,7 @@ export function Home() {
     };
   }, [feed?.heroCandidates?.length]);
 
+  // Warm hero backdrop images early so rotation transitions stay smooth.
   useEffect(() => {
     const candidates = feed?.heroCandidates ?? [];
     candidates.forEach((movie) => {
@@ -511,6 +517,7 @@ export function Home() {
   useEffect(() => {
     let cancelled = false;
 
+    // Personalization is intentionally lightweight: rank the current home feed using saved library genres.
     async function loadRecommendations() {
       const routeIds = Array.from(new Set([...(library.favorites ?? []), ...(library.watchlist ?? [])])).slice(0, 8);
       if (!routeIds.length || !feed) {

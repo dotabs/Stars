@@ -17,6 +17,7 @@ export function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+        // Keep client-side validation minimal, then create the matching profile record right after auth signup.
         if (password.length < 6) {
             setErrorMessage('Password must be at least 6 characters.');
             return;

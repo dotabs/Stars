@@ -25,6 +25,7 @@ export function ProfileConnections() {
   const [state, setState] = useState({ items: [], cursor: null, hasMore: false, isLoading: true, error: '' });
   const isOwner = Boolean(currentUser?.uid && resolvedUserId === currentUser.uid);
 
+  // Followers can unlock this view for private profiles, so follow state has to load before the list does.
   useEffect(() => {
     let cancelled = false;
 
@@ -62,6 +63,7 @@ export function ProfileConnections() {
     [followState.isFollowing, isOwner, profile?.privacy.profileVisibility]
   );
 
+  // Reset to an empty, non-loading state when the route is invalid or privacy blocks access.
   useEffect(() => {
     let cancelled = false;
 

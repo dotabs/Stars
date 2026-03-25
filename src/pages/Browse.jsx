@@ -19,9 +19,13 @@ const initialCatalogPages = 1;
 const searchDebounceMs = 250;
 const initialRenderCount = 20;
 const renderBatchSize = 20;
+
+// TMDB results can overlap across pages, so we collapse them to one entry per movie id.
 function dedupeMovies(movies) {
     return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
 }
+
+// Generate a stable pseudo-random seed so the unsorted browse view feels mixed without reshuffling on every render.
 function hashMovieOrderSeed(movie) {
     const seedSource = `${movie.id}:${movie.title}:${movie.year}`;
     let hash = 0;
@@ -33,11 +37,15 @@ function hashMovieOrderSeed(movie) {
 function mixBrowseMovies(movies) {
     return [...movies].sort((a, b) => hashMovieOrderSeed(a) - hashMovieOrderSeed(b));
 }
+
+// Fall back to January 1st when only the release year is available so date comparisons stay consistent.
 function compareReleaseDate(a, b) {
     const aDate = a.releaseDate ?? `${a.year}-01-01`;
     const bDate = b.releaseDate ?? `${b.year}-01-01`;
     return bDate.localeCompare(aDate);
 }
+
+// Centralize all browse sort rules so the same ordering is reused after initial fetches and "load more" merges.
 function sortMovies(movies, sortBy) {
     const sorted = [...movies];
     sorted.sort((a, b) => {
@@ -122,9 +130,13 @@ export function Browse() {
     const [renderLimit, setRenderLimit] = useState(initialRenderCount);
     const renderMoreRef = useRef(null);
     const { trimmedQuery: trimmedGlobalQuery, results: globalSearchResults, isLoading: isGlobalSearchLoading, errorMessage: globalSearchError, hasQuery: hasGlobalSearchQuery, } = useGlobalSearch(debouncedSearchQuery, { limit: 60, maxPages: 3 });
+
+    // Keep the input in sync with the URL so browser navigation restores the current search state.
     useEffect(() => {
         setSearchInputValue(urlSearchQuery);
     }, [urlSearchQuery]);
+
+    // Mirror the debounced search term into the query string to make the browse state shareable and reload-safe.
     useEffect(() => {
         const normalizedSearchValue = debouncedSearchQuery.trim();
         const normalizedUrlSearchValue = urlSearchQuery.trim();
@@ -167,6 +179,8 @@ export function Browse() {
             cancelled = true;
         };
     }, []);
+
+    // Trending titles are only used for the default browse landing state.
     useEffect(() => {
         let cancelled = false;
         async function loadTrending() {
@@ -188,6 +202,8 @@ export function Browse() {
             cancelled = true;
         };
     }, []);
+
+    // Count only filters that are actively narrowing the catalog so the UI can show a concise active state.
     const activeFiltersCount = useMemo(() => selectedGenres.length +
         selectedLanguages.length +
         selectedVerdicts.length +
@@ -211,6 +227,8 @@ export function Browse() {
         selectedVerdicts,
         yearRange,
     ]);
+
+    // Build the TMDB query object from UI state, omitting default values so the request stays minimal.
     const browseApiQuery = useMemo(() => ({
         genres: selectedGenres,
         languages: selectedLanguages,
@@ -245,6 +263,8 @@ export function Browse() {
     const deferredBrowseQuery = useDeferredValue(browseApiQuery);
     const browseQueryKey = useMemo(() => serializeBrowseMovieQuery(deferredBrowseQuery), [deferredBrowseQuery]);
     const isDefaultBrowseState = activeFiltersCount === 0 && !sortBy;
+
+    // Refetch whenever the normalized browse query changes, while preserving already loaded content during refreshes.
     useEffect(() => {
         let cancelled = false;
         async function loadCatalog() {
@@ -299,11 +319,15 @@ export function Browse() {
         };
     }, [browseQueryKey, deferredBrowseQuery, sortBy]);
     const visibleMovies = useMemo(() => (sortBy ? sortMovies(catalogState.movies, sortBy) : catalogState.movies), [catalogState.movies, sortBy]);
+
+    // Reset the incremental render window whenever the underlying result set changes.
     useEffect(() => {
         setRenderLimit(Math.min(visibleMovies.length, initialRenderCount));
     }, [browseQueryKey, visibleMovies.length]);
     const hasMoreToRender = renderLimit < visibleMovies.length;
     const renderedMovies = useMemo(() => visibleMovies.slice(0, renderLimit), [renderLimit, visibleMovies]);
+
+    // Render large result sets in batches as the user scrolls to keep the grid responsive.
     useEffect(() => {
         const target = renderMoreRef.current;
         if (!target || !hasMoreToRender)
@@ -322,6 +346,8 @@ export function Browse() {
         !catalogState.isInitialLoading &&
         !catalogState.isLoadingMore &&
         !catalogState.isRefreshing;
+
+    // Clear both in-memory filters and the search query param so the page returns to its default browse state.
     const resetBrowseState = useCallback(() => {
         setSelectedGenres([]);
         setSelectedLanguages([]);
@@ -342,6 +368,8 @@ export function Browse() {
         setSearchParams(nextParams, { replace: true });
     }, [searchParams, setSearchParams]);
     const availableLanguageOptions = useMemo(() => languageOptions, [languageOptions]);
+
+    // Drop any selected language that no longer exists in the latest TMDB language list.
     useEffect(() => {
         setSelectedLanguages((current) => current.filter((code) => availableLanguageOptions.some((language) => language.value === code)));
     }, [availableLanguageOptions]);
@@ -350,6 +378,8 @@ export function Browse() {
     }, [browseQueryKey]);
     const visibleLanguageOptions = useMemo(() => showAllLanguages ? availableLanguageOptions : availableLanguageOptions.slice(0, 18), [availableLanguageOptions, showAllLanguages]);
     const hasMoreLanguages = availableLanguageOptions.length > 18;
+
+    // Fetch the next TMDB page and merge it into the existing catalog without introducing duplicates.
     const handleLoadMore = useCallback(async () => {
         const nextPage = catalogState.loadedPage + 1;
         if (nextPage > catalogState.totalPages || catalogState.isLoadingMore || catalogState.isRefreshing)
@@ -394,6 +424,8 @@ export function Browse() {
         deferredBrowseQuery,
         sortBy,
     ]);
+
+    // Route all library mutations through one handler so auth and error toasts stay consistent.
     const handleToggleLibraryItem = useCallback(async (listName, movieId) => {
         try {
             await toggleLibraryItem({

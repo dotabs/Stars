@@ -7,6 +7,7 @@ export function Notifications() {
   const { currentUser } = useAuth();
   const [state, setState] = useState({ items: [], cursor: null, hasMore: false, isLoading: true });
 
+  // Notifications are marked read as part of the initial fetch so the badge state clears naturally after viewing.
   useEffect(() => {
     let cancelled = false;
     if (!currentUser?.uid) {

@@ -13,6 +13,7 @@ export function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    // Preserve the protected route the user originally tried to visit before being redirected to sign in.
     const redirectTo = location.state?.from?.pathname || '/';
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -78,6 +78,7 @@ function buildFallbackPeople(movie) {
   };
 }
 
+// Local titles do not have TMDB recommendations, so build a small similarity graph from the bundled dataset.
 function buildLocalRecommendations(localMovie) {
   const related = localMovies
     .filter((entry) => entry.id !== localMovie.id)
@@ -97,6 +98,7 @@ function buildLocalRecommendations(localMovie) {
   };
 }
 
+// Rating cards share one tone system so TMDB, community, and personal scores feel visually related.
 function getRatingTone(type, hasData, score) {
   if (type === 'personal') {
     return {
@@ -263,6 +265,7 @@ export function Review() {
   const { feedback, isLoading: isFeedbackLoading } = useMovieFeedback(movie?.id);
   const reviewRef = useRef(null);
 
+  // Back behavior works like a modal close when possible, but still supports direct entry to the page.
   function handleBack() {
     if (window.history.length > 1) {
       navigate(-1);
@@ -275,6 +278,7 @@ export function Review() {
   useEffect(() => {
     let cancelled = false;
 
+    // Prefer live TMDB data, then gracefully fall back to the local seeded catalog when needed.
     async function loadMovie() {
       if (!id) {
         return;
@@ -340,6 +344,7 @@ export function Review() {
     setRatingInput(userEntry?.rating ?? 0);
     setReviewInput(userEntry?.reviewText ?? '');
   }, [movie?.id, userEntry?.rating, userEntry?.reviewText]);
+  // Opening the editor scrolls the form into view so it feels connected to the current movie context.
   useEffect(() => {
     if (!isEditorOpen) {
       return;
@@ -432,6 +437,7 @@ export function Review() {
   const isWatched = Boolean(libraryEntry?.isWatched);
   const isFavorite = Boolean(libraryEntry?.isFavorite);
 
+  // Route all library updates through one helper so auth and toast behavior stays consistent.
   async function handleLibraryToggle(listName, enabled, successTitle, successDescription) {
     try {
       await setLibraryItemState({

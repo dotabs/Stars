@@ -12,6 +12,7 @@ import { isLibraryAuthError, toggleLibraryItem } from '@/lib/user-library';
 const PREVIEW_PAGE_SIZE = 8;
 const DETAIL_PAGE_SIZE = 18;
 
+// Collections can overlap, so merge pages by movie id before updating a list detail view.
 function dedupeMovies(movies) {
     return Array.from(new Map(movies.map((movie) => [movie.id, movie])).values());
 }
@@ -25,6 +26,7 @@ function formatCompactNumber(value) {
         maximumFractionDigits: 1,
     }).format(numeric);
 }
+// Exclude titles that already appeared in earlier collections to keep the page feeling broader when paginating.
 function buildCollectionExclusionIds(collections, collectionId) {
     const collectionIndex = collections.findIndex((collection) => collection.id === collectionId);
     return collections
@@ -79,6 +81,7 @@ export function Lists() {
         let cancelled = false;
         async function loadCollections() {
             setIsLoading(true);
+            // Load lightweight preview collections first; detail pages can hydrate a larger first page on demand.
             try {
                 const response = await fetchTmdbCollections(PREVIEW_PAGE_SIZE);
                 if (!cancelled) {
@@ -143,6 +146,7 @@ export function Lists() {
         collectionsRef.current = collections;
     }, [collections]);
 
+    // Centralize collection pagination so both infinite scroll and manual "View All" reuse the same loader.
     const loadCollectionPage = useCallback(async (collectionId, page, options = {}) => {
         const { replace = false, limit = DETAIL_PAGE_SIZE } = options;
         const cacheKey = `${collectionId}:${page}:${limit}`;

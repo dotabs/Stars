@@ -27,6 +27,7 @@ export function Messages() {
   const [messageInput, setMessageInput] = useState('');
   const [isSending, setIsSending] = useState(false);
 
+  // Conversations are loaded separately from messages so the left rail stays responsive while threads swap.
   useEffect(() => {
     let cancelled = false;
     if (!currentUser?.uid) {
@@ -57,6 +58,7 @@ export function Messages() {
     };
   }, [activeConversationId, currentUser?.uid]);
 
+  // Opening the page from a profile preloads that recipient only if messaging is allowed by privacy settings.
   useEffect(() => {
     let cancelled = false;
     if (!requestedUserId || !currentUser?.uid || requestedUserId === currentUser.uid) {
@@ -85,6 +87,7 @@ export function Messages() {
     };
   }, [currentUser?.uid, requestedUserId]);
 
+  // Mark the active thread as read after its messages land, keeping unread counts in sync with the UI.
   useEffect(() => {
     let cancelled = false;
     if (!activeConversationId || !currentUser?.uid) {

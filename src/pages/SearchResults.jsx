@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 const searchDebounceMs = 250;
 const searchViewOrder = ['all', 'person', 'tv', 'movie'];
+// Keep search-type labels and validation centralized because both the filter rail and result summary use them.
 function getSearchViewLabel(type) {
     if (type === 'all')
         return 'All';
@@ -52,6 +53,7 @@ export function SearchResults() {
         limit: 60,
         maxPages: 3,
     });
+    // Stay in sync with browser navigation so shared URLs restore both the query and selected filter.
     useEffect(() => {
         setSearchInputValue(initialQuery);
     }, [initialQuery]);
@@ -73,6 +75,7 @@ export function SearchResults() {
     const visibleResults = useMemo(() => filterResults(results, selectedType), [results, selectedType]);
     const watchlistSet = useMemo(() => new Set(library.watchlist), [library.watchlist]);
     const favoritesSet = useMemo(() => new Set(library.favorites), [library.favorites]);
+    // Search cards can save results directly, so reuse the same auth-aware library mutation flow here.
     const handleToggleLibraryItem = async (listName, movieId) => {
         try {
             await toggleLibraryItem({

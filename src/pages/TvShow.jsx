@@ -107,6 +107,7 @@ function getRatingTone(type, hasData, score) {
   };
 }
 
+// TV detail reuses the same score styling system as movies so app feedback reads consistently across media types.
 function RatingPill({ label, value, hint, tone = 'tmdb', score, hasData = true }) {
   const styles = getRatingTone(tone, hasData, score);
 
@@ -205,6 +206,7 @@ export function TvShow() {
   const feedbackId = show ? `tv-${show.id}` : '';
   const { feedback, isLoading: isFeedbackLoading } = useMovieFeedback(feedbackId);
 
+  // Match the movie detail page back behavior so series pages feel consistent in navigation.
   function handleBack() {
     if (window.history.length > 1) {
       navigate(-1);
@@ -217,6 +219,7 @@ export function TvShow() {
   useEffect(() => {
     let cancelled = false;
 
+    // TV pages are TMDB-backed only, so invalid ids can short-circuit before the request starts.
     if (!hasValidTvId) {
       setIsLoading(false);
       return () => {
@@ -327,6 +330,7 @@ export function TvShow() {
   const isWatched = Boolean(libraryEntry?.isWatched);
   const isFavorite = Boolean(libraryEntry?.isFavorite);
 
+  // Store TV titles under a namespaced library id so they can share the same Firebase collections as movies.
   async function handleLibraryToggle(listName, enabled, successTitle, successDescription) {
     try {
       await setLibraryItemState({

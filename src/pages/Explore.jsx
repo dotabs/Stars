@@ -11,6 +11,7 @@ const visitedStorageKey = 'stars:explore:visited-countries';
 const recentMoviesStorageKey = 'stars:explore:recent-country-movies';
 const maxPinnedCountries = 6;
 const maxRecentMoviesPerCountry = 24;
+// Persist lightweight explore state locally so the globe remembers recent habits between visits.
 function readStoredArray(key, fallback) {
     if (typeof window === 'undefined')
         return fallback;
@@ -38,6 +39,7 @@ function writeStoredValue(key, value) {
         return;
     window.localStorage.setItem(key, JSON.stringify(value));
 }
+// Merge refreshed country metadata back into the static country list while preserving explored progress.
 function mergeCountryState(countries, nextCountry, visited) {
     return countries.map((country) => country.key === nextCountry.key
         ? {
@@ -121,6 +123,7 @@ export function Explore() {
     useEffect(() => {
         prefetchExploreCountryPool([selectedCountryKey, ...pinnedCountries]);
     }, [pinnedCountries, selectedCountryKey]);
+    // Guard country loads so late async responses do not overwrite a newer selection.
     useEffect(() => {
         let cancelled = false;
         const requestId = loadRequestRef.current + 1;
@@ -183,6 +186,7 @@ export function Explore() {
     const passportTier = passportLabel(visitedCountries.length);
     const topStandouts = selectedCountryData.standoutTitles?.slice(0, 4) ?? [];
     const isShowingCurrentCountryDiscovery = discovery?.country.key === selectedCountryKey;
+    // Country changes reset the local search and active shelf without blocking the globe animation.
     const handleCountrySelect = (country) => {
         startTransition(() => {
             setSelectedCountryKey(country.key);
